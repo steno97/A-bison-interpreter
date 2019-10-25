@@ -18,10 +18,10 @@
 "else"|"ELSE"           { return ELSE; }
 "void"|"VOID"           { return VOID; }
 [0-9]+ 					{ return NUMBER; }
-[a-z][a-z0-9]*			{ return ALPHA; }
+([a-z]+[_a-z0-9]*)		{ return ALPHA; }
 
 "+"	                    { return ADD; }
-"-"						{ return sub; }
+"-"						{ return SUB; }
 "*"                     { return MUL; }
 "/"                     { return DIV; }
 "++""	                { return INCR; }
@@ -48,6 +48,7 @@
 "&"             { return REFER; }
 "\n"			{ return NEWLINE; }
 "#"				{ return COMMENT; }
-"->"			{ return CHANGESTATE; }
+"=>"			{ return CHANGESTATE; }
+.              	{printf("Unknown token!n"); yyterminate();}
 
 %%
