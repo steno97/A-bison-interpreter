@@ -23,6 +23,7 @@
 
 %%
 
+//definisco un elenco assegnazioni
 elenco_ass: 
  | assegnazione SEMI
  | elenco_ass NEWLINE elenco_ass
@@ -50,37 +51,46 @@ term: NUMBER
 definition: VAR LBRACE end_ass RBRACE
 ;
 
+//definisco un elenco di eventi o comandi
 elenco_ev_com:
 	| string SEMI
 	| elenco_ev_com NEWLINE elenco_ev_com
 ;
 
+/definisco il campo eventi
 events: EVENT LBRACE elenco_ev_com RBRACE
 ;
 
+//definisco il campo comandi
 commands: COMMAND LBRACE elenco_ev_com RBRACE
 ;
 
+//definisco il campo stato
 state: STATE LBRACE actions NEWLINE elenco_cambio RBRACE
 	| STATE LBRACE actions NEWLINE elenco_cambio RBRACE
 ;
 
+//definisco le azioni svolte 
 actions: ACTION LBRACE elenco_actions RBRACE SEMI
 ;
 
+//definisco un elenco di azioni svolte nello stato
 elenco_actions: 
 	| string
 	| elenco_actions COMMA elenco_actions
 ;
 
+//definisco il cambio stato
 cambiostato: string CHANGESTATE string SEMI
 	| CHANGESTATE string SEMI
 ;
 
+//definisco un elenco di cambiostato
 elenco_cambio: cambiostato
 	| cambiostato NEWLINE cambiostato
 ;
 
+//definisco il commento
 commenti: COMMENT string NEWLINE
 	| COMMENT
 ;
