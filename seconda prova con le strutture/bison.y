@@ -51,8 +51,8 @@ definition: VAR LBRACE NEWLINE RBRACE
 	| VAR LBRACE elenco_ass RBRACE
 ;
 
-elenco_ev_com: string SEMI {$$ = (evento) $1;}
-	| elenco_ev_com NEWLINE elenco_ev_com
+elenco_ev_com: string SEMI {$$ = new_evento((evento) $1,NULL);}
+	| elenco_ev_com NEWLINE string SEMI {$$= add_evento($1,new_evento((evento) $3,NULL);}
 ;
 
 events: EVENT LBRACE elenco_ev_com RBRACE
@@ -62,10 +62,8 @@ commands: COMMAND LBRACE elenco_ev_com RBRACE
 ;
 
 /* è da implementare con gli if*/
-new_el_stati(stato* statolista, stato* prox);
-
 elenco_stati:state NEWLINE state {$$=new_el_stati($1, $2);}
-	| elenco_stati NEWLINE satate {$$=add_el_stati($1, $2);
+	| elenco_stati NEWLINE satate {$$=add_el_stati($1, $2;}
 ;
 
 state: STATE string LBRACE elenco_actions NEWLINE elenco_cambio RBRACE {$$=new_state($2,$4,$6);
@@ -91,6 +89,5 @@ elenco_cambio: cambiostato
 commenti: COMMENT
 	|COMMENT string NEWLINE
 ;
-
 
 %%
