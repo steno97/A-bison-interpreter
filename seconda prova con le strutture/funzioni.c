@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include <dichiarazioni.h>
+#include "dichiarazioni.h"
 #include <stdlib.h>
 
 
