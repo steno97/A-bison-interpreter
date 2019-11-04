@@ -10,34 +10,19 @@ action* az=NULL;
 event* eventi=NULL;
 event* interrupt=NULL;
 elenco_stati* status=NULL;
-stato stato0*=NULL;
+stato* stato0=NULL;
 
 
 //funzione che esegue le azioni
-int do(){
+int do_(){
+	return 0;
 	//ci sara una chiamata a funzioni già preisposte
 }
 	
-int run(elenco_stati* el){
-	*elenco=*el;	
-	while(el!=NULL){
-		if((el->value)->nome==idle){
-			stato0=el->value;
-			break;
-		}
-		el=el->next;
-	}	
-	while{
-		stato0=analisi(stato0);
-	}
-	return 1;
-}
-
-
 stato* analisi(stato* s){
 	action* az=s->azioni;
 	while(az->value!=NULL){
-		do(az->value);
+		do_(az->value);
 		az=az->next;
 		}
 	eventi=s->eventi;
@@ -50,6 +35,22 @@ stato* analisi(stato* s){
 		status=status->next;
 		}
 	return status->value;
+}
+
+
+int run(elenco_stati* el){
+	*elenco=*el;	
+	while(el!=NULL){
+		if((el->value)->nome=="idle"){
+			stato0=el->value;
+			break;
+		}
+		el=el->next;
+	}	
+	while(1){
+		stato0=analisi(stato0);
+	}
+	return 1;
 }
 
 void yyerror(char *s, ...){
