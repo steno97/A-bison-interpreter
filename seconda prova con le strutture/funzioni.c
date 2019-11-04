@@ -21,7 +21,7 @@ int free_cambiostato(cambio_stato* cs){
 	return 1;
 }
 
-stato* new_stato( String n,action* actions, cambio_stato* cs){
+stato* new_stato2( String n,action* actions, cambio_stato* cs){
 	stato* s=(stato*) malloc(sizeof(stato));
 	s->nome=n;
 	s->azioni=actions;
@@ -30,7 +30,7 @@ stato* new_stato( String n,action* actions, cambio_stato* cs){
 	return s;
 }
 
-stato* new_stato( String n, action* actions, event *ev, elenco_stati* el_stati){
+stato* new_stato3( String n, action* actions, event *ev, elenco_stati* prox){
 	stato* s=(stato*) malloc(sizeof(stato));
 	s->nome=n;
 	s->azioni=actions;
@@ -38,7 +38,7 @@ stato* new_stato( String n, action* actions, event *ev, elenco_stati* el_stati){
 	s->el_stati=prox;
 	return s;
 }
-stato* new_stato(String n){
+stato* new_stato1(String n){
 	stato* s=(stato*) malloc(sizeof(stato));
 	s->nome=n;
 	s->azioni=NULL;
@@ -50,21 +50,27 @@ stato* new_stato(String n){
 
 action* new_action(azione* a, action* prox){
 	action* az=(action*) malloc(sizeof(action));
-	az->value=a;
+	az->value=*a;
 	az->next=prox;
 	return az;
 }
 
 event* new_evento(evento* e, event* prox){
 	event* ev=(event*) malloc(sizeof(event));
-	ev->value=e;
+	ev->value=*e;
 	ev->next=prox;
 	return ev;
 }
 elenco_stati* new_el_stati(stato* statolista, stato* prox){
 	elenco_stati* el=(elenco_stati*) malloc(sizeof(elenco_stati));
 	el->value=statolista;
-	el->next=prox;
+	el->next=new_el_stati1(prox);
+	return el;
+}
+elenco_stati* new_el_stati1(stato* statolista){
+	elenco_stati* el=(elenco_stati*) malloc(sizeof(elenco_stati));
+	el->value=statolista;
+	el->next=NULL;
 	return el;
 }
 
@@ -79,8 +85,9 @@ event* add_evento(event* e, event* prox){
 }
 
 elenco_stati* add_el_stati(elenco_stati* statolista, stato* prox){
-	prox->next=statolista->value;
-	return prox;
+	elenco_stati* t=new_el_stati(prox, NULL);
+	t->next=statolista;
+	return t;
 }
 
 
@@ -111,8 +118,8 @@ int free_evento(event* e){
 	return 1;
 }
 
-int free_el_stati(stato* statolista){
-	action* a1=NULL;
+int free_el_stati(elenco_stati* statolista){
+	elenco_stati* a1=NULL;
 	while(statolista->next!=NULL){
 		a1=statolista->next;
 		free(statolista);

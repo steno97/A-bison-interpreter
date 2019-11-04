@@ -63,11 +63,10 @@ commands: COMMAND LBRACE elenco_ev_com RBRACE
 
 /* è da implementare con gli if*/
 elenco_stati:state NEWLINE state {$$=new_el_stati($1, $2);}
-	| elenco_stati NEWLINE satate {$$=add_el_stati($1, $2;}
+	| elenco_stati NEWLINE state {$$=add_el_stati($1, $2;}
 ;
 
-state: STATE string LBRACE elenco_actions NEWLINE elenco_cambio RBRACE {$$=new_state($2,$4,$6);
-																			free(elenco_cambio);}
+state: STATE string LBRACE elenco_actions NEWLINE elenco_cambio RBRACE {$$=new_stato2($2,$4,$6); free(elenco_cambio);}
 ;
 
 actions: | ACTION LBRACE SPACE RBRACE SEMI
@@ -78,8 +77,8 @@ elenco_actions: string {$$ = new_action((azione) $1,NULL);}
 	| elenco_actions COMMA String {$$ = add_azione($1, new_action((azione $1 NULL)));}
 ;
 
-cambiostato: string CHANGESTATE string SEMI {$$= new_cambiostato(new_evento((evento) $1,NULL),new_el_stati(new_stato($2),NULL);}
-	| CHANGESTATE string SEMI {$$= new_cambiostato(new_evento( NULL,NULL),new_stato($2));}
+cambiostato: string CHANGESTATE string SEMI {$$= new_cambiostato(new_evento((evento) $1,NULL),new_el_stati1(new_stato1($3));}
+	| CHANGESTATE string SEMI {$$= new_cambiostato(new_evento( NULL,NULL),new_el_stati1(new_stato1($2));}
 ;
 
 elenco_cambio: cambiostato 
