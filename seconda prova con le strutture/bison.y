@@ -89,4 +89,8 @@ commenti: COMMENT
 	|COMMENT string NEWLINE
 ;
 
+main: elenco_stati {run($1)}
+;
+
+
 %%

@@ -1,36 +1,58 @@
-ho scrtto solo la logica da seguire
+//ho scrtto solo la logica da seguire
 
-stato status*=NULL;
-interrupt inter*=NULL;
-action action*=NULL;
-eventi eventi*=NULL;
+#include <stdio.h>
+#include "dichiarazioni.h"
+#include <stdlib.h>
+#include <stdarg.h>
+
+elenco_stati* elenco=NULL;
+action* az=NULL;
+event* eventi=NULL;
+event* interrupt=NULL;
+elenco_stati* status=NULL;
 stato stato0*=NULL;
+
 
 //funzione che esegue le azioni
 int do(){
 	//ci sara una chiamata a funzioni già preisposte
 }
 	
-int analizzastato(status){	
-	
-	while(action!=NULL){
-		do(*action);
-		action=action.next;
+int run(elenco_stati* el){
+	*elenco=*el;	
+	while(el!=NULL){
+		if((el->value)->nome==idle){
+			stato0=el->value;
+			break;
 		}
-	while(eventi!=NULL){
-		if(eventi*==inter*){
-			status*=stato0;
-			}
-		eventi=eventi.next;
-		stato=stato0.next;
-		}
-	analizzastato(status);
+		el=el->next;
+	}	
+	while{
+		stato0=analisi(stato0);
+	}
+	return 1;
 }
 
 
-/*
-void yyerror(char *s, ...)
-{
+stato* analisi(stato* s){
+	action* az=s->azioni;
+	while(az->value!=NULL){
+		do(az->value);
+		az=az->next;
+		}
+	eventi=s->eventi;
+	status=s->el_stati;
+	while(eventi!=NULL){
+		if(eventi->value==interrupt->value){
+			break;
+			}
+		eventi=eventi->next;
+		status=status->next;
+		}
+	return status->value;
+}
+
+void yyerror(char *s, ...){
 	va_list ap;
 	va_start(ap, s);
 	fprintf(stderr, "%d: error: ", yylineno);
@@ -38,9 +60,6 @@ void yyerror(char *s, ...)
 	fprintf(stderr, "\n");
 }
 
-int main()
-{
-	printf("> ");
+int main(){
 	return yyparse();
 }
-*/
