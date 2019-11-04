@@ -1,6 +1,6 @@
 %{
 #include <stdio.h>
-#include <dichiarazini.h>
+#include "dichiarazini.h"
 %}
 
 /* declare tokens */
