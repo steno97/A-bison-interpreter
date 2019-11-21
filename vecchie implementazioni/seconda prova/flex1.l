@@ -1,6 +1,5 @@
 %{
-#include "bison.tab.h"
-#include "dichiarazioni.h"
+# include "bisonfile.h"
 %}
 
 %%
@@ -10,15 +9,14 @@
 "state"					{ return STATE; }
 "actions"				{ return ACTION; }
 
-"char"|"CHAR"           { yylval->fn = 10; return TYPE; }
-"int"|"INT"             { yylval->fn = 11; return TYPE; }
-"float"|"FLOAT"         { yylval->fn = 12; return TYPE; }
-"double"|"DOUBLE"       { yylval->fn = 13; return TYPE; }
-"void"|"VOID"           { yylval->fn = 14; return TYPE; }
-/* String codice 15*/
+"byte"|"BYTE"			{ return BYTE; } 
+"char"|"CHAR"           { return CHAR; }
+"int"|"INT"             { return INT; }
+"float"|"FLOAT"         { return FLOAT; }
+"double"|"DOUBLE"       { return DOUBLE; }
 "if"|"IF"               { return IF; }
-"elif"|"ELIF"           { return ELIF; }
 "else"|"ELSE"           { return ELSE; }
+"void"|"VOID"           { return VOID; }
 [0-9]+ 					{ return NUMBER; }
 ([a-z]+[_a-z0-9]*)		{ return ALPHA; }
 
@@ -28,15 +26,15 @@
 "/"                     { return DIV; }
 "++""	                { return INCR; }
 "--"					{ returd DECR;}  
+"||"                    { return OR; }
+"&&"                    { return AND; }
 "!"                     { return NOT; }
-">" 			{ yylval->fn = 1; return CMP; }
-"<" 			{ yylval->fn = 2; return CMP; }
-"!=" 			{ yylval->fn = 3; return CMP; }
-"==" 			{ yylval->fn = 4; return CMP; }
-">=" 			{ yylval->fn = 5; return CMP; }
-"<=" 			{ yylval->fn = 6; return CMP; }
-"&&"			{ yylval->fn = 7; return CMP; }
-"||"			{ yylval->fn = 8; return CMP; }
+"=="	                { return EQU; }
+"!="					{ return NOTEQU; }	
+">"	        			{ return MAJ; }
+"<"						{ return LOV; }
+">="					{ return MAJEQU; }
+"<="					{ return LOVEQU; }
 
 "("             { return LPAREN; }
 ")"             { return RPAREN; }
