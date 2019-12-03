@@ -2,75 +2,6 @@
 #include "dichiarazioni.h"
 #include <stdlib.h>
 
-cicli* new_cicli(int t, assegnazioni* asse, elenco_cond* con, action* a, cond* co){
-	cicli* cs=(cicli*) malloc(sizeof(cicli));
-	cs->tipo=t;
-	cs->as=asse;
-	cs->condi=con;
-	cs->az=a;
-	cs->con=co;
-	return cs;
-}
-
-cicli* new_cicli1(int t, assegnazioni* asse, elenchi* e, action* a, cond* co){
-	cicli* cs=(cicli*) malloc(sizeof(cicli));
-	cs->tipo=t;
-	cs->as=asse;
-	cs->el=e;
-	cs->az=a;
-	cs->con=co;
-	return cs;
-}
-
-int free_cicli(cicli* c){
-	free_assegnazioni(c->as);
-	free_elencocond(c->condi);
-	free_elenchi(c->el);
-	free_action(c->az);
-	free_cond(c->con);
-	free(c);
-	return 1;
-}
-
-elenchi* new_elenchi( action* opera, cambio_stato* cambios){
-	elenchi* cs=(elenchi*) malloc(sizeof(elenchi));
-	cs->oper=opera;
-	cs->cambio=cambios;
-	return cs;
-}
-
-operazioni* new_operazione( assegnazioni* pr, assegnazioni* sec, assegnazioni* ter, int type, int v){
-	operazioni* cs=(operazioni*) malloc(sizeof(operazioni));
-	cs->primo=pr;
-	cs->secondo=sec;
-	cs->terzo=ter;
-	cs->operatore=type;
-	cs->value=v;
-	return cs;
-}
-
-int free_elenchi(elenchi* op){
-	free_action(op->oper);
-	free_cambiostato(op->cambio);
-	return 1;
-}
-int free_operazioni(operazioni* op){
-	free_assegnazioni(op->primo);
-	free_assegnazioni(op->secondo);
-	free_assegnazioni(op->terzo);
-	free(op);
-	return 1;
-}
-
-elenchi* add_cambio_elenchi( elenchi* el, cambio_stato* cambio){
-		(el->cambio)=add_cambiostato(cambio, el->cambio);
-		return el;
-}
-elenchi* add_oper_elenchi(elenchi* el, action* az){
-		(el->oper)=add_azione(az, el->oper);
-		return el;
-}
-
 cambio_stato* new_cambiostato(event* e, elenco_stati* es){
 	cambio_stato* cs=(cambio_stato*) malloc(sizeof(cambio_stato));
 	cs->causa=e;
@@ -89,43 +20,22 @@ int free_cambiostato(cambio_stato* cs){
 	return 1;
 }
 
-stato* new_stato5( String n,action* actions,elenco_cond* el_con, elenchi* cs,cicli* c){
-	stato* s=(stato*) malloc(sizeof(stato));
-	s->nome=n;
-	s->azioni=actions;
-	if(cs!=NULL){
-		s->eventi=(cs->cambio)->causa;
-		s->el_stati=(cs->cambio)->effetto;
-		s->azioni=add_azione(cs->oper, s->azioni);
-	}
-	else{
-		s->eventi=NULL;
-		s->el_stati=NULL;
-	}
-	s->el_cond=el_con;
-	s->cic=c;
-	return s;
-}
 stato* new_stato4( String n,action* actions, elenco_cond* con){
 	stato* s=(stato*) malloc(sizeof(stato));
 	s->nome=n;
 	s->azioni=actions;
 	s->eventi=NULL;
 	s->el_stati=NULL;
-	s->azioni=NULL;
 	s->el_cond=NULL;
-	s->cic=NULL;
 	return s;
 }
-stato* new_stato2( String n,action* actions, elenchi* cs){
+stato* new_stato2( String n,action* actions, cambio_stato* cs){
 	stato* s=(stato*) malloc(sizeof(stato));
 	s->nome=n;
 	s->azioni=actions;
-	s->eventi=(cs->cambio)->causa;
-	s->el_stati=(cs->cambio)->effetto;
-	s->azioni=add_azione(cs->oper, s->azioni);
+	s->eventi=cs->causa;
+	s->el_stati=cs->effetto;
 	s->el_cond=NULL;
-	s->cic=NULL;
 	return s;
 }
 stato* new_stato3( String n, action* actions, event *ev, elenco_stati* prox){
@@ -135,7 +45,6 @@ stato* new_stato3( String n, action* actions, event *ev, elenco_stati* prox){
 	s->eventi=ev;
 	s->el_stati=prox;
 	s->el_cond=NULL;
-	s->cic=NULL;
 	return s;
 }
 stato* new_stato1(String n){
@@ -145,13 +54,12 @@ stato* new_stato1(String n){
 	s->eventi=NULL;
 	s->el_stati=NULL;
 	s->el_cond=NULL;
-	s->cic=NULL;
 	return s;
 }
 	
-action* new_action(operazioni* a, action* prox){
+action* new_action(azione* a, action* prox){
 	action* az=(action*) malloc(sizeof(action));
-	az->op=a;
+	az->value=*a;
 	az->next=prox;
 	return az;
 }
@@ -174,7 +82,7 @@ elenco_stati* new_el_stati1(stato* statolista){
 	return el;
 }
 
-action* add_azione(action* a, action* prox){
+action* add_stato(action* a, action* prox){
 	a->next=prox;
 	return a;
 }
@@ -265,14 +173,12 @@ int free_elencocond(elenco_cond* elen){
 	return 1;
 }
 
-cond* new_cond(assegnazioni* pr, assegnazioni* sec, int par, elenchi* stat){
+cond* new_cond(assegnazioni* pr, assegnazioni* sec, int par, struct cambio_stato* stat){
 	cond* con=(cond*) malloc(sizeof(cond));
 	con->primo=pr;
 	con->secondo=sec;
 	con->paragone=par;
-	con->s=stat->cambio;
-	con->az=stat->oper;
-	free(stat);
+	con->s=stat;
 	return con;
 }
 int free_cond(cond* condi){

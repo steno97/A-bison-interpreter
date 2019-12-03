@@ -20,24 +20,20 @@ int interruzioni=0;
 elenco_stati* status=NULL;
 stato* stato0=NULL;
 String errore="evento non valido per lo stato corrente\n";
-FILE * fp;
-char * line = NULL;
-size_t len = 0;
-ssize_t read;
-int end_of_file=0;
 
 
 /*dubbi e perplessita
- * qualche volta dovrò alloracare spazio alle strutture contenute in altre strutture dati!!! ATTENZIONE
- * gli IF sono implementati solo al primo livello
+ * come creo gli interrupt e come li gestisco 
+ * le azioni come le svolgo? creo una funzione per ogni azione possibile e immaginabile?
+ * lettura da file fatto ma non so se va bene!?!
+ * gestite le condizioni
+ * corretti alcuni errori (sicuramente ce ne sono altri)
+ * 
 */
 
 //interruzione del "clock", tempo fittizio ideato da noi
 //handler timer 
 void timer_handler(int signum){
-	if (interruzioni==1){
-		return;
-	}
 	interruzioni=1;
 	while(eventi!=NULL){
 		if(eventi->value=="0"){
@@ -47,21 +43,12 @@ void timer_handler(int signum){
 		eventi=eventi->next;
 		status=status->next;
 		}
-	
 }
 
-void evento_handler(int signum){
-	if (interruzioni==1 || end_of_file){
-		return;
-	}
-	interruzioni=1;
-	if((read = getline(&line, &len, fp)) == -1) {
-        interruzioni=0;
-        end_of_file=1;
-        return;
-    }   
+void evento_handler(void* e){
+	interruzioni=0;
 	while(eventi!=NULL){
-		if(strcmp(eventi->value, line)==0){
+		if(eventi->value==e){
 			stato0=status->value;
 			break;
 			}
@@ -71,6 +58,12 @@ void evento_handler(int signum){
 		if(eventi==NULL){
 			printf("errore evento non presente per tale stato");
 		}
+}
+
+//funzione che esegue le azioni (da fare)
+int do_(azione v){
+	return 0;
+	//ci sara una chiamata a funzioni già preisposte
 }
 
 void* tipo(assegnazioni* a){
@@ -95,91 +88,6 @@ void* tipo(assegnazioni* a){
 	}
 }
 
-//funzione che esegue le azioni (da fare)
-int do_(operazioni* v){
-	switch (v->operatore){
-		case 40:{
-			if(v->primo!=NULL){
-				printf("%s\n",(v->primo)->nome);
-				}
-			else{ printf("%s",errore);}
-			break;
-			}
-		case 20:{
-			assegnazioni* x=as;
-			while (x!=NULL){
-				if(v->primo->nome==x->nome){
-					x->value=(int)tipo(v->secondo)+(int)tipo(v->terzo);
-					break;
-					}
-				x=x->next;
-				}
-			}	
-		case 21:{
-			assegnazioni* x=as;
-			while (x!=NULL){
-				if(v->primo->nome==x->nome){
-					x->value=(int)tipo(v->secondo)-(int)tipo(v->terzo);
-					break;
-					}
-				x=x->next;
-				}
-			}	
-		case 22:{
-			assegnazioni* x=as;
-			while (x!=NULL){
-				if(v->primo->nome==x->nome){
-					x->value=(int)tipo(v->secondo)*(int)tipo(v->terzo);
-					break;
-					}
-				x=x->next;
-				}
-			}	
-		case 23:{
-			assegnazioni* x=as;
-			while (x!=NULL){
-				if(v->primo->nome==x->nome){
-					x->value=(int)tipo(v->secondo)/(int)tipo(v->terzo);
-					break;
-					}
-				x=x->next;
-				}
-			}	
-		
-		case 24: {
-			assegnazioni* x=as;
-			while (x!=NULL){
-				if(v->primo->nome==x->nome){
-					x->value=x->value+1;
-					break;
-					}
-				x=x->next;
-				}
-			}	
-		case 25:{
-			assegnazioni* x=as;
-			while (x!=NULL){
-				if(v->primo->nome==x->nome){
-					x->value=x->value-1;
-					break;
-					}
-				x=x->next;
-				}
-			}
-		case 26:{
-			assegnazioni* x=as;
-			while (x!=NULL){
-				if(v->primo->nome==x->nome){
-					x->value=v->value;
-					break;
-					}
-				x=x->next;
-				}
-			}
-	}
-	return 1;
-}
-
 int confronto(cond* c){
 	switch (c->paragone){
 		case 1: return tipo(c->primo)> tipo(c->secondo);
@@ -200,58 +108,12 @@ stato* analisi(stato* s){
 	interruzioni=0;
 	action* az=s->azioni;
 	while(az!=NULL){
-		do_(az->op);
+		do_(az->value);
 		az=az->next;
 		}
-
-	//analisi dei cicli
-	cicli* cicl=s->cic;
-	if(cicl!=NULL){
-		if(cicl->tipo==1){
-			add_assegnazioni(cicl->as, as);
-		}
-		while(confronto(cicl->con)){
-			az=cicl->az;
-			while(az!=NULL){
-				do_(az->op);
-				az=az->next;
-			}
-			
-			
-		condi=cicl->condi;
-		while(condi!=NULL){
-			if(confronto(condi->value)){
-				az=(condi->value)->az;
-				while(az!=NULL){
-					do_(az->op);
-					az=az->next;
-				}
-				eventi=((condi->value)->s)->causa;
-				status=((condi->value)->s)->effetto;
-				while(interruzioni==0){
-					}
-				trovato=1;
-				break;
-				}
-			condi=condi->next;
-		}
-		if(cicl->el!=NULL && !(trovato)){
-			eventi=((cicl->el)->cambio)->causa;
-			status=((cicl->el)->cambio)->effetto;
-			while(interruzioni==0){
-			}
-		}
-	}
-	
-	
 	condi=s->el_cond;
 	while(condi!=NULL){
 		if(confronto(condi->value)){
-			az=(condi->value)->az;
-			while(az!=NULL){
-				do_(az->op);
-				az=az->next;
-			}
 			eventi=((condi->value)->s)->causa;
 			status=((condi->value)->s)->effetto;
 			while(interruzioni==0){
@@ -283,8 +145,8 @@ stato* analisi(stato* s){
 		el=el->next;
 	}	
 	return stato0;
-	}
 }
+
 
 int run(assegnazioni* ass,event* evv,action* azz,elenco_stati* el){
 	as=ass;
@@ -319,16 +181,6 @@ int main(int argc, char **argv){
 			return (1);    
 			}  
 		}
-		
-	////////////////////////////////////////////////////////////////////
-	//inizializzazione lettura file
-    fp = fopen("eventi.txt", "r");
-    if (fp == NULL){
-        printf("errore nell'apertura file");
-	}
-    	
-	////////////////////////////////////////////////////////////////////	
-	// 1° interrupt	
 	struct sigaction sa;
 	struct itimerval timer;
 
@@ -346,39 +198,9 @@ int main(int argc, char **argv){
 	/* Start a virtual timer. It counts down whenever this process is
 	executing. */
 	setitimer (ITIMER_VIRTUAL, &timer, NULL);
-
-
-	///////////////////////////////////////////////////////////////////
-	//2° interrupt
-	struct sigaction sa1;
-	struct itimerval timer1;
-
-	/* Install timer_handler as the signal handler for SIGVTALRM. */
-	memset (&sa1, 0, sizeof (sa1));
-	sa1.sa_handler = &evento_handler;
-	sigaction (SIGVTALRM, &sa1, NULL);
-
-	/* Configure the timer to expire after 500 msec... */
-	timer1.it_value.tv_sec = 0;
-	timer1.it_value.tv_usec = 50000;
-	/* ... and every 500 msec after that. */
-	timer1.it_interval.tv_sec = 0;
-	timer1.it_interval.tv_usec = 500000;
-	/* Start a virtual timer. It counts down whenever this process is
-	executing. */
-	setitimer (ITIMER_VIRTUAL, &timer1, NULL);
-	
-	////////////////////////////////////////////////////////////////////
 	int flag=0;
 	flag = yyparse();
     fclose(yyin);
-    fclose(fp);
-    if (line){
-        free(line);
-	}
+    
     return flag;
 }
-
-
-
-

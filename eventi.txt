@@ -1,0 +1,13 @@
+diminuiamo_prima
+aumentiamo_seconda
+diminuiamo_prima
+aumentiamo_seconda
+errore
+aumentiamo_seconda
+ciclo
+aumentiamo_seconda
+ciclo
+aumentiamo_seconda
+ciclo
+aumentiamo_seconda
+errore

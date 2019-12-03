@@ -1,0 +1,2 @@
+implementare il file prova per il test e il file eventi
+implementare il makefile
