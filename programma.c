@@ -2,6 +2,8 @@
 
 #include <stdio.h>
 #include "dichiarazioni.h"
+#include "bison.tab.h"
+#include "flex.lex.h"
 #include <stdlib.h>
 #include <stdarg.h>
 #include <signal.h>
