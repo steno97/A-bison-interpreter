@@ -289,6 +289,7 @@ stato* analisi(stato* s){
 }
 
 int run(assegnazioni* ass,event* evv,action* azz,elenco_stati* el){
+	
 	as=ass;
 	elenco=el;	
 	while(el!=NULL){
@@ -314,14 +315,12 @@ void yyerror(char *s, ...){
 }
 
 //programma principale e configurazione handler
-int main(int argc, char **argv){
-	if(argc > 1){    
-		if(!(yyin = fopen(argv[1], "r"))) {      
-			perror(argv[1]);      
-			return (1);    
-			}  
-		}
-		
+int main(int argc, char **argv){  
+	if(!(yyin = fopen("prova.txt", "r"))) {      
+		printf("errore\n");  
+		return (1);    
+		}  
+	
 	////////////////////////////////////////////////////////////////////
 	//inizializzazione lettura file
     fp = fopen("eventi.txt", "r");
@@ -371,8 +370,10 @@ int main(int argc, char **argv){
 	setitimer (ITIMER_VIRTUAL, &timer1, NULL);
 	
 	////////////////////////////////////////////////////////////////////
+	
 	int flag=0;
 	flag = yyparse();
+		
     fclose(yyin);
     fclose(fp);
     if (line){
