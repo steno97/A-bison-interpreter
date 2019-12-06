@@ -25,7 +25,7 @@ String errore="evento non valido per lo stato corrente\n";
 FILE * fp;
 char * line = NULL;
 size_t len = 0;
-//ssize_t read;
+ssize_t ra;
 int end_of_file=0;
 
 
@@ -57,7 +57,7 @@ void evento_handler(int signum){
 		return;
 	}
 	interruzioni=1;
-	if((read = getline(&line, &len, fp)) == -1) {
+	if((ra = getline(&line, &len, fp)) == -1) {
         interruzioni=0;
         end_of_file=1;
         return;
