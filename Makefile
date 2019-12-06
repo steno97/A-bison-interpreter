@@ -3,7 +3,7 @@ CFLAGS = -g
 all:compilatore
 
 compilatore: flex.lex.o bison.tab.o programma.o funzioni.o
-		cc -g -o $@ bison.tab.o flec.lex.o programma.o funzioni.o -lm
+		cc -g -o $@ bison.tab.o flex.lex.o programma.o funzioni.o -lm
 
 flex.lex.o: flex.lex.c bison.tab.h dichiarazioni.h
 

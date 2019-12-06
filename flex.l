@@ -1,5 +1,5 @@
 %option header-file="flex.lex.h"
-
+%option noyywrap
 %{
 #include "bison.tab.h"
 #include "dichiarazioni.h"

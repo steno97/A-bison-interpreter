@@ -203,6 +203,9 @@ void yyfree ( void *  );
 
 /* Begin user sect3 */
 
+#define yywrap() (/*CONSTCOND*/1)
+#define YY_SKIP_YYWRAP
+
 extern int yylineno;
 
 extern char *yytext;
@@ -469,6 +472,6 @@ extern int yylex (void);
 #line 63 "flex.l"
 
 
-#line 473 "flex.lex.h"
+#line 476 "flex.lex.h"
 #undef yyIN_HEADER
 #endif /* yyHEADER_H */
