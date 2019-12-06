@@ -54,7 +54,7 @@
 #define YYSKELETON_NAME "yacc.c"
 
 /* Pure parsers.  */
-#define YYPURE 1
+#define YYPURE 0
 
 /* Push parsers.  */
 #define YYPUSH 0
@@ -151,6 +151,7 @@ typedef union YYSTYPE YYSTYPE;
 #endif
 
 
+extern YYSTYPE yylval;
 
 int yyparse (void);
 
@@ -1111,6 +1112,15 @@ yydestruct (const char *yymsg, int yytype, YYSTYPE *yyvaluep)
 
 
 
+/* The lookahead symbol.  */
+int yychar;
+
+/* The semantic value of the lookahead symbol.  */
+YYSTYPE yylval;
+/* Number of syntax errors so far.  */
+int yynerrs;
+
+
 /*----------.
 | yyparse.  |
 `----------*/
@@ -1118,19 +1128,6 @@ yydestruct (const char *yymsg, int yytype, YYSTYPE *yyvaluep)
 int
 yyparse (void)
 {
-/* The lookahead symbol.  */
-int yychar;
-
-
-/* The semantic value of the lookahead symbol.  */
-/* Default value used for initialization, for pacifying older GCCs
-   or non-GCC compilers.  */
-YY_INITIAL_VALUE (static YYSTYPE yyval_default;)
-YYSTYPE yylval YY_INITIAL_VALUE (= yyval_default);
-
-    /* Number of syntax errors so far.  */
-    int yynerrs;
-
     int yystate;
     /* Number of tokens to shift before error messages enabled.  */
     int yyerrstatus;
@@ -1289,7 +1286,7 @@ yybackup:
   if (yychar == YYEMPTY)
     {
       YYDPRINTF ((stderr, "Reading a token: "));
-      yychar = yylex (&yylval);
+      yychar = yylex ();
     }
 
   if (yychar <= YYEOF)
@@ -1370,335 +1367,335 @@ yyreduce:
         case 3:
 #line 69 "bison.y" /* yacc.c:1652  */
     {(yyval.op)=new_operazione( new_assegnazioni( (yyvsp[-4].c), NULL, 15), new_assegnazioni( (yyvsp[-2].c), NULL, 15), new_assegnazioni( (yyvsp[0].c), NULL, 15), (yyvsp[-1].fn), -1);}
-#line 1374 "bison.tab.c" /* yacc.c:1652  */
+#line 1371 "bison.tab.c" /* yacc.c:1652  */
     break;
 
   case 4:
 #line 70 "bison.y" /* yacc.c:1652  */
     {(yyval.op)=new_operazione( new_assegnazioni( (yyvsp[-4].c), NULL, 15), new_assegnazioni( (yyvsp[-2].c), NULL, 15), new_assegnazioni( (yyvsp[0].fn), NULL, 11), (yyvsp[-1].fn), -1);}
-#line 1380 "bison.tab.c" /* yacc.c:1652  */
+#line 1377 "bison.tab.c" /* yacc.c:1652  */
     break;
 
   case 5:
 #line 71 "bison.y" /* yacc.c:1652  */
     {(yyval.op)=new_operazione( new_assegnazioni( (yyvsp[-4].c), NULL, 15), new_assegnazioni( NULL, (void*) (yyvsp[-2].fn), 11), new_assegnazioni( (yyvsp[0].c), NULL, 15), (yyvsp[-1].fn), -1);}
-#line 1386 "bison.tab.c" /* yacc.c:1652  */
+#line 1383 "bison.tab.c" /* yacc.c:1652  */
     break;
 
   case 6:
 #line 72 "bison.y" /* yacc.c:1652  */
     {(yyval.op)=new_operazione( new_assegnazioni( (yyvsp[-4].c), NULL, 15), new_assegnazioni(NULL, (void*) (yyvsp[-2].fn), 11), new_assegnazioni( NULL, (void*) (yyvsp[0].fn), 11), (yyvsp[-1].fn), -1);}
-#line 1392 "bison.tab.c" /* yacc.c:1652  */
+#line 1389 "bison.tab.c" /* yacc.c:1652  */
     break;
 
   case 7:
 #line 73 "bison.y" /* yacc.c:1652  */
     {(yyval.op)=new_operazione( new_assegnazioni( (yyvsp[-1].c), NULL, 15), NULL, NULL, (yyvsp[-3].fn), -1);}
-#line 1398 "bison.tab.c" /* yacc.c:1652  */
+#line 1395 "bison.tab.c" /* yacc.c:1652  */
     break;
 
   case 8:
 #line 74 "bison.y" /* yacc.c:1652  */
     {(yyval.op)=new_operazione( new_assegnazioni( (yyvsp[-1].c), NULL, 15), NULL, NULL, (yyvsp[-5].fn), (yyvsp[-3].fn));}
-#line 1404 "bison.tab.c" /* yacc.c:1652  */
+#line 1401 "bison.tab.c" /* yacc.c:1652  */
     break;
 
   case 9:
 #line 75 "bison.y" /* yacc.c:1652  */
     {(yyval.op)=new_operazione( new_assegnazioni( (yyvsp[-1].c), NULL, NULL), NULL, NULL, (yyvsp[-3].fn), -1);}
-#line 1410 "bison.tab.c" /* yacc.c:1652  */
+#line 1407 "bison.tab.c" /* yacc.c:1652  */
     break;
 
   case 10:
 #line 76 "bison.y" /* yacc.c:1652  */
     {(yyval.op)=new_operazione(NULL, NULL, NULL, (yyvsp[0].fn), -1);}
-#line 1416 "bison.tab.c" /* yacc.c:1652  */
+#line 1413 "bison.tab.c" /* yacc.c:1652  */
     break;
 
   case 12:
 #line 84 "bison.y" /* yacc.c:1652  */
     {(yyval.as)= add_assegnazioni( (yyvsp[-3].as), (yyvsp[-1].as));}
-#line 1422 "bison.tab.c" /* yacc.c:1652  */
+#line 1419 "bison.tab.c" /* yacc.c:1652  */
     break;
 
   case 13:
 #line 87 "bison.y" /* yacc.c:1652  */
     {(yyval.as) = new_assegnazioni( (yyvsp[-2].c), (yyvsp[0].c), (yyvsp[-3].fn));}
-#line 1428 "bison.tab.c" /* yacc.c:1652  */
+#line 1425 "bison.tab.c" /* yacc.c:1652  */
     break;
 
   case 14:
 #line 88 "bison.y" /* yacc.c:1652  */
     {(yyval.as) = new_assegnazioni( (yyvsp[-2].c), (yyvsp[0].fn), (yyvsp[-3].fn));}
-#line 1434 "bison.tab.c" /* yacc.c:1652  */
+#line 1431 "bison.tab.c" /* yacc.c:1652  */
     break;
 
   case 16:
 #line 98 "bison.y" /* yacc.c:1652  */
     {(yyval.even) = new_evento((evento) (yyvsp[-1].c),NULL);}
-#line 1440 "bison.tab.c" /* yacc.c:1652  */
+#line 1437 "bison.tab.c" /* yacc.c:1652  */
     break;
 
   case 17:
 #line 99 "bison.y" /* yacc.c:1652  */
     {(yyval.even)= add_evento((yyvsp[-3].even),new_evento((evento) (yyvsp[-1].c),NULL);}
-#line 1446 "bison.tab.c" /* yacc.c:1652  */
+#line 1443 "bison.tab.c" /* yacc.c:1652  */
     break;
 
   case 19:
 #line 108 "bison.y" /* yacc.c:1652  */
     {(yyval.elen_stat)=new_el_stati((yyvsp[-2].stat), (yyvsp[0].stat));}
-#line 1452 "bison.tab.c" /* yacc.c:1652  */
+#line 1449 "bison.tab.c" /* yacc.c:1652  */
     break;
 
   case 20:
 #line 109 "bison.y" /* yacc.c:1652  */
     {(yyval.elen_stat)=add_el_stati((yyvsp[-2].elen_stat), (yyvsp[0].stat);}
-#line 1458 "bison.tab.c" /* yacc.c:1652  */
+#line 1455 "bison.tab.c" /* yacc.c:1652  */
     break;
 
   case 21:
 #line 112 "bison.y" /* yacc.c:1652  */
     {(yyval.stat)=new_stato2((yyvsp[-5].c),(yyvsp[-3].azione),(yyvsp[-1].elen));}
-#line 1464 "bison.tab.c" /* yacc.c:1652  */
+#line 1461 "bison.tab.c" /* yacc.c:1652  */
     break;
 
   case 22:
 #line 113 "bison.y" /* yacc.c:1652  */
     {(yyval.stat)=new_stato5((yyvsp[-5].c),(yyvsp[-3].azione),(yyvsp[-1].elen_con));}
-#line 1470 "bison.tab.c" /* yacc.c:1652  */
+#line 1467 "bison.tab.c" /* yacc.c:1652  */
     break;
 
   case 23:
 #line 114 "bison.y" /* yacc.c:1652  */
     {(yyval.stat)=new_stato5((yyvsp[-5].c),(yyvsp[-3].azione),NULL,NULL,(yyvsp[-1].cic));}
-#line 1476 "bison.tab.c" /* yacc.c:1652  */
+#line 1473 "bison.tab.c" /* yacc.c:1652  */
     break;
 
   case 24:
 #line 115 "bison.y" /* yacc.c:1652  */
     {(yyval.stat)=new_stato5((yyvsp[-7].c),(yyvsp[-5].azione),(yyvsp[-1].elen_con),NULL,(yyvsp[-3].cic));}
-#line 1482 "bison.tab.c" /* yacc.c:1652  */
+#line 1479 "bison.tab.c" /* yacc.c:1652  */
     break;
 
   case 25:
 #line 116 "bison.y" /* yacc.c:1652  */
     {(yyval.stat)=new_stato5((yyvsp[-7].c),(yyvsp[-5].azione),NULL (yyvsp[-1].elen),(yyvsp[-3].cic));}
-#line 1488 "bison.tab.c" /* yacc.c:1652  */
+#line 1485 "bison.tab.c" /* yacc.c:1652  */
     break;
 
   case 26:
 #line 119 "bison.y" /* yacc.c:1652  */
     {(yyval.elen)= new_elenchi((yyvsp[0].azione), NULL);}
-#line 1494 "bison.tab.c" /* yacc.c:1652  */
+#line 1491 "bison.tab.c" /* yacc.c:1652  */
     break;
 
   case 27:
 #line 120 "bison.y" /* yacc.c:1652  */
     {(yyval.elen)= new_elenchi(NULL, (yyvsp[0].camb_stat));}
-#line 1500 "bison.tab.c" /* yacc.c:1652  */
+#line 1497 "bison.tab.c" /* yacc.c:1652  */
     break;
 
   case 28:
 #line 121 "bison.y" /* yacc.c:1652  */
     {(yyval.elen)= add_cambio_elenchi((yyvsp[-2].elen), (yyvsp[0].camb_stat));}
-#line 1506 "bison.tab.c" /* yacc.c:1652  */
+#line 1503 "bison.tab.c" /* yacc.c:1652  */
     break;
 
   case 29:
 #line 122 "bison.y" /* yacc.c:1652  */
     {(yyval.elen)= add_oper_elenchi((yyvsp[-2].elen), (yyvsp[0].azione));}
-#line 1512 "bison.tab.c" /* yacc.c:1652  */
+#line 1509 "bison.tab.c" /* yacc.c:1652  */
     break;
 
   case 30:
 #line 125 "bison.y" /* yacc.c:1652  */
     {(yyval.azione) = new_action((azione) (yyvsp[-1].op),NULL);}
-#line 1518 "bison.tab.c" /* yacc.c:1652  */
+#line 1515 "bison.tab.c" /* yacc.c:1652  */
     break;
 
   case 31:
 #line 126 "bison.y" /* yacc.c:1652  */
     {(yyval.azione) = add_azione((yyvsp[-3].azione), new_action((azione) (yyvsp[0].op), NULL));}
-#line 1524 "bison.tab.c" /* yacc.c:1652  */
+#line 1521 "bison.tab.c" /* yacc.c:1652  */
     break;
 
   case 32:
 #line 135 "bison.y" /* yacc.c:1652  */
     {(yyval.azione)= new_action(NULL, NULL);}
-#line 1530 "bison.tab.c" /* yacc.c:1652  */
+#line 1527 "bison.tab.c" /* yacc.c:1652  */
     break;
 
   case 33:
 #line 136 "bison.y" /* yacc.c:1652  */
     {(yyval.azione)= (yyvsp[-2].azione);}
-#line 1536 "bison.tab.c" /* yacc.c:1652  */
+#line 1533 "bison.tab.c" /* yacc.c:1652  */
     break;
 
   case 34:
 #line 139 "bison.y" /* yacc.c:1652  */
     {(yyval.azione) = new_action((azione) (yyvsp[0].op),NULL);}
-#line 1542 "bison.tab.c" /* yacc.c:1652  */
+#line 1539 "bison.tab.c" /* yacc.c:1652  */
     break;
 
   case 35:
 #line 140 "bison.y" /* yacc.c:1652  */
     {(yyval.azione) = add_azione((yyvsp[-2].azione), new_action((azione) (yyvsp[0].op), NULL));}
-#line 1548 "bison.tab.c" /* yacc.c:1652  */
+#line 1545 "bison.tab.c" /* yacc.c:1652  */
     break;
 
   case 36:
 #line 143 "bison.y" /* yacc.c:1652  */
     {(yyval.camb_stat)= new_cambiostato(new_evento((evento) (yyvsp[-3].c),NULL),new_el_stati1(new_stato1((yyvsp[-1].c)));}
-#line 1554 "bison.tab.c" /* yacc.c:1652  */
+#line 1551 "bison.tab.c" /* yacc.c:1652  */
     break;
 
   case 37:
 #line 144 "bison.y" /* yacc.c:1652  */
     {(yyval.camb_stat)= new_cambiostato(new_evento( (evento) "0",NULL),new_el_stati1(new_stato1((yyvsp[-1].c)));}
-#line 1560 "bison.tab.c" /* yacc.c:1652  */
+#line 1557 "bison.tab.c" /* yacc.c:1652  */
     break;
 
   case 39:
 #line 148 "bison.y" /* yacc.c:1652  */
     {(yyval.camb_stat)=add_cambiostato((yyvsp[-2].camb_stat),(yyvsp[0].camb_stat));}
-#line 1566 "bison.tab.c" /* yacc.c:1652  */
+#line 1563 "bison.tab.c" /* yacc.c:1652  */
     break;
 
   case 40:
 #line 157 "bison.y" /* yacc.c:1652  */
     {run((yyvsp[-6].as),(yyvsp[-4].even),(yyvsp[-2].azione),(yyvsp[0].elen_stat));}
-#line 1572 "bison.tab.c" /* yacc.c:1652  */
+#line 1569 "bison.tab.c" /* yacc.c:1652  */
     break;
 
   case 41:
 #line 160 "bison.y" /* yacc.c:1652  */
     {(yyval.cic)=new_cicli(1, (yyvsp[-10].as), (yyvsp[-1].elen_con), (yyvsp[-4].op), new_cond(new_assegnazioni(NULL, (yyvsp[-8].c),(int) 16),new_assegnazioni(NULL, (yyvsp[-6].fn),(int) 14) (yyvsp[-7].fn), NULL));}
-#line 1578 "bison.tab.c" /* yacc.c:1652  */
+#line 1575 "bison.tab.c" /* yacc.c:1652  */
     break;
 
   case 42:
 #line 161 "bison.y" /* yacc.c:1652  */
     {(yyval.cic)=new_cicli(1, (yyvsp[-10].as), (yyvsp[-1].elen_con), (yyvsp[-4].op), new_cond(new_assegnazioni(NULL, (yyvsp[-8].fn),(int) 14),new_assegnazioni(NULL, (yyvsp[-6].c),(int) 16) (yyvsp[-7].fn), NULL));}
-#line 1584 "bison.tab.c" /* yacc.c:1652  */
+#line 1581 "bison.tab.c" /* yacc.c:1652  */
     break;
 
   case 43:
 #line 162 "bison.y" /* yacc.c:1652  */
     {(yyval.cic)=new_cicli(1, (yyvsp[-10].as), (yyvsp[-1].elen_con), (yyvsp[-4].op), new_cond(new_assegnazioni(NULL, (yyvsp[-8].c),(int) 16),new_assegnazioni(NULL, (yyvsp[-6].c),(int) 16) (yyvsp[-7].fn), NULL));}
-#line 1590 "bison.tab.c" /* yacc.c:1652  */
+#line 1587 "bison.tab.c" /* yacc.c:1652  */
     break;
 
   case 44:
 #line 163 "bison.y" /* yacc.c:1652  */
     {(yyval.cic)=new_cicli1(1, (yyvsp[-10].as), (yyvsp[-1].elen), (yyvsp[-4].op), new_cond(new_assegnazioni(NULL, (yyvsp[-8].c),(int) 16),new_assegnazioni(NULL, (yyvsp[-6].fn),(int) 14) (yyvsp[-7].fn), NULL));}
-#line 1596 "bison.tab.c" /* yacc.c:1652  */
+#line 1593 "bison.tab.c" /* yacc.c:1652  */
     break;
 
   case 45:
 #line 164 "bison.y" /* yacc.c:1652  */
     {(yyval.cic)=new_cicli1(1, (yyvsp[-10].as), (yyvsp[-1].elen), (yyvsp[-4].op), new_cond(new_assegnazioni(NULL, (yyvsp[-8].fn),(int) 14),new_assegnazioni(NULL, (yyvsp[-6].c),(int) 16) (yyvsp[-7].fn), NULL));}
-#line 1602 "bison.tab.c" /* yacc.c:1652  */
+#line 1599 "bison.tab.c" /* yacc.c:1652  */
     break;
 
   case 46:
 #line 165 "bison.y" /* yacc.c:1652  */
     {(yyval.cic)=new_cicli1(1, (yyvsp[-10].as), (yyvsp[-1].elen), (yyvsp[-4].op), new_cond(new_assegnazioni(NULL, (yyvsp[-8].c),(int) 16),new_assegnazioni(NULL, (yyvsp[-6].c),(int) 16) (yyvsp[-7].fn), NULL));}
-#line 1608 "bison.tab.c" /* yacc.c:1652  */
+#line 1605 "bison.tab.c" /* yacc.c:1652  */
     break;
 
   case 47:
 #line 166 "bison.y" /* yacc.c:1652  */
     {(yyval.cic)=new_cicli(2, NULL, (yyvsp[-1].elen_con), NULL, new_cond(new_assegnazioni(NULL, (yyvsp[-6].fn),(int) 14),new_assegnazioni(NULL, (yyvsp[-4].fn),(int) 14) (yyvsp[-5].fn), NULL));}
-#line 1614 "bison.tab.c" /* yacc.c:1652  */
+#line 1611 "bison.tab.c" /* yacc.c:1652  */
     break;
 
   case 48:
 #line 167 "bison.y" /* yacc.c:1652  */
     {(yyval.cic)=new_cicli(2, NULL, (yyvsp[-1].elen_con), NULL, new_cond(new_assegnazioni(NULL, (yyvsp[-6].c),(int) 16),new_assegnazioni(NULL, (yyvsp[-4].fn),(int) 14) (yyvsp[-5].fn), NULL));}
-#line 1620 "bison.tab.c" /* yacc.c:1652  */
+#line 1617 "bison.tab.c" /* yacc.c:1652  */
     break;
 
   case 49:
 #line 168 "bison.y" /* yacc.c:1652  */
     {(yyval.cic)=new_cicli(2, NULL, (yyvsp[-1].elen_con), NULL, new_cond(new_assegnazioni(NULL, (yyvsp[-6].fn),(int) 14),new_assegnazioni(NULL, (yyvsp[-4].c),(int) 16) (yyvsp[-5].fn), NULL));}
-#line 1626 "bison.tab.c" /* yacc.c:1652  */
+#line 1623 "bison.tab.c" /* yacc.c:1652  */
     break;
 
   case 50:
 #line 169 "bison.y" /* yacc.c:1652  */
     {(yyval.cic)=new_cicli(2, NULL, (yyvsp[-1].elen_con), NULL, new_cond(new_assegnazioni(NULL, (yyvsp[-6].c),(int) 16),new_assegnazioni(NULL, (yyvsp[-4].c),(int) 16) (yyvsp[-5].fn), NULL));}
-#line 1632 "bison.tab.c" /* yacc.c:1652  */
+#line 1629 "bison.tab.c" /* yacc.c:1652  */
     break;
 
   case 51:
 #line 170 "bison.y" /* yacc.c:1652  */
     {(yyval.cic)=new_cicli1(2, NULL, (yyvsp[-1].elen), NULL, new_cond(new_assegnazioni(NULL, (yyvsp[-6].fn),(int) 14),new_assegnazioni(NULL, (yyvsp[-4].fn),(int) 14) (yyvsp[-5].fn), NULL));}
-#line 1638 "bison.tab.c" /* yacc.c:1652  */
+#line 1635 "bison.tab.c" /* yacc.c:1652  */
     break;
 
   case 52:
 #line 171 "bison.y" /* yacc.c:1652  */
     {(yyval.cic)=new_cicli1(2, NULL, (yyvsp[-1].elen), NULL, new_cond(new_assegnazioni(NULL, (yyvsp[-6].c),(int) 16),new_assegnazioni(NULL, (yyvsp[-4].fn),(int) 14) (yyvsp[-5].fn), NULL));}
-#line 1644 "bison.tab.c" /* yacc.c:1652  */
+#line 1641 "bison.tab.c" /* yacc.c:1652  */
     break;
 
   case 53:
 #line 172 "bison.y" /* yacc.c:1652  */
     {(yyval.cic)=new_cicli1(2, NULL, (yyvsp[-1].elen), NULL, new_cond(new_assegnazioni(NULL, (yyvsp[-6].fn),(int) 14),new_assegnazioni(NULL, (yyvsp[-4].c),(int) 16) (yyvsp[-5].fn), NULL));}
-#line 1650 "bison.tab.c" /* yacc.c:1652  */
+#line 1647 "bison.tab.c" /* yacc.c:1652  */
     break;
 
   case 54:
 #line 173 "bison.y" /* yacc.c:1652  */
     {(yyval.cic)=new_cicli1(2, NULL, (yyvsp[-1].elen), NULL, new_cond(new_assegnazioni(NULL, (yyvsp[-6].c),(int) 16),new_assegnazioni(NULL, (yyvsp[-4].c),(int) 16) (yyvsp[-5].fn), NULL));}
-#line 1656 "bison.tab.c" /* yacc.c:1652  */
+#line 1653 "bison.tab.c" /* yacc.c:1652  */
     break;
 
   case 57:
 #line 180 "bison.y" /* yacc.c:1652  */
     {(yyval.con)=new_cond(new_assegnazioni(NULL, (void *) (yyvsp[-6].fn), 14),new_assegnazioni(NULL,(void*) (yyvsp[-4].fn),(int) 14), (yyvsp[-5].fn), (yyvsp[-1].elen));}
-#line 1662 "bison.tab.c" /* yacc.c:1652  */
+#line 1659 "bison.tab.c" /* yacc.c:1652  */
     break;
 
   case 58:
 #line 181 "bison.y" /* yacc.c:1652  */
     {(yyval.con)=new_cond(new_assegnazioni(NULL,(void*) (yyvsp[-6].fn),(int) 14),new_assegnazioni(NULL, (yyvsp[-4].c),(int) 16), (yyvsp[-5].fn), (yyvsp[-1].elen));}
-#line 1668 "bison.tab.c" /* yacc.c:1652  */
+#line 1665 "bison.tab.c" /* yacc.c:1652  */
     break;
 
   case 59:
 #line 182 "bison.y" /* yacc.c:1652  */
     {(yyval.con)=new_cond(new_assegnazioni(NULL, (yyvsp[-6].c),(int) 16),new_assegnazioni(NULL,(void*) (yyvsp[-4].fn),(int) 14), (yyvsp[-5].fn), (yyvsp[-1].elen));}
-#line 1674 "bison.tab.c" /* yacc.c:1652  */
+#line 1671 "bison.tab.c" /* yacc.c:1652  */
     break;
 
   case 60:
 #line 183 "bison.y" /* yacc.c:1652  */
     {(yyval.con)=new_cond(new_assegnazioni(NULL, (yyvsp[-6].c),(int) 16),new_assegnazioni(NULL, (yyvsp[-4].c),(int) 16), (yyvsp[-5].fn), (yyvsp[-1].elen));}
-#line 1680 "bison.tab.c" /* yacc.c:1652  */
+#line 1677 "bison.tab.c" /* yacc.c:1652  */
     break;
 
   case 61:
 #line 184 "bison.y" /* yacc.c:1652  */
     {(yyval.con)=new_cond(NULL,NULL,0, (yyvsp[-1].elen));}
-#line 1686 "bison.tab.c" /* yacc.c:1652  */
+#line 1683 "bison.tab.c" /* yacc.c:1652  */
     break;
 
   case 62:
 #line 187 "bison.y" /* yacc.c:1652  */
     {(yyval.elen_con)=add_elencocond(new_elencocond((yyvsp[-2].con)),new_elencocond((yyvsp[0].con)));}
-#line 1692 "bison.tab.c" /* yacc.c:1652  */
+#line 1689 "bison.tab.c" /* yacc.c:1652  */
     break;
 
   case 63:
 #line 188 "bison.y" /* yacc.c:1652  */
     {(yyval.elen_con)=add_elencocond((yyvsp[-2].elen_con),new_elencocond((yyvsp[0].con)));}
-#line 1698 "bison.tab.c" /* yacc.c:1652  */
+#line 1695 "bison.tab.c" /* yacc.c:1652  */
     break;
 
 
-#line 1702 "bison.tab.c" /* yacc.c:1652  */
+#line 1699 "bison.tab.c" /* yacc.c:1652  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires

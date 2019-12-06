@@ -1,6 +1,6 @@
-%define api.pure
+//%define api.pure
 %define api.value.type {union YYSTYPE}
-%pure-parser
+//%pure-parser
 
 %{
 #include <stdio.h>

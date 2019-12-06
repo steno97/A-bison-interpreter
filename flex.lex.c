@@ -879,27 +879,27 @@ YY_RULE_SETUP
 case 6:
 YY_RULE_SETUP
 #line 15 "flex.l"
-{ yylval->fn = 10; return TYPE; }
+{ yylval.fn = 10; return TYPE; }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
 #line 16 "flex.l"
-{ yylval->fn = 11; return TYPE; }
+{ yylval.fn = 11; return TYPE; }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
 #line 17 "flex.l"
-{ yylval->fn = 12; return TYPE; }
+{ yylval.fn = 12; return TYPE; }
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
 #line 18 "flex.l"
-{ yylval->fn = 13; return TYPE; }
+{ yylval.fn = 13; return TYPE; }
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
 #line 19 "flex.l"
-{ yylval->fn = 14; return TYPE; }
+{ yylval.fn = 14; return TYPE; }
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
@@ -929,22 +929,22 @@ YY_RULE_SETUP
 case 16:
 YY_RULE_SETUP
 #line 27 "flex.l"
-{ yylval->fn = 24; return OPERATORE; }
+{ yylval.fn = 24; return OPERATORE; }
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
 #line 28 "flex.l"
-{ yylval->fn = 25; return OPERATORE; }
+{ yylval.fn = 25; return OPERATORE; }
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
 #line 29 "flex.l"
-{ yylval->fn = 26; return OPERATORE; } 
+{ yylval.fn = 26; return OPERATORE; } 
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
 #line 30 "flex.l"
-{ yylval->fn = 40; return PRINT; }
+{ yylval.fn = 40; return PRINT; }
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
@@ -959,62 +959,62 @@ YY_RULE_SETUP
 case 22:
 YY_RULE_SETUP
 #line 35 "flex.l"
-{ yylval->fn = 20; return OPERATORE; }
+{ yylval.fn = 20; return OPERATORE; }
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
 #line 36 "flex.l"
-{ yylval->fn = 21; return OPERATORE; }
+{ yylval.fn = 21; return OPERATORE; }
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
 #line 37 "flex.l"
-{ yylval->fn = 22; return OPERATORE; }
+{ yylval.fn = 22; return OPERATORE; }
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
 #line 38 "flex.l"
-{ yylval->fn = 23; return OPERATORE; }
+{ yylval.fn = 23; return OPERATORE; }
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
 #line 40 "flex.l"
-{ yylval->fn = 1; return CMP; }
+{ yylval.fn = 1; return CMP; }
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
 #line 41 "flex.l"
-{ yylval->fn = 2; return CMP; }
+{ yylval.fn = 2; return CMP; }
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
 #line 42 "flex.l"
-{ yylval->fn = 3; return CMP; }
+{ yylval.fn = 3; return CMP; }
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
 #line 43 "flex.l"
-{ yylval->fn = 4; return CMP; }
+{ yylval.fn = 4; return CMP; }
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
 #line 44 "flex.l"
-{ yylval->fn = 5; return CMP; }
+{ yylval.fn = 5; return CMP; }
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
 #line 45 "flex.l"
-{ yylval->fn = 6; return CMP; }
+{ yylval.fn = 6; return CMP; }
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
 #line 46 "flex.l"
-{ yylval->fn = 7; return CMP; }
+{ yylval.fn = 7; return CMP; }
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
 #line 47 "flex.l"
-{ yylval->fn = 8; return CMP; }
+{ yylval.fn = 8; return CMP; }
 	YY_BREAK
 case 34:
 YY_RULE_SETUP

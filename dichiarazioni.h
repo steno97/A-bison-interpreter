@@ -4,7 +4,7 @@ void yyerror(char *s, ...);
 extern int yyparse();
 extern FILE *yyin;
 extern int yylex();
-union YYSTYPE* yylval;
+union YYSTYPE yylval;
 
 union YYSTYPE{
 	int fn;
