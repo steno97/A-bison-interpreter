@@ -18,18 +18,6 @@
 #define FLEX_BETA
 #endif
 
-#ifdef yyget_lval
-#define yyget_lval_ALREADY_DEFINED
-#else
-#define yyget_lval yyget_lval
-#endif
-
-#ifdef yyset_lval
-#define yyset_lval_ALREADY_DEFINED
-#else
-#define yyset_lval yyset_lval
-#endif
-
 /* First, we deal with  platform-specific or compiler-specific issues. */
 
 /* begin standard C headers. */
@@ -119,23 +107,6 @@ typedef unsigned int flex_uint32_t;
 #define yynoreturn
 #endif
 
-/* An opaque pointer. */
-#ifndef YY_TYPEDEF_YY_SCANNER_T
-#define YY_TYPEDEF_YY_SCANNER_T
-typedef void* yyscan_t;
-#endif
-
-/* For convenience, these vars (plus the bison vars far below)
-   are macros in the reentrant scanner. */
-#define yyin yyg->yyin_r
-#define yyout yyg->yyout_r
-#define yyextra yyg->yyextra_r
-#define yyleng yyg->yyleng_r
-#define yytext yyg->yytext_r
-#define yylineno (YY_CURRENT_BUFFER_LVALUE->yy_bs_lineno)
-#define yycolumn (YY_CURRENT_BUFFER_LVALUE->yy_bs_column)
-#define yy_flex_debug yyg->yy_flex_debug_r
-
 /* Size of default input buffer. */
 #ifndef YY_BUF_SIZE
 #ifdef __ia64__
@@ -158,6 +129,10 @@ typedef struct yy_buffer_state *YY_BUFFER_STATE;
 #define YY_TYPEDEF_YY_SIZE_T
 typedef size_t yy_size_t;
 #endif
+
+extern int yyleng;
+
+extern FILE *yyin, *yyout;
 
 #ifndef YY_STRUCT_YY_BUFFER_STATE
 #define YY_STRUCT_YY_BUFFER_STATE
@@ -210,25 +185,31 @@ struct yy_buffer_state
 	};
 #endif /* !YY_STRUCT_YY_BUFFER_STATE */
 
-void yyrestart ( FILE *input_file , yyscan_t yyscanner );
-void yy_switch_to_buffer ( YY_BUFFER_STATE new_buffer , yyscan_t yyscanner );
-YY_BUFFER_STATE yy_create_buffer ( FILE *file, int size , yyscan_t yyscanner );
-void yy_delete_buffer ( YY_BUFFER_STATE b , yyscan_t yyscanner );
-void yy_flush_buffer ( YY_BUFFER_STATE b , yyscan_t yyscanner );
-void yypush_buffer_state ( YY_BUFFER_STATE new_buffer , yyscan_t yyscanner );
-void yypop_buffer_state ( yyscan_t yyscanner );
+void yyrestart ( FILE *input_file  );
+void yy_switch_to_buffer ( YY_BUFFER_STATE new_buffer  );
+YY_BUFFER_STATE yy_create_buffer ( FILE *file, int size  );
+void yy_delete_buffer ( YY_BUFFER_STATE b  );
+void yy_flush_buffer ( YY_BUFFER_STATE b  );
+void yypush_buffer_state ( YY_BUFFER_STATE new_buffer  );
+void yypop_buffer_state ( void );
 
-YY_BUFFER_STATE yy_scan_buffer ( char *base, yy_size_t size , yyscan_t yyscanner );
-YY_BUFFER_STATE yy_scan_string ( const char *yy_str , yyscan_t yyscanner );
-YY_BUFFER_STATE yy_scan_bytes ( const char *bytes, int len , yyscan_t yyscanner );
+YY_BUFFER_STATE yy_scan_buffer ( char *base, yy_size_t size  );
+YY_BUFFER_STATE yy_scan_string ( const char *yy_str  );
+YY_BUFFER_STATE yy_scan_bytes ( const char *bytes, int len  );
 
-void *yyalloc ( yy_size_t , yyscan_t yyscanner );
-void *yyrealloc ( void *, yy_size_t , yyscan_t yyscanner );
-void yyfree ( void * , yyscan_t yyscanner );
+void *yyalloc ( yy_size_t  );
+void *yyrealloc ( void *, yy_size_t  );
+void yyfree ( void *  );
 
 /* Begin user sect3 */
 
-#define yytext_ptr yytext_r
+extern int yylineno;
+
+extern char *yytext;
+#ifdef yytext_ptr
+#undef yytext_ptr
+#endif
+#define yytext_ptr yytext
 
 #ifdef YY_HEADER_EXPORT_START_CONDITIONS
 #define INITIAL 0
@@ -247,46 +228,34 @@ void yyfree ( void * , yyscan_t yyscanner );
 #define YY_EXTRA_TYPE void *
 #endif
 
-int yylex_init (yyscan_t* scanner);
-
-int yylex_init_extra ( YY_EXTRA_TYPE user_defined, yyscan_t* scanner);
-
 /* Accessor methods to globals.
    These are made visible to non-reentrant scanners for convenience. */
 
-int yylex_destroy ( yyscan_t yyscanner );
+int yylex_destroy ( void );
 
-int yyget_debug ( yyscan_t yyscanner );
+int yyget_debug ( void );
 
-void yyset_debug ( int debug_flag , yyscan_t yyscanner );
+void yyset_debug ( int debug_flag  );
 
-YY_EXTRA_TYPE yyget_extra ( yyscan_t yyscanner );
+YY_EXTRA_TYPE yyget_extra ( void );
 
-void yyset_extra ( YY_EXTRA_TYPE user_defined , yyscan_t yyscanner );
+void yyset_extra ( YY_EXTRA_TYPE user_defined  );
 
-FILE *yyget_in ( yyscan_t yyscanner );
+FILE *yyget_in ( void );
 
-void yyset_in  ( FILE * _in_str , yyscan_t yyscanner );
+void yyset_in  ( FILE * _in_str  );
 
-FILE *yyget_out ( yyscan_t yyscanner );
+FILE *yyget_out ( void );
 
-void yyset_out  ( FILE * _out_str , yyscan_t yyscanner );
+void yyset_out  ( FILE * _out_str  );
 
-			int yyget_leng ( yyscan_t yyscanner );
+			int yyget_leng ( void );
 
-char *yyget_text ( yyscan_t yyscanner );
+char *yyget_text ( void );
 
-int yyget_lineno ( yyscan_t yyscanner );
+int yyget_lineno ( void );
 
-void yyset_lineno ( int _line_number , yyscan_t yyscanner );
-
-int yyget_column  ( yyscan_t yyscanner );
-
-void yyset_column ( int _column_no , yyscan_t yyscanner );
-
-YYSTYPE * yyget_lval ( yyscan_t yyscanner );
-
-void yyset_lval ( YYSTYPE * yylval_param , yyscan_t yyscanner );
+void yyset_lineno ( int _line_number  );
 
 /* Macros after this point can all be overridden by user definitions in
  * section 1.
@@ -294,18 +263,18 @@ void yyset_lval ( YYSTYPE * yylval_param , yyscan_t yyscanner );
 
 #ifndef YY_SKIP_YYWRAP
 #ifdef __cplusplus
-extern "C" int yywrap ( yyscan_t yyscanner );
+extern "C" int yywrap ( void );
 #else
-extern int yywrap ( yyscan_t yyscanner );
+extern int yywrap ( void );
 #endif
 #endif
 
 #ifndef yytext_ptr
-static void yy_flex_strncpy ( char *, const char *, int , yyscan_t yyscanner);
+static void yy_flex_strncpy ( char *, const char *, int );
 #endif
 
 #ifdef YY_NEED_STRLEN
-static int yy_flex_strlen ( const char * , yyscan_t yyscanner);
+static int yy_flex_strlen ( const char * );
 #endif
 
 #ifndef YY_NO_INPUT
@@ -333,11 +302,9 @@ static int yy_flex_strlen ( const char * , yyscan_t yyscanner);
 #ifndef YY_DECL
 #define YY_DECL_IS_OURS 1
 
-extern int yylex \
-               (YYSTYPE * yylval_param , yyscan_t yyscanner);
+extern int yylex (void);
 
-#define YY_DECL int yylex \
-               (YYSTYPE * yylval_param , yyscan_t yyscanner)
+#define YY_DECL int yylex (void)
 #endif /* !YY_DECL */
 
 /* yy_get_previous_state - get the state just before the EOB char was reached */
@@ -499,9 +466,9 @@ extern int yylex \
 #undef yyTABLES_NAME
 #endif
 
-#line 64 "flex.l"
+#line 63 "flex.l"
 
 
-#line 506 "flex.lex.h"
+#line 473 "flex.lex.h"
 #undef yyIN_HEADER
 #endif /* yyHEADER_H */

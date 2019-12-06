@@ -3,8 +3,8 @@ extern int yylineno; /* from lexer */
 void yyerror(char *s, ...);
 extern int yyparse();
 extern FILE *yyin;
-//extern int yylex();
-
+extern int yylex();
+union YYSTYPE* yylval;
 
 union YYSTYPE{
 	int fn;
@@ -21,7 +21,6 @@ union YYSTYPE{
 	struct elenchi* elen;
 	struct cicli* cic;
 };
-
  
 typedef char*  String;
 typedef String evento;

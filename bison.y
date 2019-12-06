@@ -1,5 +1,6 @@
-//%define api.pure
-
+%define api.pure
+%define api.value.type {union YYSTYPE}
+%pure-parser
 
 %{
 #include <stdio.h>
@@ -12,7 +13,6 @@
 #include "dichiarazioni.h"
 %}
 
-%define api.value.type {union YYSTYPE}
 
 /* declare tokens */
 %token NUMBER
@@ -68,11 +68,11 @@ string: ALPHA
 
 operazioni: string ASSIGN string OPERATORE string {$$=new_operazione( new_assegnazioni( $1, NULL, 15), new_assegnazioni( $3, NULL, 15), new_assegnazioni( $5, NULL, 15), $4, -1);}
 	| string ASSIGN string OPERATORE term {$$=new_operazione( new_assegnazioni( $1, NULL, 15), new_assegnazioni( $3, NULL, 15), new_assegnazioni( $5, NULL, 11), $4, -1);}
-	| string ASSIGN term OPERATORE string {$$=new_operazione( new_assegnazioni( $1, NULL, 15), new_assegnazioni( $3, NULL, 11), new_assegnazioni( $5, NULL, 15), $4, -1);}
-	| string ASSIGN term OPERATORE term {$$=new_operazione( new_assegnazioni( $1, NULL, 15), new_assegnazioni( $3, NULL, 11), new_assegnazioni( $5, NULL, 11), $4, -1);}
+	| string ASSIGN term OPERATORE string {$$=new_operazione( new_assegnazioni( $1, NULL, 15), new_assegnazioni( NULL, (void*) $3, 11), new_assegnazioni( $5, NULL, 15), $4, -1);}
+	| string ASSIGN term OPERATORE term {$$=new_operazione( new_assegnazioni( $1, NULL, 15), new_assegnazioni(NULL, (void*) $3, 11), new_assegnazioni( NULL, (void*) $5, 11), $4, -1);}
 	| OPERATORE LPAREN string RPAREN {$$=new_operazione( new_assegnazioni( $3, NULL, 15), NULL, NULL, $1, -1);}
 	| OPERATORE LPAREN term COMMA string RPAREN {$$=new_operazione( new_assegnazioni( $5, NULL, 15), NULL, NULL, $1, $3);}
-	| PRINT LPAREN string RPAREN {$$=new_operazione( new_assegnazioni( -1, $3, NULL), NULL, NULL, $1, -1);}
+	| PRINT LPAREN string RPAREN {$$=new_operazione( new_assegnazioni( $3, NULL, NULL), NULL, NULL, $1, -1);}
 	| PRINT {$$=new_operazione(NULL, NULL, NULL, $1, -1);}
 ;
 
@@ -132,7 +132,7 @@ azioni:string SEMI {$$ = new_action((azione) $1,NULL);}
 ;
 */
 
-actions: | ACTION LBRACE SPACE RBRACE SEMI	{$$= new_action(NULL, NULL);}
+actions: ACTION LBRACE SPACE RBRACE SEMI	{$$= new_action(NULL, NULL);}
 	| ACTION LBRACE elenco_actions RBRACE SEMI  {$$= $3;}
 ;
 
@@ -177,15 +177,15 @@ metodo: IF
 	| ELIF
 ;
 
-cond: metodo LPAREN term CMP term RPAREN LBRACE elenchi RBRACE			{$$=new_cond(new_assegnazioni(NULL, $3,(int) 14),new_assegnazioni(NULL, $5,(int) 14), $4, $8);}
-	| metodo LPAREN term CMP string RPAREN LBRACE elenchi RBRACE		{$$=new_cond(new_assegnazioni(NULL, $3,(int) 14),new_assegnazioni(NULL, $5,(int) 16), $4, $8);}
-	| metodo LPAREN string CMP term  RPAREN LBRACE elenchi RBRACE		{$$=new_cond(new_assegnazioni(NULL, $3,(int) 16),new_assegnazioni(NULL, $5,(int) 14), $4, $8);}
+cond: metodo LPAREN term CMP term RPAREN LBRACE elenchi RBRACE			{$$=new_cond(new_assegnazioni(NULL, (void *) $3, 14),new_assegnazioni(NULL,(void*) $5,(int) 14), $4, $8);}
+	| metodo LPAREN term CMP string RPAREN LBRACE elenchi RBRACE		{$$=new_cond(new_assegnazioni(NULL,(void*) $3,(int) 14),new_assegnazioni(NULL, $5,(int) 16), $4, $8);}
+	| metodo LPAREN string CMP term  RPAREN LBRACE elenchi RBRACE		{$$=new_cond(new_assegnazioni(NULL, $3,(int) 16),new_assegnazioni(NULL,(void*) $5,(int) 14), $4, $8);}
 	| metodo LPAREN string CMP string RPAREN LBRACE elenchi RBRACE		{$$=new_cond(new_assegnazioni(NULL, $3,(int) 16),new_assegnazioni(NULL, $5,(int) 16), $4, $8);}
 	| ELSE LBRACE elenchi RBRACE										{$$=new_cond(NULL,NULL,0, $3);}
 ;
 
-elenco_cond: cond NEWLINE cond  {$$=add_elencocond(new_elencocond($1),new_elencocond($3);}
-	| elenco_cond NEWLINE cond	{$$=add_elencocond($1,new_elencocond($3);}
+elenco_cond: cond NEWLINE cond  {$$=add_elencocond(new_elencocond($1),new_elencocond($3));}
+	| elenco_cond NEWLINE cond	{$$=add_elencocond($1,new_elencocond($3));}
 ;
 
 %%

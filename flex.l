@@ -1,5 +1,4 @@
 %option header-file="flex.lex.h"
-%option reentrant bison-bridge
 
 %{
 #include "bison.tab.h"
