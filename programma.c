@@ -25,7 +25,7 @@ String errore="evento non valido per lo stato corrente\n";
 FILE * fp;
 char * line = NULL;
 size_t len = 0;
-ssize_t read;
+//ssize_t read;
 int end_of_file=0;
 
 
@@ -77,12 +77,12 @@ void evento_handler(int signum){
 
 void* tipo(assegnazioni* a){
 	switch (a->type){
-		case 1: return (char*) a->value;
-		case 2: return (int*) a->value;
-		case 3: return (float*) a->value;
-		case 4: return (double*) a->value;
-		case 5: return a->value;
-		case 6:{
+		case 10: return (char*) a->value;
+		case 11: return (int*) a->value;
+		case 12: return (float*) a->value;
+		case 13: return (double*) a->value;
+		case 14: return a->value;
+		case 15:{
 			assegnazioni* at=as;
 			while(at!=NULL && !variabile){
 				if(at->nome==((String)a->value))
