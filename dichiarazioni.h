@@ -105,6 +105,8 @@ int free_cicli(cicli* c);
 stato* new_stato5( String n,action* actions, elenco_cond* el_con,elenchi* cs,cicli* c);
 
 
+int run(assegnazioni* ass,event* evv,action* azz,elenco_stati* el);
+
 elenchi* new_elenchi( action* opera, cambio_stato* cambios);
 elenchi* add_cambio_elenchi( elenchi* el, cambio_stato* cambio);
 elenchi* add_oper_elenchi(elenchi* el, action* az);
