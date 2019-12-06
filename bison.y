@@ -113,7 +113,7 @@ state: STATE string LBRACE elenco_actions NEWLINE elenchi RBRACE {$$=new_stato2(
 	| STATE string LBRACE elenco_actions NEWLINE elenco_cond RBRACE {$$=new_stato2($2,$4,$6);}
 	| STATE string LBRACE elenco_actions NEWLINE cicli RBRACE {$$=new_stato5($2,$4,NULL,NULL,$6);}
 	| STATE string LBRACE elenco_actions NEWLINE cicli NEWLINE elenco_cond RBRACE {$$=new_stato5($2,$4,$8,NULL,$6);}
-	| STATE string LBRACE elenco_actions NEWLINE cicli NEWLINE elenchi RBRACE {$$=new_stato5($2,$4,NULL $8,$6);}
+	| STATE string LBRACE elenco_actions NEWLINE cicli NEWLINE elenchi RBRACE {$$=new_stato5($2,$4,NULL,$8,$6);}
 ;
 
 elenchi: elenco_operazioni					{$$= new_elenchi($1, NULL);}
@@ -122,8 +122,8 @@ elenchi: elenco_operazioni					{$$= new_elenchi($1, NULL);}
 	| elenchi NEWLINE elenco_operazioni		{$$= add_oper_elenchi($1, $3);}
 ; 
 
-elenco_operazioni: operazioni SEMI{$$ = new_action((azione) $1,NULL);}
-	| elenco_operazioni NEWLINE SEMI operazioni {$$ = add_azione($1, new_action((azione) $4, NULL));}
+elenco_operazioni: operazioni SEMI {$$ = new_action((action) $1,NULL);}
+	| elenco_operazioni NEWLINE SEMI operazioni {$$ = add_azione($1, new_action((action) $4, NULL));}
 ;
 
 /*
@@ -140,8 +140,8 @@ elenco_actions: operazioni {$$ = new_action((azione) $1,NULL);}
 	| elenco_actions COMMA operazioni {$$ = add_azione($1, new_action((azione) $3, NULL));}
 ;
 
-cambiostato: string CHANGESTATE string SEMI {$$= new_cambiostato(new_evento((evento) $1,NULL),new_el_stati1(new_stato1($3));}
-	| CHANGESTATE string SEMI {$$= new_cambiostato(new_evento( (evento) "0",NULL),new_el_stati1(new_stato1($2));}
+cambiostato: string CHANGESTATE string SEMI {$$= new_cambiostato(new_evento((evento) $1,NULL),new_el_stati1(new_stato1($3)));}
+	| CHANGESTATE string SEMI {$$= new_cambiostato(new_evento( (evento) "0",NULL),new_el_stati1(new_stato1($2)));}
 ;
 
 elenco_cambio: cambiostato 
