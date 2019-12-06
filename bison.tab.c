@@ -1372,7 +1372,7 @@ yyreduce:
 
   case 4:
 #line 70 "bison.y" /* yacc.c:1652  */
-    {(yyval.op)=new_operazione( new_assegnazioni( (yyvsp[-4].c), NULL, 15), new_assegnazioni( (yyvsp[-2].c), NULL, 15), new_assegnazioni( (yyvsp[0].fn), NULL, 11), (yyvsp[-1].fn), -1);}
+    {(yyval.op)=new_operazione( new_assegnazioni( (yyvsp[-4].c), NULL, 15), new_assegnazioni( (yyvsp[-2].c), NULL, 15), new_assegnazioni( NULL, (void*) (yyvsp[0].fn), 11), (yyvsp[-1].fn), -1);}
 #line 1377 "bison.tab.c" /* yacc.c:1652  */
     break;
 
@@ -1402,7 +1402,7 @@ yyreduce:
 
   case 9:
 #line 75 "bison.y" /* yacc.c:1652  */
-    {(yyval.op)=new_operazione( new_assegnazioni( (yyvsp[-1].c), NULL, NULL), NULL, NULL, (yyvsp[-3].fn), -1);}
+    {(yyval.op)=new_operazione( new_assegnazioni( (yyvsp[-1].c), NULL, 15), NULL, NULL, (yyvsp[-3].fn), -1);}
 #line 1407 "bison.tab.c" /* yacc.c:1652  */
     break;
 
@@ -1426,19 +1426,19 @@ yyreduce:
 
   case 14:
 #line 88 "bison.y" /* yacc.c:1652  */
-    {(yyval.as) = new_assegnazioni( (yyvsp[-2].c), (yyvsp[0].fn), (yyvsp[-3].fn));}
+    {(yyval.as) = new_assegnazioni( (yyvsp[-2].c), (void*) (yyvsp[0].fn), (yyvsp[-3].fn));}
 #line 1431 "bison.tab.c" /* yacc.c:1652  */
     break;
 
   case 16:
 #line 98 "bison.y" /* yacc.c:1652  */
-    {(yyval.even) = new_evento((evento) (yyvsp[-1].c),NULL);}
+    {(yyval.even) = new_evento((evento*) (yyvsp[-1].c),NULL);}
 #line 1437 "bison.tab.c" /* yacc.c:1652  */
     break;
 
   case 17:
 #line 99 "bison.y" /* yacc.c:1652  */
-    {(yyval.even)= add_evento((yyvsp[-3].even),new_evento((evento) (yyvsp[-1].c),NULL);}
+    {(yyval.even)= add_evento((yyvsp[-3].even),new_evento((evento*) (yyvsp[-1].c),NULL));}
 #line 1443 "bison.tab.c" /* yacc.c:1652  */
     break;
 
@@ -1450,7 +1450,7 @@ yyreduce:
 
   case 20:
 #line 109 "bison.y" /* yacc.c:1652  */
-    {(yyval.elen_stat)=add_el_stati((yyvsp[-2].elen_stat), (yyvsp[0].stat);}
+    {(yyval.elen_stat)=add_el_stati((yyvsp[-2].elen_stat), (yyvsp[0].stat));}
 #line 1455 "bison.tab.c" /* yacc.c:1652  */
     break;
 
@@ -1462,7 +1462,7 @@ yyreduce:
 
   case 22:
 #line 113 "bison.y" /* yacc.c:1652  */
-    {(yyval.stat)=new_stato5((yyvsp[-5].c),(yyvsp[-3].azione),(yyvsp[-1].elen_con));}
+    {(yyval.stat)=new_stato2((yyvsp[-5].c),(yyvsp[-3].azione),(yyvsp[-1].elen_con));}
 #line 1467 "bison.tab.c" /* yacc.c:1652  */
     break;
 
