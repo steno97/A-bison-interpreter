@@ -1,12 +1,12 @@
-global variables{
-	int prima=1000;
+global_variables{
+	int prima=1000;	
 	int seconda=0;
 }
 
 events{
-	diminuiamo_prima;
+	diminuiamo_prima; IF
 	aumentiamo_seconda;
-        errore;
+    errore;
 	ciclo;
 }
 
@@ -19,8 +19,9 @@ state idle{
 	aumentiamo_seconda=>inc;
 	errore=>error;
 	ciclo=>cic;
-	=>idle
+	=>idle;
 }
+
 
 state dim{
 	actions{dec(prima)};
@@ -59,3 +60,5 @@ state error{
 	actions{print_schermo_message};
 	=>idle;
 }
+
+

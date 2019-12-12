@@ -1,6 +1,6 @@
 
 extern int yylineno; /* from lexer */
-void yyerror(char *s, ...);
+//void yyerror(char *s, ...);
 extern int yyparse();
 extern FILE *yyin;
 extern int yylex();
@@ -22,8 +22,8 @@ union YYSTYPE{
 	struct cicli* cic;
 };
  
-typedef char*  String;
-typedef String evento;
+typedef char* String;
+typedef char* evento;
 
 typedef struct assegnazioni{
 	int type;

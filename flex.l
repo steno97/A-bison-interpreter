@@ -53,11 +53,16 @@ print_schermo_message	{ yylval.fn = 40; return PRINT; }
 ";"             { return SEMI; }
 ","             { return COMMA; }
 "="             { return ASSIGN; }
-"\n"			{ return NEWLINE; }
-"\t"			{ return SPACE; }
+
+"//".*
+[ \t ]
+\\\n
+
+"\r"			{ return NEWLINE; }
 "#"				{ return COMMENT; }
 "=>"			{ return CHANGESTATE; }
-.              	{printf("Unknown token!n"); yyterminate();}
-
+"$end"     		{return ENFILE; exit(0);}
+.              	{ yyerror("Mystery character %c\n", *yytext); printf("Unknown token!\n"); yyterminate();}
+<<EOF>>         { exit(0); }
 
 %%

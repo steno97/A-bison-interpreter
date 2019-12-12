@@ -67,15 +67,14 @@ extern int yydebug;
     COMMA = 273,
     CHANGESTATE = 274,
     COMMENT = 275,
-    SPACE = 276,
-    IF = 277,
-    ELSE = 278,
-    ELIF = 279,
-    CMP = 280,
-    OPERATORE = 281,
-    WHILE = 282,
-    FOR = 283,
-    PRINT = 284
+    IF = 276,
+    ELSE = 277,
+    ELIF = 278,
+    CMP = 279,
+    OPERATORE = 280,
+    WHILE = 281,
+    FOR = 282,
+    PRINT = 283
   };
 #endif
 
