@@ -1,214 +1,205 @@
 Nonterminals useless in grammar
 
-   commands
    commenti
 
 
 Terminals unused in grammar
 
-   COMMAND
    COMMENT
 
 
 Regole inutili nella grammatica
 
-   67 commands: COMMAND LBRACE elenco_ev_com RBRACE
-
-   68 commenti: COMMENT
-   69         | COMMENT string NEWLINE
+   66 commenti: COMMENT
+   67         | COMMENT string
 
 
-Stato 92 1 conflitti shift/riduzione
-Stato 94 1 conflitti shift/riduzione
-Stato 121 1 conflitti shift/riduzione
-Stato 122 1 conflitti shift/riduzione
+Stato 56 2 conflitti shift/riduzione
+Stato 76 2 conflitti shift/riduzione
 
 
 Grammatica
 
     0 $accept: main $end
 
-    1 main: definition serie_newline events serie_newline actions serie_newline elenco_stati serie_newline
+    1 main: definition events commands elenco_stati
 
-    2 serie_newline: NEWLINE
-    3              | serie_newline NEWLINE
+    2 definition: VAR LBRACE RBRACE
+    3           | VAR LBRACE elenco_ass RBRACE
 
-    4 definition: VAR LBRACE NEWLINE RBRACE
-    5           | VAR LBRACE NEWLINE elenco_ass NEWLINE RBRACE
+    4 elenco_ass: assegnazione SEMI
+    5           | elenco_ass assegnazione SEMI
 
-    6 elenco_ass: assegnazione SEMI
-    7           | elenco_ass NEWLINE assegnazione SEMI
+    6 assegnazione: TYPE string ASSIGN string
+    7             | TYPE string ASSIGN term
 
-    8 assegnazione: TYPE string ASSIGN string
-    9             | TYPE string ASSIGN term
+    8 string: ALPHA
 
-   10 string: ALPHA
+    9 operazioni: string ASSIGN string OPERATORE string
+   10           | string ASSIGN string OPERATORE term
+   11           | string ASSIGN term OPERATORE string
+   12           | string ASSIGN term OPERATORE term
+   13           | OPERATORE LPAREN string RPAREN
+   14           | OPERATORE LPAREN term COMMA string RPAREN
+   15           | PRINT LPAREN string RPAREN
+   16           | PRINT
 
-   11 operazioni: string ASSIGN string OPERATORE string
-   12           | string ASSIGN string OPERATORE term
-   13           | string ASSIGN term OPERATORE string
-   14           | string ASSIGN term OPERATORE term
-   15           | OPERATORE LPAREN string RPAREN
-   16           | OPERATORE LPAREN term COMMA string RPAREN
-   17           | PRINT LPAREN string RPAREN
-   18           | PRINT
+   17 term: NUMBER
 
-   19 term: NUMBER
+   18 events: EVENT LBRACE elenco_ev_com RBRACE
 
-   20 events: EVENT LBRACE NEWLINE elenco_ev_com NEWLINE RBRACE
+   19 elenco_ev_com: string SEMI
+   20              | elenco_ev_com string SEMI
 
-   21 elenco_ev_com: string SEMI
-   22              | elenco_ev_com NEWLINE string SEMI
+   21 elenco_stati: state
+   22             | elenco_stati state
 
-   23 elenco_stati: state NEWLINE state
-   24             | elenco_stati NEWLINE state
+   23 state: STATE string LBRACE actions elenchi RBRACE
+   24      | STATE string LBRACE actions elenco_cond elenchi RBRACE
+   25      | STATE string LBRACE actions cicli RBRACE
+   26      | STATE string LBRACE actions cicli elenco_cond RBRACE
+   27      | STATE string LBRACE actions cicli elenchi RBRACE
 
-   25 state: STATE string LBRACE elenco_actions NEWLINE elenchi RBRACE
-   26      | STATE string LBRACE elenco_actions NEWLINE elenco_cond RBRACE
-   27      | STATE string LBRACE elenco_actions NEWLINE cicli RBRACE
-   28      | STATE string LBRACE elenco_actions NEWLINE cicli NEWLINE elenco_cond RBRACE
-   29      | STATE string LBRACE elenco_actions NEWLINE cicli NEWLINE elenchi RBRACE
+   28 elenchi: elenco_operazioni
+   29        | elenco_cambio
+   30        | elenchi elenco_cambio
+   31        | elenchi elenco_operazioni
 
-   30 elenchi: elenco_operazioni
-   31        | elenco_cambio
-   32        | elenchi NEWLINE elenco_cambio
-   33        | elenchi NEWLINE elenco_operazioni
+   32 elenco_operazioni: operazioni SEMI
+   33                  | elenco_operazioni SEMI operazioni
 
-   34 elenco_operazioni: operazioni SEMI
-   35                  | elenco_operazioni NEWLINE SEMI operazioni
+   34 actions: ACTION LBRACE RBRACE SEMI
+   35        | ACTION LBRACE elenco_actions RBRACE SEMI
 
-   36 actions: ACTION LBRACE RBRACE SEMI
-   37        | ACTION LBRACE elenco_actions RBRACE SEMI
+   36 commands: COMMAND LBRACE elenco_ev_com RBRACE
 
-   38 elenco_actions: operazioni
-   39               | elenco_actions COMMA operazioni
+   37 elenco_actions: operazioni
+   38               | elenco_actions COMMA operazioni
 
-   40 cambiostato: string CHANGESTATE string SEMI
-   41            | CHANGESTATE string SEMI
+   39 cambiostato: string CHANGESTATE string SEMI
+   40            | CHANGESTATE string SEMI
 
-   42 elenco_cambio: cambiostato
-   43              | elenco_cambio NEWLINE cambiostato
+   41 elenco_cambio: cambiostato
+   42              | elenco_cambio cambiostato
 
-   44 cicli: FOR LPAREN assegnazione COMMA string CMP term COMMA operazioni RPAREN LBRACE elenco_cond RBRACE
-   45      | FOR LPAREN assegnazione COMMA term CMP string COMMA operazioni RPAREN LBRACE elenco_cond RBRACE
-   46      | FOR LPAREN assegnazione COMMA string CMP string COMMA operazioni RPAREN LBRACE elenco_cond RBRACE
-   47      | FOR LPAREN assegnazione COMMA string CMP term COMMA operazioni RPAREN LBRACE elenchi RBRACE
-   48      | FOR LPAREN assegnazione COMMA term CMP string COMMA operazioni RPAREN LBRACE elenchi RBRACE
-   49      | FOR LPAREN assegnazione COMMA string CMP string COMMA operazioni RPAREN LBRACE elenchi RBRACE
-   50      | WHILE LPAREN term CMP term RPAREN LBRACE elenco_cond RBRACE
-   51      | WHILE LPAREN string CMP term RPAREN LBRACE elenco_cond RBRACE
-   52      | WHILE LPAREN term CMP string RPAREN LBRACE elenco_cond RBRACE
-   53      | WHILE LPAREN string CMP string RPAREN LBRACE elenco_cond RBRACE
-   54      | WHILE LPAREN term CMP term RPAREN LBRACE elenchi RBRACE
-   55      | WHILE LPAREN string CMP term RPAREN LBRACE elenchi RBRACE
-   56      | WHILE LPAREN term CMP string RPAREN LBRACE elenchi RBRACE
-   57      | WHILE LPAREN string CMP string RPAREN LBRACE elenchi RBRACE
+   43 cicli: FOR LPAREN assegnazione COMMA string CMP term COMMA operazioni RPAREN LBRACE elenco_cond RBRACE
+   44      | FOR LPAREN assegnazione COMMA term CMP string COMMA operazioni RPAREN LBRACE elenco_cond RBRACE
+   45      | FOR LPAREN assegnazione COMMA string CMP string COMMA operazioni RPAREN LBRACE elenco_cond RBRACE
+   46      | FOR LPAREN assegnazione COMMA string CMP term COMMA operazioni RPAREN LBRACE elenchi RBRACE
+   47      | FOR LPAREN assegnazione COMMA term CMP string COMMA operazioni RPAREN LBRACE elenchi RBRACE
+   48      | FOR LPAREN assegnazione COMMA string CMP string COMMA operazioni RPAREN LBRACE elenchi RBRACE
+   49      | WHILE LPAREN term CMP term RPAREN LBRACE elenco_cond RBRACE
+   50      | WHILE LPAREN string CMP term RPAREN LBRACE elenco_cond RBRACE
+   51      | WHILE LPAREN term CMP string RPAREN LBRACE elenco_cond RBRACE
+   52      | WHILE LPAREN string CMP string RPAREN LBRACE elenco_cond RBRACE
+   53      | WHILE LPAREN term CMP term RPAREN LBRACE elenchi RBRACE
+   54      | WHILE LPAREN string CMP term RPAREN LBRACE elenchi RBRACE
+   55      | WHILE LPAREN term CMP string RPAREN LBRACE elenchi RBRACE
+   56      | WHILE LPAREN string CMP string RPAREN LBRACE elenchi RBRACE
 
-   58 metodo: IF
-   59       | ELIF
+   57 metodo: IF
+   58       | ELIF
 
-   60 cond: metodo LPAREN term CMP term RPAREN LBRACE elenchi RBRACE
-   61     | metodo LPAREN term CMP string RPAREN LBRACE elenchi RBRACE
-   62     | metodo LPAREN string CMP term RPAREN LBRACE elenchi RBRACE
-   63     | metodo LPAREN string CMP string RPAREN LBRACE elenchi RBRACE
-   64     | ELSE LBRACE elenchi RBRACE
+   59 cond: metodo LPAREN term CMP term RPAREN LBRACE elenchi RBRACE
+   60     | metodo LPAREN term CMP string RPAREN LBRACE elenchi RBRACE
+   61     | metodo LPAREN string CMP term RPAREN LBRACE elenchi RBRACE
+   62     | metodo LPAREN string CMP string RPAREN LBRACE elenchi RBRACE
+   63     | ELSE LBRACE elenchi RBRACE
 
-   65 elenco_cond: cond NEWLINE cond
-   66            | elenco_cond NEWLINE cond
+   64 elenco_cond: cond
+   65            | elenco_cond cond
 
 
 Simboli terminali e regole in cui appaiono
 
 $end (0) 0
 error (256)
-NUMBER <fn> (258) 19
-TYPE <fn> (259) 8 9
-SEMI (260) 6 7 21 22 34 35 36 37 40 41
-ALPHA <c> (261) 10
-ASSIGN (262) 8 9 11 12 13 14
-VAR (263) 4 5
-LBRACE (264) 4 5 20 25 26 27 28 29 36 37 44 45 46 47 48 49 50 51 52
-    53 54 55 56 57 60 61 62 63 64
-RBRACE (265) 4 5 20 25 26 27 28 29 36 37 44 45 46 47 48 49 50 51 52
-    53 54 55 56 57 60 61 62 63 64
-LPAREN (266) 15 16 17 44 45 46 47 48 49 50 51 52 53 54 55 56 57 60
-    61 62 63
-RPAREN (267) 15 16 17 44 45 46 47 48 49 50 51 52 53 54 55 56 57 60
-    61 62 63
-EVENT (268) 20
-COMMAND <even> (269)
-STATE (270) 25 26 27 28 29
-ACTION (271) 36 37
-NEWLINE (272) 2 3 4 5 7 20 22 23 24 25 26 27 28 29 32 33 35 43 65 66
-COMMA (273) 16 39 44 45 46 47 48 49
-CHANGESTATE (274) 40 41
-COMMENT (275)
-IF (276) 58
-ELSE (277) 64
-ELIF (278) 59
-CMP <fn> (279) 44 45 46 47 48 49 50 51 52 53 54 55 56 57 60 61 62 63
-OPERATORE <fn> (280) 11 12 13 14 15 16
-WHILE (281) 50 51 52 53 54 55 56 57
-FOR (282) 44 45 46 47 48 49
-PRINT <fn> (283) 17 18
+NUMBER <fn> (258) 17
+TYPE <fn> (259) 6 7
+SEMI (260) 4 5 19 20 32 33 34 35 39 40
+ALPHA <c> (261) 8
+ASSIGN (262) 6 7 9 10 11 12
+VAR (263) 2 3
+LBRACE (264) 2 3 18 23 24 25 26 27 34 35 36 43 44 45 46 47 48 49 50
+    51 52 53 54 55 56 59 60 61 62 63
+RBRACE (265) 2 3 18 23 24 25 26 27 34 35 36 43 44 45 46 47 48 49 50
+    51 52 53 54 55 56 59 60 61 62 63
+LPAREN (266) 13 14 15 43 44 45 46 47 48 49 50 51 52 53 54 55 56 59
+    60 61 62
+RPAREN (267) 13 14 15 43 44 45 46 47 48 49 50 51 52 53 54 55 56 59
+    60 61 62
+EVENT (268) 18
+ACTION (269) 34 35
+COMMAND (270) 36
+STATE (271) 23 24 25 26 27
+COMMA (272) 14 38 43 44 45 46 47 48
+CHANGESTATE (273) 39 40
+COMMENT (274)
+IF (275) 57
+ELSE (276) 63
+ELIF (277) 58
+CMP <fn> (278) 43 44 45 46 47 48 49 50 51 52 53 54 55 56 59 60 61 62
+OPERATORE <fn> (279) 9 10 11 12 13 14
+WHILE (280) 49 50 51 52 53 54 55 56
+FOR (281) 43 44 45 46 47 48
+PRINT <fn> (282) 15 16
 
 
 Simboli nonterminali e regole in cui appaiono
 
-$accept (29)
+$accept (28)
     nel primo membro: 0
-main (30)
+main (29)
     nel primo membro: 1, nel secondo membro: 0
-serie_newline (31)
-    nel primo membro: 2 3, nel secondo membro: 1 3
-definition <as> (32)
-    nel primo membro: 4 5, nel secondo membro: 1
-elenco_ass <as> (33)
-    nel primo membro: 6 7, nel secondo membro: 5 7
-assegnazione <as> (34)
-    nel primo membro: 8 9, nel secondo membro: 6 7 44 45 46 47 48 49
-string <c> (35)
-    nel primo membro: 10, nel secondo membro: 8 9 11 12 13 14 15 16
-    17 21 22 25 26 27 28 29 40 41 44 45 46 47 48 49 51 52 53 55 56
-    57 61 62 63
-operazioni <op> (36)
-    nel primo membro: 11 12 13 14 15 16 17 18, nel secondo membro:
-    34 35 38 39 44 45 46 47 48 49
-term <fn> (37)
-    nel primo membro: 19, nel secondo membro: 9 12 13 14 16 44 45 47
-    48 50 51 52 54 55 56 60 61 62
-events <even> (38)
-    nel primo membro: 20, nel secondo membro: 1
-elenco_ev_com <even> (39)
-    nel primo membro: 21 22, nel secondo membro: 20 22
-elenco_stati <elen_stat> (40)
-    nel primo membro: 23 24, nel secondo membro: 1 24
-state <stat> (41)
-    nel primo membro: 25 26 27 28 29, nel secondo membro: 23 24
-elenchi <elen> (42)
-    nel primo membro: 30 31 32 33, nel secondo membro: 25 29 32 33
-    47 48 49 54 55 56 57 60 61 62 63 64
-elenco_operazioni <azione> (43)
-    nel primo membro: 34 35, nel secondo membro: 30 33 35
-actions <azione> (44)
-    nel primo membro: 36 37, nel secondo membro: 1
-elenco_actions <azione> (45)
-    nel primo membro: 38 39, nel secondo membro: 25 26 27 28 29 37
-    39
-cambiostato <camb_stat> (46)
-    nel primo membro: 40 41, nel secondo membro: 42 43
-elenco_cambio <camb_stat> (47)
-    nel primo membro: 42 43, nel secondo membro: 31 32 43
-cicli <cic> (48)
-    nel primo membro: 44 45 46 47 48 49 50 51 52 53 54 55 56 57, nel secondo membro:
-    27 28 29
-metodo (49)
-    nel primo membro: 58 59, nel secondo membro: 60 61 62 63
-cond <con> (50)
-    nel primo membro: 60 61 62 63 64, nel secondo membro: 65 66
-elenco_cond <elen_con> (51)
-    nel primo membro: 65 66, nel secondo membro: 26 28 44 45 46 50
-    51 52 53 66
+definition <as> (30)
+    nel primo membro: 2 3, nel secondo membro: 1
+elenco_ass <as> (31)
+    nel primo membro: 4 5, nel secondo membro: 3 5
+assegnazione <as> (32)
+    nel primo membro: 6 7, nel secondo membro: 4 5 43 44 45 46 47 48
+string <c> (33)
+    nel primo membro: 8, nel secondo membro: 6 7 9 10 11 12 13 14 15
+    19 20 23 24 25 26 27 39 40 43 44 45 46 47 48 50 51 52 54 55 56
+    60 61 62
+operazioni <op> (34)
+    nel primo membro: 9 10 11 12 13 14 15 16, nel secondo membro: 32
+    33 37 38 43 44 45 46 47 48
+term <fn> (35)
+    nel primo membro: 17, nel secondo membro: 7 10 11 12 14 43 44 46
+    47 49 50 51 53 54 55 59 60 61
+events <even> (36)
+    nel primo membro: 18, nel secondo membro: 1
+elenco_ev_com <even> (37)
+    nel primo membro: 19 20, nel secondo membro: 18 20 36
+elenco_stati <elen_stat> (38)
+    nel primo membro: 21 22, nel secondo membro: 1 22
+state <stat> (39)
+    nel primo membro: 23 24 25 26 27, nel secondo membro: 21 22
+elenchi <elen> (40)
+    nel primo membro: 28 29 30 31, nel secondo membro: 23 24 27 30
+    31 46 47 48 53 54 55 56 59 60 61 62 63
+elenco_operazioni <azione> (41)
+    nel primo membro: 32 33, nel secondo membro: 28 31 33
+actions <azione> (42)
+    nel primo membro: 34 35, nel secondo membro: 23 24 25 26 27
+commands <even> (43)
+    nel primo membro: 36, nel secondo membro: 1
+elenco_actions <azione> (44)
+    nel primo membro: 37 38, nel secondo membro: 35 38
+cambiostato <camb_stat> (45)
+    nel primo membro: 39 40, nel secondo membro: 41 42
+elenco_cambio <camb_stat> (46)
+    nel primo membro: 41 42, nel secondo membro: 29 30 42
+cicli <cic> (47)
+    nel primo membro: 43 44 45 46 47 48 49 50 51 52 53 54 55 56, nel secondo membro:
+    25 26 27
+metodo (48)
+    nel primo membro: 57 58, nel secondo membro: 59 60 61 62
+cond <con> (49)
+    nel primo membro: 59 60 61 62 63, nel secondo membro: 64 65
+elenco_cond <elen_con> (50)
+    nel primo membro: 64 65, nel secondo membro: 24 26 43 44 45 49
+    50 51 52 65
 
 
 Stato 0
@@ -223,8 +214,8 @@ Stato 0
 
 Stato 1
 
-    4 definition: VAR . LBRACE NEWLINE RBRACE
-    5           | VAR . LBRACE NEWLINE elenco_ass NEWLINE RBRACE
+    2 definition: VAR . LBRACE RBRACE
+    3           | VAR . LBRACE elenco_ass RBRACE
 
     LBRACE  shift e prosecuzione allo stato 4
 
@@ -238,19 +229,23 @@ Stato 2
 
 Stato 3
 
-    1 main: definition . serie_newline events serie_newline actions serie_newline elenco_stati serie_newline
+    1 main: definition . events commands elenco_stati
 
-    NEWLINE  shift e prosecuzione allo stato 6
+    EVENT  shift e prosecuzione allo stato 6
 
-    serie_newline  prosecuzione allo stato 7
+    events  prosecuzione allo stato 7
 
 
 Stato 4
 
-    4 definition: VAR LBRACE . NEWLINE RBRACE
-    5           | VAR LBRACE . NEWLINE elenco_ass NEWLINE RBRACE
+    2 definition: VAR LBRACE . RBRACE
+    3           | VAR LBRACE . elenco_ass RBRACE
 
-    NEWLINE  shift e prosecuzione allo stato 8
+    TYPE    shift e prosecuzione allo stato 8
+    RBRACE  shift e prosecuzione allo stato 9
+
+    elenco_ass    prosecuzione allo stato 10
+    assegnazione  prosecuzione allo stato 11
 
 
 Stato 5
@@ -262,2099 +257,2132 @@ Stato 5
 
 Stato 6
 
-    2 serie_newline: NEWLINE .
+   18 events: EVENT . LBRACE elenco_ev_com RBRACE
 
-    $default  riduzione con la regola 2 (serie_newline)
+    LBRACE  shift e prosecuzione allo stato 12
 
 
 Stato 7
 
-    1 main: definition serie_newline . events serie_newline actions serie_newline elenco_stati serie_newline
-    3 serie_newline: serie_newline . NEWLINE
+    1 main: definition events . commands elenco_stati
 
-    EVENT    shift e prosecuzione allo stato 9
-    NEWLINE  shift e prosecuzione allo stato 10
+    COMMAND  shift e prosecuzione allo stato 13
 
-    events  prosecuzione allo stato 11
+    commands  prosecuzione allo stato 14
 
 
 Stato 8
 
-    4 definition: VAR LBRACE NEWLINE . RBRACE
-    5           | VAR LBRACE NEWLINE . elenco_ass NEWLINE RBRACE
+    6 assegnazione: TYPE . string ASSIGN string
+    7             | TYPE . string ASSIGN term
 
-    TYPE    shift e prosecuzione allo stato 12
-    RBRACE  shift e prosecuzione allo stato 13
+    ALPHA  shift e prosecuzione allo stato 15
 
-    elenco_ass    prosecuzione allo stato 14
-    assegnazione  prosecuzione allo stato 15
+    string  prosecuzione allo stato 16
 
 
 Stato 9
 
-   20 events: EVENT . LBRACE NEWLINE elenco_ev_com NEWLINE RBRACE
+    2 definition: VAR LBRACE RBRACE .
 
-    LBRACE  shift e prosecuzione allo stato 16
+    $default  riduzione con la regola 2 (definition)
 
 
 Stato 10
 
-    3 serie_newline: serie_newline NEWLINE .
+    3 definition: VAR LBRACE elenco_ass . RBRACE
+    5 elenco_ass: elenco_ass . assegnazione SEMI
 
-    $default  riduzione con la regola 3 (serie_newline)
+    TYPE    shift e prosecuzione allo stato 8
+    RBRACE  shift e prosecuzione allo stato 17
+
+    assegnazione  prosecuzione allo stato 18
 
 
 Stato 11
 
-    1 main: definition serie_newline events . serie_newline actions serie_newline elenco_stati serie_newline
+    4 elenco_ass: assegnazione . SEMI
 
-    NEWLINE  shift e prosecuzione allo stato 6
-
-    serie_newline  prosecuzione allo stato 17
+    SEMI  shift e prosecuzione allo stato 19
 
 
 Stato 12
 
-    8 assegnazione: TYPE . string ASSIGN string
-    9             | TYPE . string ASSIGN term
+   18 events: EVENT LBRACE . elenco_ev_com RBRACE
 
-    ALPHA  shift e prosecuzione allo stato 18
+    ALPHA  shift e prosecuzione allo stato 15
 
-    string  prosecuzione allo stato 19
+    string         prosecuzione allo stato 20
+    elenco_ev_com  prosecuzione allo stato 21
 
 
 Stato 13
 
-    4 definition: VAR LBRACE NEWLINE RBRACE .
+   36 commands: COMMAND . LBRACE elenco_ev_com RBRACE
 
-    $default  riduzione con la regola 4 (definition)
+    LBRACE  shift e prosecuzione allo stato 22
 
 
 Stato 14
 
-    5 definition: VAR LBRACE NEWLINE elenco_ass . NEWLINE RBRACE
-    7 elenco_ass: elenco_ass . NEWLINE assegnazione SEMI
+    1 main: definition events commands . elenco_stati
 
-    NEWLINE  shift e prosecuzione allo stato 20
+    STATE  shift e prosecuzione allo stato 23
+
+    elenco_stati  prosecuzione allo stato 24
+    state         prosecuzione allo stato 25
 
 
 Stato 15
 
-    6 elenco_ass: assegnazione . SEMI
+    8 string: ALPHA .
 
-    SEMI  shift e prosecuzione allo stato 21
+    $default  riduzione con la regola 8 (string)
 
 
 Stato 16
 
-   20 events: EVENT LBRACE . NEWLINE elenco_ev_com NEWLINE RBRACE
+    6 assegnazione: TYPE string . ASSIGN string
+    7             | TYPE string . ASSIGN term
 
-    NEWLINE  shift e prosecuzione allo stato 22
+    ASSIGN  shift e prosecuzione allo stato 26
 
 
 Stato 17
 
-    1 main: definition serie_newline events serie_newline . actions serie_newline elenco_stati serie_newline
-    3 serie_newline: serie_newline . NEWLINE
+    3 definition: VAR LBRACE elenco_ass RBRACE .
 
-    ACTION   shift e prosecuzione allo stato 23
-    NEWLINE  shift e prosecuzione allo stato 10
-
-    actions  prosecuzione allo stato 24
+    $default  riduzione con la regola 3 (definition)
 
 
 Stato 18
 
-   10 string: ALPHA .
+    5 elenco_ass: elenco_ass assegnazione . SEMI
 
-    $default  riduzione con la regola 10 (string)
+    SEMI  shift e prosecuzione allo stato 27
 
 
 Stato 19
 
-    8 assegnazione: TYPE string . ASSIGN string
-    9             | TYPE string . ASSIGN term
+    4 elenco_ass: assegnazione SEMI .
 
-    ASSIGN  shift e prosecuzione allo stato 25
+    $default  riduzione con la regola 4 (elenco_ass)
 
 
 Stato 20
 
-    5 definition: VAR LBRACE NEWLINE elenco_ass NEWLINE . RBRACE
-    7 elenco_ass: elenco_ass NEWLINE . assegnazione SEMI
+   19 elenco_ev_com: string . SEMI
 
-    TYPE    shift e prosecuzione allo stato 12
-    RBRACE  shift e prosecuzione allo stato 26
-
-    assegnazione  prosecuzione allo stato 27
+    SEMI  shift e prosecuzione allo stato 28
 
 
 Stato 21
 
-    6 elenco_ass: assegnazione SEMI .
+   18 events: EVENT LBRACE elenco_ev_com . RBRACE
+   20 elenco_ev_com: elenco_ev_com . string SEMI
 
-    $default  riduzione con la regola 6 (elenco_ass)
+    ALPHA   shift e prosecuzione allo stato 15
+    RBRACE  shift e prosecuzione allo stato 29
+
+    string  prosecuzione allo stato 30
 
 
 Stato 22
 
-   20 events: EVENT LBRACE NEWLINE . elenco_ev_com NEWLINE RBRACE
+   36 commands: COMMAND LBRACE . elenco_ev_com RBRACE
 
-    ALPHA  shift e prosecuzione allo stato 18
+    ALPHA  shift e prosecuzione allo stato 15
 
-    string         prosecuzione allo stato 28
-    elenco_ev_com  prosecuzione allo stato 29
+    string         prosecuzione allo stato 20
+    elenco_ev_com  prosecuzione allo stato 31
 
 
 Stato 23
 
-   36 actions: ACTION . LBRACE RBRACE SEMI
-   37        | ACTION . LBRACE elenco_actions RBRACE SEMI
+   23 state: STATE . string LBRACE actions elenchi RBRACE
+   24      | STATE . string LBRACE actions elenco_cond elenchi RBRACE
+   25      | STATE . string LBRACE actions cicli RBRACE
+   26      | STATE . string LBRACE actions cicli elenco_cond RBRACE
+   27      | STATE . string LBRACE actions cicli elenchi RBRACE
 
-    LBRACE  shift e prosecuzione allo stato 30
+    ALPHA  shift e prosecuzione allo stato 15
+
+    string  prosecuzione allo stato 32
 
 
 Stato 24
 
-    1 main: definition serie_newline events serie_newline actions . serie_newline elenco_stati serie_newline
+    1 main: definition events commands elenco_stati .
+   22 elenco_stati: elenco_stati . state
 
-    NEWLINE  shift e prosecuzione allo stato 6
+    STATE  shift e prosecuzione allo stato 23
 
-    serie_newline  prosecuzione allo stato 31
+    $default  riduzione con la regola 1 (main)
+
+    state  prosecuzione allo stato 33
 
 
 Stato 25
 
-    8 assegnazione: TYPE string ASSIGN . string
-    9             | TYPE string ASSIGN . term
+   21 elenco_stati: state .
 
-    NUMBER  shift e prosecuzione allo stato 32
-    ALPHA   shift e prosecuzione allo stato 18
-
-    string  prosecuzione allo stato 33
-    term    prosecuzione allo stato 34
+    $default  riduzione con la regola 21 (elenco_stati)
 
 
 Stato 26
 
-    5 definition: VAR LBRACE NEWLINE elenco_ass NEWLINE RBRACE .
+    6 assegnazione: TYPE string ASSIGN . string
+    7             | TYPE string ASSIGN . term
 
-    $default  riduzione con la regola 5 (definition)
+    NUMBER  shift e prosecuzione allo stato 34
+    ALPHA   shift e prosecuzione allo stato 15
+
+    string  prosecuzione allo stato 35
+    term    prosecuzione allo stato 36
 
 
 Stato 27
 
-    7 elenco_ass: elenco_ass NEWLINE assegnazione . SEMI
+    5 elenco_ass: elenco_ass assegnazione SEMI .
 
-    SEMI  shift e prosecuzione allo stato 35
+    $default  riduzione con la regola 5 (elenco_ass)
 
 
 Stato 28
 
-   21 elenco_ev_com: string . SEMI
+   19 elenco_ev_com: string SEMI .
 
-    SEMI  shift e prosecuzione allo stato 36
+    $default  riduzione con la regola 19 (elenco_ev_com)
 
 
 Stato 29
 
-   20 events: EVENT LBRACE NEWLINE elenco_ev_com . NEWLINE RBRACE
-   22 elenco_ev_com: elenco_ev_com . NEWLINE string SEMI
+   18 events: EVENT LBRACE elenco_ev_com RBRACE .
 
-    NEWLINE  shift e prosecuzione allo stato 37
+    $default  riduzione con la regola 18 (events)
 
 
 Stato 30
 
-   36 actions: ACTION LBRACE . RBRACE SEMI
-   37        | ACTION LBRACE . elenco_actions RBRACE SEMI
+   20 elenco_ev_com: elenco_ev_com string . SEMI
 
-    ALPHA      shift e prosecuzione allo stato 18
-    RBRACE     shift e prosecuzione allo stato 38
-    OPERATORE  shift e prosecuzione allo stato 39
-    PRINT      shift e prosecuzione allo stato 40
-
-    string          prosecuzione allo stato 41
-    operazioni      prosecuzione allo stato 42
-    elenco_actions  prosecuzione allo stato 43
+    SEMI  shift e prosecuzione allo stato 37
 
 
 Stato 31
 
-    1 main: definition serie_newline events serie_newline actions serie_newline . elenco_stati serie_newline
-    3 serie_newline: serie_newline . NEWLINE
+   20 elenco_ev_com: elenco_ev_com . string SEMI
+   36 commands: COMMAND LBRACE elenco_ev_com . RBRACE
 
-    STATE    shift e prosecuzione allo stato 44
-    NEWLINE  shift e prosecuzione allo stato 10
+    ALPHA   shift e prosecuzione allo stato 15
+    RBRACE  shift e prosecuzione allo stato 38
 
-    elenco_stati  prosecuzione allo stato 45
-    state         prosecuzione allo stato 46
+    string  prosecuzione allo stato 30
 
 
 Stato 32
 
-   19 term: NUMBER .
+   23 state: STATE string . LBRACE actions elenchi RBRACE
+   24      | STATE string . LBRACE actions elenco_cond elenchi RBRACE
+   25      | STATE string . LBRACE actions cicli RBRACE
+   26      | STATE string . LBRACE actions cicli elenco_cond RBRACE
+   27      | STATE string . LBRACE actions cicli elenchi RBRACE
 
-    $default  riduzione con la regola 19 (term)
+    LBRACE  shift e prosecuzione allo stato 39
 
 
 Stato 33
 
-    8 assegnazione: TYPE string ASSIGN string .
+   22 elenco_stati: elenco_stati state .
 
-    $default  riduzione con la regola 8 (assegnazione)
+    $default  riduzione con la regola 22 (elenco_stati)
 
 
 Stato 34
 
-    9 assegnazione: TYPE string ASSIGN term .
+   17 term: NUMBER .
 
-    $default  riduzione con la regola 9 (assegnazione)
+    $default  riduzione con la regola 17 (term)
 
 
 Stato 35
 
-    7 elenco_ass: elenco_ass NEWLINE assegnazione SEMI .
+    6 assegnazione: TYPE string ASSIGN string .
 
-    $default  riduzione con la regola 7 (elenco_ass)
+    $default  riduzione con la regola 6 (assegnazione)
 
 
 Stato 36
 
-   21 elenco_ev_com: string SEMI .
+    7 assegnazione: TYPE string ASSIGN term .
 
-    $default  riduzione con la regola 21 (elenco_ev_com)
+    $default  riduzione con la regola 7 (assegnazione)
 
 
 Stato 37
 
-   20 events: EVENT LBRACE NEWLINE elenco_ev_com NEWLINE . RBRACE
-   22 elenco_ev_com: elenco_ev_com NEWLINE . string SEMI
+   20 elenco_ev_com: elenco_ev_com string SEMI .
 
-    ALPHA   shift e prosecuzione allo stato 18
-    RBRACE  shift e prosecuzione allo stato 47
-
-    string  prosecuzione allo stato 48
+    $default  riduzione con la regola 20 (elenco_ev_com)
 
 
 Stato 38
 
-   36 actions: ACTION LBRACE RBRACE . SEMI
+   36 commands: COMMAND LBRACE elenco_ev_com RBRACE .
 
-    SEMI  shift e prosecuzione allo stato 49
+    $default  riduzione con la regola 36 (commands)
 
 
 Stato 39
 
-   15 operazioni: OPERATORE . LPAREN string RPAREN
-   16           | OPERATORE . LPAREN term COMMA string RPAREN
+   23 state: STATE string LBRACE . actions elenchi RBRACE
+   24      | STATE string LBRACE . actions elenco_cond elenchi RBRACE
+   25      | STATE string LBRACE . actions cicli RBRACE
+   26      | STATE string LBRACE . actions cicli elenco_cond RBRACE
+   27      | STATE string LBRACE . actions cicli elenchi RBRACE
 
-    LPAREN  shift e prosecuzione allo stato 50
+    ACTION  shift e prosecuzione allo stato 40
+
+    actions  prosecuzione allo stato 41
 
 
 Stato 40
 
-   17 operazioni: PRINT . LPAREN string RPAREN
-   18           | PRINT .
+   34 actions: ACTION . LBRACE RBRACE SEMI
+   35        | ACTION . LBRACE elenco_actions RBRACE SEMI
 
-    LPAREN  shift e prosecuzione allo stato 51
-
-    $default  riduzione con la regola 18 (operazioni)
+    LBRACE  shift e prosecuzione allo stato 42
 
 
 Stato 41
 
-   11 operazioni: string . ASSIGN string OPERATORE string
-   12           | string . ASSIGN string OPERATORE term
-   13           | string . ASSIGN term OPERATORE string
-   14           | string . ASSIGN term OPERATORE term
+   23 state: STATE string LBRACE actions . elenchi RBRACE
+   24      | STATE string LBRACE actions . elenco_cond elenchi RBRACE
+   25      | STATE string LBRACE actions . cicli RBRACE
+   26      | STATE string LBRACE actions . cicli elenco_cond RBRACE
+   27      | STATE string LBRACE actions . cicli elenchi RBRACE
 
-    ASSIGN  shift e prosecuzione allo stato 52
+    ALPHA        shift e prosecuzione allo stato 15
+    CHANGESTATE  shift e prosecuzione allo stato 43
+    IF           shift e prosecuzione allo stato 44
+    ELSE         shift e prosecuzione allo stato 45
+    ELIF         shift e prosecuzione allo stato 46
+    OPERATORE    shift e prosecuzione allo stato 47
+    WHILE        shift e prosecuzione allo stato 48
+    FOR          shift e prosecuzione allo stato 49
+    PRINT        shift e prosecuzione allo stato 50
+
+    string             prosecuzione allo stato 51
+    operazioni         prosecuzione allo stato 52
+    elenchi            prosecuzione allo stato 53
+    elenco_operazioni  prosecuzione allo stato 54
+    cambiostato        prosecuzione allo stato 55
+    elenco_cambio      prosecuzione allo stato 56
+    cicli              prosecuzione allo stato 57
+    metodo             prosecuzione allo stato 58
+    cond               prosecuzione allo stato 59
+    elenco_cond        prosecuzione allo stato 60
 
 
 Stato 42
 
-   38 elenco_actions: operazioni .
+   34 actions: ACTION LBRACE . RBRACE SEMI
+   35        | ACTION LBRACE . elenco_actions RBRACE SEMI
 
-    $default  riduzione con la regola 38 (elenco_actions)
+    ALPHA      shift e prosecuzione allo stato 15
+    RBRACE     shift e prosecuzione allo stato 61
+    OPERATORE  shift e prosecuzione allo stato 47
+    PRINT      shift e prosecuzione allo stato 50
+
+    string          prosecuzione allo stato 62
+    operazioni      prosecuzione allo stato 63
+    elenco_actions  prosecuzione allo stato 64
 
 
 Stato 43
 
-   37 actions: ACTION LBRACE elenco_actions . RBRACE SEMI
-   39 elenco_actions: elenco_actions . COMMA operazioni
+   40 cambiostato: CHANGESTATE . string SEMI
 
-    RBRACE  shift e prosecuzione allo stato 53
-    COMMA   shift e prosecuzione allo stato 54
+    ALPHA  shift e prosecuzione allo stato 15
+
+    string  prosecuzione allo stato 65
 
 
 Stato 44
 
-   25 state: STATE . string LBRACE elenco_actions NEWLINE elenchi RBRACE
-   26      | STATE . string LBRACE elenco_actions NEWLINE elenco_cond RBRACE
-   27      | STATE . string LBRACE elenco_actions NEWLINE cicli RBRACE
-   28      | STATE . string LBRACE elenco_actions NEWLINE cicli NEWLINE elenco_cond RBRACE
-   29      | STATE . string LBRACE elenco_actions NEWLINE cicli NEWLINE elenchi RBRACE
+   57 metodo: IF .
 
-    ALPHA  shift e prosecuzione allo stato 18
-
-    string  prosecuzione allo stato 55
+    $default  riduzione con la regola 57 (metodo)
 
 
 Stato 45
 
-    1 main: definition serie_newline events serie_newline actions serie_newline elenco_stati . serie_newline
-   24 elenco_stati: elenco_stati . NEWLINE state
+   63 cond: ELSE . LBRACE elenchi RBRACE
 
-    NEWLINE  shift e prosecuzione allo stato 56
-
-    serie_newline  prosecuzione allo stato 57
+    LBRACE  shift e prosecuzione allo stato 66
 
 
 Stato 46
 
-   23 elenco_stati: state . NEWLINE state
-
-    NEWLINE  shift e prosecuzione allo stato 58
-
-
-Stato 47
-
-   20 events: EVENT LBRACE NEWLINE elenco_ev_com NEWLINE RBRACE .
-
-    $default  riduzione con la regola 20 (events)
-
-
-Stato 48
-
-   22 elenco_ev_com: elenco_ev_com NEWLINE string . SEMI
-
-    SEMI  shift e prosecuzione allo stato 59
-
-
-Stato 49
-
-   36 actions: ACTION LBRACE RBRACE SEMI .
-
-    $default  riduzione con la regola 36 (actions)
-
-
-Stato 50
-
-   15 operazioni: OPERATORE LPAREN . string RPAREN
-   16           | OPERATORE LPAREN . term COMMA string RPAREN
-
-    NUMBER  shift e prosecuzione allo stato 32
-    ALPHA   shift e prosecuzione allo stato 18
-
-    string  prosecuzione allo stato 60
-    term    prosecuzione allo stato 61
-
-
-Stato 51
-
-   17 operazioni: PRINT LPAREN . string RPAREN
-
-    ALPHA  shift e prosecuzione allo stato 18
-
-    string  prosecuzione allo stato 62
-
-
-Stato 52
-
-   11 operazioni: string ASSIGN . string OPERATORE string
-   12           | string ASSIGN . string OPERATORE term
-   13           | string ASSIGN . term OPERATORE string
-   14           | string ASSIGN . term OPERATORE term
-
-    NUMBER  shift e prosecuzione allo stato 32
-    ALPHA   shift e prosecuzione allo stato 18
-
-    string  prosecuzione allo stato 63
-    term    prosecuzione allo stato 64
-
-
-Stato 53
-
-   37 actions: ACTION LBRACE elenco_actions RBRACE . SEMI
-
-    SEMI  shift e prosecuzione allo stato 65
-
-
-Stato 54
-
-   39 elenco_actions: elenco_actions COMMA . operazioni
-
-    ALPHA      shift e prosecuzione allo stato 18
-    OPERATORE  shift e prosecuzione allo stato 39
-    PRINT      shift e prosecuzione allo stato 40
-
-    string      prosecuzione allo stato 41
-    operazioni  prosecuzione allo stato 66
-
-
-Stato 55
-
-   25 state: STATE string . LBRACE elenco_actions NEWLINE elenchi RBRACE
-   26      | STATE string . LBRACE elenco_actions NEWLINE elenco_cond RBRACE
-   27      | STATE string . LBRACE elenco_actions NEWLINE cicli RBRACE
-   28      | STATE string . LBRACE elenco_actions NEWLINE cicli NEWLINE elenco_cond RBRACE
-   29      | STATE string . LBRACE elenco_actions NEWLINE cicli NEWLINE elenchi RBRACE
-
-    LBRACE  shift e prosecuzione allo stato 67
-
-
-Stato 56
-
-    2 serie_newline: NEWLINE .
-   24 elenco_stati: elenco_stati NEWLINE . state
-
-    STATE  shift e prosecuzione allo stato 44
-
-    $default  riduzione con la regola 2 (serie_newline)
-
-    state  prosecuzione allo stato 68
-
-
-Stato 57
-
-    1 main: definition serie_newline events serie_newline actions serie_newline elenco_stati serie_newline .
-    3 serie_newline: serie_newline . NEWLINE
-
-    NEWLINE  shift e prosecuzione allo stato 10
-
-    $default  riduzione con la regola 1 (main)
-
-
-Stato 58
-
-   23 elenco_stati: state NEWLINE . state
-
-    STATE  shift e prosecuzione allo stato 44
-
-    state  prosecuzione allo stato 69
-
-
-Stato 59
-
-   22 elenco_ev_com: elenco_ev_com NEWLINE string SEMI .
-
-    $default  riduzione con la regola 22 (elenco_ev_com)
-
-
-Stato 60
-
-   15 operazioni: OPERATORE LPAREN string . RPAREN
-
-    RPAREN  shift e prosecuzione allo stato 70
-
-
-Stato 61
-
-   16 operazioni: OPERATORE LPAREN term . COMMA string RPAREN
-
-    COMMA  shift e prosecuzione allo stato 71
-
-
-Stato 62
-
-   17 operazioni: PRINT LPAREN string . RPAREN
-
-    RPAREN  shift e prosecuzione allo stato 72
-
-
-Stato 63
-
-   11 operazioni: string ASSIGN string . OPERATORE string
-   12           | string ASSIGN string . OPERATORE term
-
-    OPERATORE  shift e prosecuzione allo stato 73
-
-
-Stato 64
-
-   13 operazioni: string ASSIGN term . OPERATORE string
-   14           | string ASSIGN term . OPERATORE term
-
-    OPERATORE  shift e prosecuzione allo stato 74
-
-
-Stato 65
-
-   37 actions: ACTION LBRACE elenco_actions RBRACE SEMI .
-
-    $default  riduzione con la regola 37 (actions)
-
-
-Stato 66
-
-   39 elenco_actions: elenco_actions COMMA operazioni .
-
-    $default  riduzione con la regola 39 (elenco_actions)
-
-
-Stato 67
-
-   25 state: STATE string LBRACE . elenco_actions NEWLINE elenchi RBRACE
-   26      | STATE string LBRACE . elenco_actions NEWLINE elenco_cond RBRACE
-   27      | STATE string LBRACE . elenco_actions NEWLINE cicli RBRACE
-   28      | STATE string LBRACE . elenco_actions NEWLINE cicli NEWLINE elenco_cond RBRACE
-   29      | STATE string LBRACE . elenco_actions NEWLINE cicli NEWLINE elenchi RBRACE
-
-    ALPHA      shift e prosecuzione allo stato 18
-    OPERATORE  shift e prosecuzione allo stato 39
-    PRINT      shift e prosecuzione allo stato 40
-
-    string          prosecuzione allo stato 41
-    operazioni      prosecuzione allo stato 42
-    elenco_actions  prosecuzione allo stato 75
-
-
-Stato 68
-
-   24 elenco_stati: elenco_stati NEWLINE state .
-
-    $default  riduzione con la regola 24 (elenco_stati)
-
-
-Stato 69
-
-   23 elenco_stati: state NEWLINE state .
-
-    $default  riduzione con la regola 23 (elenco_stati)
-
-
-Stato 70
-
-   15 operazioni: OPERATORE LPAREN string RPAREN .
-
-    $default  riduzione con la regola 15 (operazioni)
-
-
-Stato 71
-
-   16 operazioni: OPERATORE LPAREN term COMMA . string RPAREN
-
-    ALPHA  shift e prosecuzione allo stato 18
-
-    string  prosecuzione allo stato 76
-
-
-Stato 72
-
-   17 operazioni: PRINT LPAREN string RPAREN .
-
-    $default  riduzione con la regola 17 (operazioni)
-
-
-Stato 73
-
-   11 operazioni: string ASSIGN string OPERATORE . string
-   12           | string ASSIGN string OPERATORE . term
-
-    NUMBER  shift e prosecuzione allo stato 32
-    ALPHA   shift e prosecuzione allo stato 18
-
-    string  prosecuzione allo stato 77
-    term    prosecuzione allo stato 78
-
-
-Stato 74
-
-   13 operazioni: string ASSIGN term OPERATORE . string
-   14           | string ASSIGN term OPERATORE . term
-
-    NUMBER  shift e prosecuzione allo stato 32
-    ALPHA   shift e prosecuzione allo stato 18
-
-    string  prosecuzione allo stato 79
-    term    prosecuzione allo stato 80
-
-
-Stato 75
-
-   25 state: STATE string LBRACE elenco_actions . NEWLINE elenchi RBRACE
-   26      | STATE string LBRACE elenco_actions . NEWLINE elenco_cond RBRACE
-   27      | STATE string LBRACE elenco_actions . NEWLINE cicli RBRACE
-   28      | STATE string LBRACE elenco_actions . NEWLINE cicli NEWLINE elenco_cond RBRACE
-   29      | STATE string LBRACE elenco_actions . NEWLINE cicli NEWLINE elenchi RBRACE
-   39 elenco_actions: elenco_actions . COMMA operazioni
-
-    NEWLINE  shift e prosecuzione allo stato 81
-    COMMA    shift e prosecuzione allo stato 54
-
-
-Stato 76
-
-   16 operazioni: OPERATORE LPAREN term COMMA string . RPAREN
-
-    RPAREN  shift e prosecuzione allo stato 82
-
-
-Stato 77
-
-   11 operazioni: string ASSIGN string OPERATORE string .
-
-    $default  riduzione con la regola 11 (operazioni)
-
-
-Stato 78
-
-   12 operazioni: string ASSIGN string OPERATORE term .
-
-    $default  riduzione con la regola 12 (operazioni)
-
-
-Stato 79
-
-   13 operazioni: string ASSIGN term OPERATORE string .
-
-    $default  riduzione con la regola 13 (operazioni)
-
-
-Stato 80
-
-   14 operazioni: string ASSIGN term OPERATORE term .
-
-    $default  riduzione con la regola 14 (operazioni)
-
-
-Stato 81
-
-   25 state: STATE string LBRACE elenco_actions NEWLINE . elenchi RBRACE
-   26      | STATE string LBRACE elenco_actions NEWLINE . elenco_cond RBRACE
-   27      | STATE string LBRACE elenco_actions NEWLINE . cicli RBRACE
-   28      | STATE string LBRACE elenco_actions NEWLINE . cicli NEWLINE elenco_cond RBRACE
-   29      | STATE string LBRACE elenco_actions NEWLINE . cicli NEWLINE elenchi RBRACE
-
-    ALPHA        shift e prosecuzione allo stato 18
-    CHANGESTATE  shift e prosecuzione allo stato 83
-    IF           shift e prosecuzione allo stato 84
-    ELSE         shift e prosecuzione allo stato 85
-    ELIF         shift e prosecuzione allo stato 86
-    OPERATORE    shift e prosecuzione allo stato 39
-    WHILE        shift e prosecuzione allo stato 87
-    FOR          shift e prosecuzione allo stato 88
-    PRINT        shift e prosecuzione allo stato 40
-
-    string             prosecuzione allo stato 89
-    operazioni         prosecuzione allo stato 90
-    elenchi            prosecuzione allo stato 91
-    elenco_operazioni  prosecuzione allo stato 92
-    cambiostato        prosecuzione allo stato 93
-    elenco_cambio      prosecuzione allo stato 94
-    cicli              prosecuzione allo stato 95
-    metodo             prosecuzione allo stato 96
-    cond               prosecuzione allo stato 97
-    elenco_cond        prosecuzione allo stato 98
-
-
-Stato 82
-
-   16 operazioni: OPERATORE LPAREN term COMMA string RPAREN .
-
-    $default  riduzione con la regola 16 (operazioni)
-
-
-Stato 83
-
-   41 cambiostato: CHANGESTATE . string SEMI
-
-    ALPHA  shift e prosecuzione allo stato 18
-
-    string  prosecuzione allo stato 99
-
-
-Stato 84
-
-   58 metodo: IF .
+   58 metodo: ELIF .
 
     $default  riduzione con la regola 58 (metodo)
 
 
-Stato 85
+Stato 47
 
-   64 cond: ELSE . LBRACE elenchi RBRACE
+   13 operazioni: OPERATORE . LPAREN string RPAREN
+   14           | OPERATORE . LPAREN term COMMA string RPAREN
 
-    LBRACE  shift e prosecuzione allo stato 100
-
-
-Stato 86
-
-   59 metodo: ELIF .
-
-    $default  riduzione con la regola 59 (metodo)
+    LPAREN  shift e prosecuzione allo stato 67
 
 
-Stato 87
+Stato 48
 
-   50 cicli: WHILE . LPAREN term CMP term RPAREN LBRACE elenco_cond RBRACE
-   51      | WHILE . LPAREN string CMP term RPAREN LBRACE elenco_cond RBRACE
-   52      | WHILE . LPAREN term CMP string RPAREN LBRACE elenco_cond RBRACE
-   53      | WHILE . LPAREN string CMP string RPAREN LBRACE elenco_cond RBRACE
-   54      | WHILE . LPAREN term CMP term RPAREN LBRACE elenchi RBRACE
-   55      | WHILE . LPAREN string CMP term RPAREN LBRACE elenchi RBRACE
-   56      | WHILE . LPAREN term CMP string RPAREN LBRACE elenchi RBRACE
-   57      | WHILE . LPAREN string CMP string RPAREN LBRACE elenchi RBRACE
+   49 cicli: WHILE . LPAREN term CMP term RPAREN LBRACE elenco_cond RBRACE
+   50      | WHILE . LPAREN string CMP term RPAREN LBRACE elenco_cond RBRACE
+   51      | WHILE . LPAREN term CMP string RPAREN LBRACE elenco_cond RBRACE
+   52      | WHILE . LPAREN string CMP string RPAREN LBRACE elenco_cond RBRACE
+   53      | WHILE . LPAREN term CMP term RPAREN LBRACE elenchi RBRACE
+   54      | WHILE . LPAREN string CMP term RPAREN LBRACE elenchi RBRACE
+   55      | WHILE . LPAREN term CMP string RPAREN LBRACE elenchi RBRACE
+   56      | WHILE . LPAREN string CMP string RPAREN LBRACE elenchi RBRACE
 
-    LPAREN  shift e prosecuzione allo stato 101
-
-
-Stato 88
-
-   44 cicli: FOR . LPAREN assegnazione COMMA string CMP term COMMA operazioni RPAREN LBRACE elenco_cond RBRACE
-   45      | FOR . LPAREN assegnazione COMMA term CMP string COMMA operazioni RPAREN LBRACE elenco_cond RBRACE
-   46      | FOR . LPAREN assegnazione COMMA string CMP string COMMA operazioni RPAREN LBRACE elenco_cond RBRACE
-   47      | FOR . LPAREN assegnazione COMMA string CMP term COMMA operazioni RPAREN LBRACE elenchi RBRACE
-   48      | FOR . LPAREN assegnazione COMMA term CMP string COMMA operazioni RPAREN LBRACE elenchi RBRACE
-   49      | FOR . LPAREN assegnazione COMMA string CMP string COMMA operazioni RPAREN LBRACE elenchi RBRACE
-
-    LPAREN  shift e prosecuzione allo stato 102
+    LPAREN  shift e prosecuzione allo stato 68
 
 
-Stato 89
+Stato 49
 
-   11 operazioni: string . ASSIGN string OPERATORE string
-   12           | string . ASSIGN string OPERATORE term
-   13           | string . ASSIGN term OPERATORE string
-   14           | string . ASSIGN term OPERATORE term
-   40 cambiostato: string . CHANGESTATE string SEMI
+   43 cicli: FOR . LPAREN assegnazione COMMA string CMP term COMMA operazioni RPAREN LBRACE elenco_cond RBRACE
+   44      | FOR . LPAREN assegnazione COMMA term CMP string COMMA operazioni RPAREN LBRACE elenco_cond RBRACE
+   45      | FOR . LPAREN assegnazione COMMA string CMP string COMMA operazioni RPAREN LBRACE elenco_cond RBRACE
+   46      | FOR . LPAREN assegnazione COMMA string CMP term COMMA operazioni RPAREN LBRACE elenchi RBRACE
+   47      | FOR . LPAREN assegnazione COMMA term CMP string COMMA operazioni RPAREN LBRACE elenchi RBRACE
+   48      | FOR . LPAREN assegnazione COMMA string CMP string COMMA operazioni RPAREN LBRACE elenchi RBRACE
 
-    ASSIGN       shift e prosecuzione allo stato 52
-    CHANGESTATE  shift e prosecuzione allo stato 103
-
-
-Stato 90
-
-   34 elenco_operazioni: operazioni . SEMI
-
-    SEMI  shift e prosecuzione allo stato 104
+    LPAREN  shift e prosecuzione allo stato 69
 
 
-Stato 91
+Stato 50
 
-   25 state: STATE string LBRACE elenco_actions NEWLINE elenchi . RBRACE
-   32 elenchi: elenchi . NEWLINE elenco_cambio
-   33        | elenchi . NEWLINE elenco_operazioni
+   15 operazioni: PRINT . LPAREN string RPAREN
+   16           | PRINT .
 
-    RBRACE   shift e prosecuzione allo stato 105
-    NEWLINE  shift e prosecuzione allo stato 106
+    LPAREN  shift e prosecuzione allo stato 70
 
-
-Stato 92
-
-   30 elenchi: elenco_operazioni .
-   35 elenco_operazioni: elenco_operazioni . NEWLINE SEMI operazioni
-
-    NEWLINE  shift e prosecuzione allo stato 107
-
-    NEWLINE   [riduzione con la regola 30 (elenchi)]
-    $default  riduzione con la regola 30 (elenchi)
+    $default  riduzione con la regola 16 (operazioni)
 
 
-Stato 93
+Stato 51
 
-   42 elenco_cambio: cambiostato .
+    9 operazioni: string . ASSIGN string OPERATORE string
+   10           | string . ASSIGN string OPERATORE term
+   11           | string . ASSIGN term OPERATORE string
+   12           | string . ASSIGN term OPERATORE term
+   39 cambiostato: string . CHANGESTATE string SEMI
+
+    ASSIGN       shift e prosecuzione allo stato 71
+    CHANGESTATE  shift e prosecuzione allo stato 72
+
+
+Stato 52
+
+   32 elenco_operazioni: operazioni . SEMI
+
+    SEMI  shift e prosecuzione allo stato 73
+
+
+Stato 53
+
+   23 state: STATE string LBRACE actions elenchi . RBRACE
+   30 elenchi: elenchi . elenco_cambio
+   31        | elenchi . elenco_operazioni
+
+    ALPHA        shift e prosecuzione allo stato 15
+    RBRACE       shift e prosecuzione allo stato 74
+    CHANGESTATE  shift e prosecuzione allo stato 43
+    OPERATORE    shift e prosecuzione allo stato 47
+    PRINT        shift e prosecuzione allo stato 50
+
+    string             prosecuzione allo stato 51
+    operazioni         prosecuzione allo stato 52
+    elenco_operazioni  prosecuzione allo stato 75
+    cambiostato        prosecuzione allo stato 55
+    elenco_cambio      prosecuzione allo stato 76
+
+
+Stato 54
+
+   28 elenchi: elenco_operazioni .
+   33 elenco_operazioni: elenco_operazioni . SEMI operazioni
+
+    SEMI  shift e prosecuzione allo stato 77
+
+    $default  riduzione con la regola 28 (elenchi)
+
+
+Stato 55
+
+   41 elenco_cambio: cambiostato .
+
+    $default  riduzione con la regola 41 (elenco_cambio)
+
+
+Stato 56
+
+   29 elenchi: elenco_cambio .
+   42 elenco_cambio: elenco_cambio . cambiostato
+
+    ALPHA        shift e prosecuzione allo stato 15
+    CHANGESTATE  shift e prosecuzione allo stato 43
+
+    ALPHA        [riduzione con la regola 29 (elenchi)]
+    CHANGESTATE  [riduzione con la regola 29 (elenchi)]
+    $default     riduzione con la regola 29 (elenchi)
+
+    string       prosecuzione allo stato 78
+    cambiostato  prosecuzione allo stato 79
+
+
+Stato 57
+
+   25 state: STATE string LBRACE actions cicli . RBRACE
+   26      | STATE string LBRACE actions cicli . elenco_cond RBRACE
+   27      | STATE string LBRACE actions cicli . elenchi RBRACE
+
+    ALPHA        shift e prosecuzione allo stato 15
+    RBRACE       shift e prosecuzione allo stato 80
+    CHANGESTATE  shift e prosecuzione allo stato 43
+    IF           shift e prosecuzione allo stato 44
+    ELSE         shift e prosecuzione allo stato 45
+    ELIF         shift e prosecuzione allo stato 46
+    OPERATORE    shift e prosecuzione allo stato 47
+    PRINT        shift e prosecuzione allo stato 50
+
+    string             prosecuzione allo stato 51
+    operazioni         prosecuzione allo stato 52
+    elenchi            prosecuzione allo stato 81
+    elenco_operazioni  prosecuzione allo stato 54
+    cambiostato        prosecuzione allo stato 55
+    elenco_cambio      prosecuzione allo stato 56
+    metodo             prosecuzione allo stato 58
+    cond               prosecuzione allo stato 59
+    elenco_cond        prosecuzione allo stato 82
+
+
+Stato 58
+
+   59 cond: metodo . LPAREN term CMP term RPAREN LBRACE elenchi RBRACE
+   60     | metodo . LPAREN term CMP string RPAREN LBRACE elenchi RBRACE
+   61     | metodo . LPAREN string CMP term RPAREN LBRACE elenchi RBRACE
+   62     | metodo . LPAREN string CMP string RPAREN LBRACE elenchi RBRACE
+
+    LPAREN  shift e prosecuzione allo stato 83
+
+
+Stato 59
+
+   64 elenco_cond: cond .
+
+    $default  riduzione con la regola 64 (elenco_cond)
+
+
+Stato 60
+
+   24 state: STATE string LBRACE actions elenco_cond . elenchi RBRACE
+   65 elenco_cond: elenco_cond . cond
+
+    ALPHA        shift e prosecuzione allo stato 15
+    CHANGESTATE  shift e prosecuzione allo stato 43
+    IF           shift e prosecuzione allo stato 44
+    ELSE         shift e prosecuzione allo stato 45
+    ELIF         shift e prosecuzione allo stato 46
+    OPERATORE    shift e prosecuzione allo stato 47
+    PRINT        shift e prosecuzione allo stato 50
+
+    string             prosecuzione allo stato 51
+    operazioni         prosecuzione allo stato 52
+    elenchi            prosecuzione allo stato 84
+    elenco_operazioni  prosecuzione allo stato 54
+    cambiostato        prosecuzione allo stato 55
+    elenco_cambio      prosecuzione allo stato 56
+    metodo             prosecuzione allo stato 58
+    cond               prosecuzione allo stato 85
+
+
+Stato 61
+
+   34 actions: ACTION LBRACE RBRACE . SEMI
+
+    SEMI  shift e prosecuzione allo stato 86
+
+
+Stato 62
+
+    9 operazioni: string . ASSIGN string OPERATORE string
+   10           | string . ASSIGN string OPERATORE term
+   11           | string . ASSIGN term OPERATORE string
+   12           | string . ASSIGN term OPERATORE term
+
+    ASSIGN  shift e prosecuzione allo stato 71
+
+
+Stato 63
+
+   37 elenco_actions: operazioni .
+
+    $default  riduzione con la regola 37 (elenco_actions)
+
+
+Stato 64
+
+   35 actions: ACTION LBRACE elenco_actions . RBRACE SEMI
+   38 elenco_actions: elenco_actions . COMMA operazioni
+
+    RBRACE  shift e prosecuzione allo stato 87
+    COMMA   shift e prosecuzione allo stato 88
+
+
+Stato 65
+
+   40 cambiostato: CHANGESTATE string . SEMI
+
+    SEMI  shift e prosecuzione allo stato 89
+
+
+Stato 66
+
+   63 cond: ELSE LBRACE . elenchi RBRACE
+
+    ALPHA        shift e prosecuzione allo stato 15
+    CHANGESTATE  shift e prosecuzione allo stato 43
+    OPERATORE    shift e prosecuzione allo stato 47
+    PRINT        shift e prosecuzione allo stato 50
+
+    string             prosecuzione allo stato 51
+    operazioni         prosecuzione allo stato 52
+    elenchi            prosecuzione allo stato 90
+    elenco_operazioni  prosecuzione allo stato 54
+    cambiostato        prosecuzione allo stato 55
+    elenco_cambio      prosecuzione allo stato 56
+
+
+Stato 67
+
+   13 operazioni: OPERATORE LPAREN . string RPAREN
+   14           | OPERATORE LPAREN . term COMMA string RPAREN
+
+    NUMBER  shift e prosecuzione allo stato 34
+    ALPHA   shift e prosecuzione allo stato 15
+
+    string  prosecuzione allo stato 91
+    term    prosecuzione allo stato 92
+
+
+Stato 68
+
+   49 cicli: WHILE LPAREN . term CMP term RPAREN LBRACE elenco_cond RBRACE
+   50      | WHILE LPAREN . string CMP term RPAREN LBRACE elenco_cond RBRACE
+   51      | WHILE LPAREN . term CMP string RPAREN LBRACE elenco_cond RBRACE
+   52      | WHILE LPAREN . string CMP string RPAREN LBRACE elenco_cond RBRACE
+   53      | WHILE LPAREN . term CMP term RPAREN LBRACE elenchi RBRACE
+   54      | WHILE LPAREN . string CMP term RPAREN LBRACE elenchi RBRACE
+   55      | WHILE LPAREN . term CMP string RPAREN LBRACE elenchi RBRACE
+   56      | WHILE LPAREN . string CMP string RPAREN LBRACE elenchi RBRACE
+
+    NUMBER  shift e prosecuzione allo stato 34
+    ALPHA   shift e prosecuzione allo stato 15
+
+    string  prosecuzione allo stato 93
+    term    prosecuzione allo stato 94
+
+
+Stato 69
+
+   43 cicli: FOR LPAREN . assegnazione COMMA string CMP term COMMA operazioni RPAREN LBRACE elenco_cond RBRACE
+   44      | FOR LPAREN . assegnazione COMMA term CMP string COMMA operazioni RPAREN LBRACE elenco_cond RBRACE
+   45      | FOR LPAREN . assegnazione COMMA string CMP string COMMA operazioni RPAREN LBRACE elenco_cond RBRACE
+   46      | FOR LPAREN . assegnazione COMMA string CMP term COMMA operazioni RPAREN LBRACE elenchi RBRACE
+   47      | FOR LPAREN . assegnazione COMMA term CMP string COMMA operazioni RPAREN LBRACE elenchi RBRACE
+   48      | FOR LPAREN . assegnazione COMMA string CMP string COMMA operazioni RPAREN LBRACE elenchi RBRACE
+
+    TYPE  shift e prosecuzione allo stato 8
+
+    assegnazione  prosecuzione allo stato 95
+
+
+Stato 70
+
+   15 operazioni: PRINT LPAREN . string RPAREN
+
+    ALPHA  shift e prosecuzione allo stato 15
+
+    string  prosecuzione allo stato 96
+
+
+Stato 71
+
+    9 operazioni: string ASSIGN . string OPERATORE string
+   10           | string ASSIGN . string OPERATORE term
+   11           | string ASSIGN . term OPERATORE string
+   12           | string ASSIGN . term OPERATORE term
+
+    NUMBER  shift e prosecuzione allo stato 34
+    ALPHA   shift e prosecuzione allo stato 15
+
+    string  prosecuzione allo stato 97
+    term    prosecuzione allo stato 98
+
+
+Stato 72
+
+   39 cambiostato: string CHANGESTATE . string SEMI
+
+    ALPHA  shift e prosecuzione allo stato 15
+
+    string  prosecuzione allo stato 99
+
+
+Stato 73
+
+   32 elenco_operazioni: operazioni SEMI .
+
+    $default  riduzione con la regola 32 (elenco_operazioni)
+
+
+Stato 74
+
+   23 state: STATE string LBRACE actions elenchi RBRACE .
+
+    $default  riduzione con la regola 23 (state)
+
+
+Stato 75
+
+   31 elenchi: elenchi elenco_operazioni .
+   33 elenco_operazioni: elenco_operazioni . SEMI operazioni
+
+    SEMI  shift e prosecuzione allo stato 77
+
+    $default  riduzione con la regola 31 (elenchi)
+
+
+Stato 76
+
+   30 elenchi: elenchi elenco_cambio .
+   42 elenco_cambio: elenco_cambio . cambiostato
+
+    ALPHA        shift e prosecuzione allo stato 15
+    CHANGESTATE  shift e prosecuzione allo stato 43
+
+    ALPHA        [riduzione con la regola 30 (elenchi)]
+    CHANGESTATE  [riduzione con la regola 30 (elenchi)]
+    $default     riduzione con la regola 30 (elenchi)
+
+    string       prosecuzione allo stato 78
+    cambiostato  prosecuzione allo stato 79
+
+
+Stato 77
+
+   33 elenco_operazioni: elenco_operazioni SEMI . operazioni
+
+    ALPHA      shift e prosecuzione allo stato 15
+    OPERATORE  shift e prosecuzione allo stato 47
+    PRINT      shift e prosecuzione allo stato 50
+
+    string      prosecuzione allo stato 62
+    operazioni  prosecuzione allo stato 100
+
+
+Stato 78
+
+   39 cambiostato: string . CHANGESTATE string SEMI
+
+    CHANGESTATE  shift e prosecuzione allo stato 72
+
+
+Stato 79
+
+   42 elenco_cambio: elenco_cambio cambiostato .
 
     $default  riduzione con la regola 42 (elenco_cambio)
 
 
-Stato 94
+Stato 80
 
-   31 elenchi: elenco_cambio .
-   43 elenco_cambio: elenco_cambio . NEWLINE cambiostato
-
-    NEWLINE  shift e prosecuzione allo stato 108
-
-    NEWLINE   [riduzione con la regola 31 (elenchi)]
-    $default  riduzione con la regola 31 (elenchi)
-
-
-Stato 95
-
-   27 state: STATE string LBRACE elenco_actions NEWLINE cicli . RBRACE
-   28      | STATE string LBRACE elenco_actions NEWLINE cicli . NEWLINE elenco_cond RBRACE
-   29      | STATE string LBRACE elenco_actions NEWLINE cicli . NEWLINE elenchi RBRACE
-
-    RBRACE   shift e prosecuzione allo stato 109
-    NEWLINE  shift e prosecuzione allo stato 110
-
-
-Stato 96
-
-   60 cond: metodo . LPAREN term CMP term RPAREN LBRACE elenchi RBRACE
-   61     | metodo . LPAREN term CMP string RPAREN LBRACE elenchi RBRACE
-   62     | metodo . LPAREN string CMP term RPAREN LBRACE elenchi RBRACE
-   63     | metodo . LPAREN string CMP string RPAREN LBRACE elenchi RBRACE
-
-    LPAREN  shift e prosecuzione allo stato 111
-
-
-Stato 97
-
-   65 elenco_cond: cond . NEWLINE cond
-
-    NEWLINE  shift e prosecuzione allo stato 112
-
-
-Stato 98
-
-   26 state: STATE string LBRACE elenco_actions NEWLINE elenco_cond . RBRACE
-   66 elenco_cond: elenco_cond . NEWLINE cond
-
-    RBRACE   shift e prosecuzione allo stato 113
-    NEWLINE  shift e prosecuzione allo stato 114
-
-
-Stato 99
-
-   41 cambiostato: CHANGESTATE string . SEMI
-
-    SEMI  shift e prosecuzione allo stato 115
-
-
-Stato 100
-
-   64 cond: ELSE LBRACE . elenchi RBRACE
-
-    ALPHA        shift e prosecuzione allo stato 18
-    CHANGESTATE  shift e prosecuzione allo stato 83
-    OPERATORE    shift e prosecuzione allo stato 39
-    PRINT        shift e prosecuzione allo stato 40
-
-    string             prosecuzione allo stato 89
-    operazioni         prosecuzione allo stato 90
-    elenchi            prosecuzione allo stato 116
-    elenco_operazioni  prosecuzione allo stato 92
-    cambiostato        prosecuzione allo stato 93
-    elenco_cambio      prosecuzione allo stato 94
-
-
-Stato 101
-
-   50 cicli: WHILE LPAREN . term CMP term RPAREN LBRACE elenco_cond RBRACE
-   51      | WHILE LPAREN . string CMP term RPAREN LBRACE elenco_cond RBRACE
-   52      | WHILE LPAREN . term CMP string RPAREN LBRACE elenco_cond RBRACE
-   53      | WHILE LPAREN . string CMP string RPAREN LBRACE elenco_cond RBRACE
-   54      | WHILE LPAREN . term CMP term RPAREN LBRACE elenchi RBRACE
-   55      | WHILE LPAREN . string CMP term RPAREN LBRACE elenchi RBRACE
-   56      | WHILE LPAREN . term CMP string RPAREN LBRACE elenchi RBRACE
-   57      | WHILE LPAREN . string CMP string RPAREN LBRACE elenchi RBRACE
-
-    NUMBER  shift e prosecuzione allo stato 32
-    ALPHA   shift e prosecuzione allo stato 18
-
-    string  prosecuzione allo stato 117
-    term    prosecuzione allo stato 118
-
-
-Stato 102
-
-   44 cicli: FOR LPAREN . assegnazione COMMA string CMP term COMMA operazioni RPAREN LBRACE elenco_cond RBRACE
-   45      | FOR LPAREN . assegnazione COMMA term CMP string COMMA operazioni RPAREN LBRACE elenco_cond RBRACE
-   46      | FOR LPAREN . assegnazione COMMA string CMP string COMMA operazioni RPAREN LBRACE elenco_cond RBRACE
-   47      | FOR LPAREN . assegnazione COMMA string CMP term COMMA operazioni RPAREN LBRACE elenchi RBRACE
-   48      | FOR LPAREN . assegnazione COMMA term CMP string COMMA operazioni RPAREN LBRACE elenchi RBRACE
-   49      | FOR LPAREN . assegnazione COMMA string CMP string COMMA operazioni RPAREN LBRACE elenchi RBRACE
-
-    TYPE  shift e prosecuzione allo stato 12
-
-    assegnazione  prosecuzione allo stato 119
-
-
-Stato 103
-
-   40 cambiostato: string CHANGESTATE . string SEMI
-
-    ALPHA  shift e prosecuzione allo stato 18
-
-    string  prosecuzione allo stato 120
-
-
-Stato 104
-
-   34 elenco_operazioni: operazioni SEMI .
-
-    $default  riduzione con la regola 34 (elenco_operazioni)
-
-
-Stato 105
-
-   25 state: STATE string LBRACE elenco_actions NEWLINE elenchi RBRACE .
+   25 state: STATE string LBRACE actions cicli RBRACE .
 
     $default  riduzione con la regola 25 (state)
 
 
-Stato 106
+Stato 81
 
-   32 elenchi: elenchi NEWLINE . elenco_cambio
-   33        | elenchi NEWLINE . elenco_operazioni
+   27 state: STATE string LBRACE actions cicli elenchi . RBRACE
+   30 elenchi: elenchi . elenco_cambio
+   31        | elenchi . elenco_operazioni
 
-    ALPHA        shift e prosecuzione allo stato 18
-    CHANGESTATE  shift e prosecuzione allo stato 83
-    OPERATORE    shift e prosecuzione allo stato 39
-    PRINT        shift e prosecuzione allo stato 40
+    ALPHA        shift e prosecuzione allo stato 15
+    RBRACE       shift e prosecuzione allo stato 101
+    CHANGESTATE  shift e prosecuzione allo stato 43
+    OPERATORE    shift e prosecuzione allo stato 47
+    PRINT        shift e prosecuzione allo stato 50
 
-    string             prosecuzione allo stato 89
-    operazioni         prosecuzione allo stato 90
-    elenco_operazioni  prosecuzione allo stato 121
-    cambiostato        prosecuzione allo stato 93
-    elenco_cambio      prosecuzione allo stato 122
+    string             prosecuzione allo stato 51
+    operazioni         prosecuzione allo stato 52
+    elenco_operazioni  prosecuzione allo stato 75
+    cambiostato        prosecuzione allo stato 55
+    elenco_cambio      prosecuzione allo stato 76
 
 
-Stato 107
+Stato 82
 
-   35 elenco_operazioni: elenco_operazioni NEWLINE . SEMI operazioni
+   26 state: STATE string LBRACE actions cicli elenco_cond . RBRACE
+   65 elenco_cond: elenco_cond . cond
 
-    SEMI  shift e prosecuzione allo stato 123
+    RBRACE  shift e prosecuzione allo stato 102
+    IF      shift e prosecuzione allo stato 44
+    ELSE    shift e prosecuzione allo stato 45
+    ELIF    shift e prosecuzione allo stato 46
 
+    metodo  prosecuzione allo stato 58
+    cond    prosecuzione allo stato 85
 
-Stato 108
 
-   43 elenco_cambio: elenco_cambio NEWLINE . cambiostato
+Stato 83
 
-    ALPHA        shift e prosecuzione allo stato 18
-    CHANGESTATE  shift e prosecuzione allo stato 83
+   59 cond: metodo LPAREN . term CMP term RPAREN LBRACE elenchi RBRACE
+   60     | metodo LPAREN . term CMP string RPAREN LBRACE elenchi RBRACE
+   61     | metodo LPAREN . string CMP term RPAREN LBRACE elenchi RBRACE
+   62     | metodo LPAREN . string CMP string RPAREN LBRACE elenchi RBRACE
 
-    string       prosecuzione allo stato 124
-    cambiostato  prosecuzione allo stato 125
+    NUMBER  shift e prosecuzione allo stato 34
+    ALPHA   shift e prosecuzione allo stato 15
 
+    string  prosecuzione allo stato 103
+    term    prosecuzione allo stato 104
 
-Stato 109
 
-   27 state: STATE string LBRACE elenco_actions NEWLINE cicli RBRACE .
+Stato 84
 
-    $default  riduzione con la regola 27 (state)
+   24 state: STATE string LBRACE actions elenco_cond elenchi . RBRACE
+   30 elenchi: elenchi . elenco_cambio
+   31        | elenchi . elenco_operazioni
 
+    ALPHA        shift e prosecuzione allo stato 15
+    RBRACE       shift e prosecuzione allo stato 105
+    CHANGESTATE  shift e prosecuzione allo stato 43
+    OPERATORE    shift e prosecuzione allo stato 47
+    PRINT        shift e prosecuzione allo stato 50
 
-Stato 110
+    string             prosecuzione allo stato 51
+    operazioni         prosecuzione allo stato 52
+    elenco_operazioni  prosecuzione allo stato 75
+    cambiostato        prosecuzione allo stato 55
+    elenco_cambio      prosecuzione allo stato 76
 
-   28 state: STATE string LBRACE elenco_actions NEWLINE cicli NEWLINE . elenco_cond RBRACE
-   29      | STATE string LBRACE elenco_actions NEWLINE cicli NEWLINE . elenchi RBRACE
 
-    ALPHA        shift e prosecuzione allo stato 18
-    CHANGESTATE  shift e prosecuzione allo stato 83
-    IF           shift e prosecuzione allo stato 84
-    ELSE         shift e prosecuzione allo stato 85
-    ELIF         shift e prosecuzione allo stato 86
-    OPERATORE    shift e prosecuzione allo stato 39
-    PRINT        shift e prosecuzione allo stato 40
+Stato 85
 
-    string             prosecuzione allo stato 89
-    operazioni         prosecuzione allo stato 90
-    elenchi            prosecuzione allo stato 126
-    elenco_operazioni  prosecuzione allo stato 92
-    cambiostato        prosecuzione allo stato 93
-    elenco_cambio      prosecuzione allo stato 94
-    metodo             prosecuzione allo stato 96
-    cond               prosecuzione allo stato 97
-    elenco_cond        prosecuzione allo stato 127
-
-
-Stato 111
-
-   60 cond: metodo LPAREN . term CMP term RPAREN LBRACE elenchi RBRACE
-   61     | metodo LPAREN . term CMP string RPAREN LBRACE elenchi RBRACE
-   62     | metodo LPAREN . string CMP term RPAREN LBRACE elenchi RBRACE
-   63     | metodo LPAREN . string CMP string RPAREN LBRACE elenchi RBRACE
-
-    NUMBER  shift e prosecuzione allo stato 32
-    ALPHA   shift e prosecuzione allo stato 18
-
-    string  prosecuzione allo stato 128
-    term    prosecuzione allo stato 129
-
-
-Stato 112
-
-   65 elenco_cond: cond NEWLINE . cond
-
-    IF    shift e prosecuzione allo stato 84
-    ELSE  shift e prosecuzione allo stato 85
-    ELIF  shift e prosecuzione allo stato 86
-
-    metodo  prosecuzione allo stato 96
-    cond    prosecuzione allo stato 130
-
-
-Stato 113
-
-   26 state: STATE string LBRACE elenco_actions NEWLINE elenco_cond RBRACE .
-
-    $default  riduzione con la regola 26 (state)
-
-
-Stato 114
-
-   66 elenco_cond: elenco_cond NEWLINE . cond
-
-    IF    shift e prosecuzione allo stato 84
-    ELSE  shift e prosecuzione allo stato 85
-    ELIF  shift e prosecuzione allo stato 86
-
-    metodo  prosecuzione allo stato 96
-    cond    prosecuzione allo stato 131
-
-
-Stato 115
-
-   41 cambiostato: CHANGESTATE string SEMI .
-
-    $default  riduzione con la regola 41 (cambiostato)
-
-
-Stato 116
-
-   32 elenchi: elenchi . NEWLINE elenco_cambio
-   33        | elenchi . NEWLINE elenco_operazioni
-   64 cond: ELSE LBRACE elenchi . RBRACE
-
-    RBRACE   shift e prosecuzione allo stato 132
-    NEWLINE  shift e prosecuzione allo stato 106
-
-
-Stato 117
-
-   51 cicli: WHILE LPAREN string . CMP term RPAREN LBRACE elenco_cond RBRACE
-   53      | WHILE LPAREN string . CMP string RPAREN LBRACE elenco_cond RBRACE
-   55      | WHILE LPAREN string . CMP term RPAREN LBRACE elenchi RBRACE
-   57      | WHILE LPAREN string . CMP string RPAREN LBRACE elenchi RBRACE
-
-    CMP  shift e prosecuzione allo stato 133
-
-
-Stato 118
-
-   50 cicli: WHILE LPAREN term . CMP term RPAREN LBRACE elenco_cond RBRACE
-   52      | WHILE LPAREN term . CMP string RPAREN LBRACE elenco_cond RBRACE
-   54      | WHILE LPAREN term . CMP term RPAREN LBRACE elenchi RBRACE
-   56      | WHILE LPAREN term . CMP string RPAREN LBRACE elenchi RBRACE
-
-    CMP  shift e prosecuzione allo stato 134
-
-
-Stato 119
-
-   44 cicli: FOR LPAREN assegnazione . COMMA string CMP term COMMA operazioni RPAREN LBRACE elenco_cond RBRACE
-   45      | FOR LPAREN assegnazione . COMMA term CMP string COMMA operazioni RPAREN LBRACE elenco_cond RBRACE
-   46      | FOR LPAREN assegnazione . COMMA string CMP string COMMA operazioni RPAREN LBRACE elenco_cond RBRACE
-   47      | FOR LPAREN assegnazione . COMMA string CMP term COMMA operazioni RPAREN LBRACE elenchi RBRACE
-   48      | FOR LPAREN assegnazione . COMMA term CMP string COMMA operazioni RPAREN LBRACE elenchi RBRACE
-   49      | FOR LPAREN assegnazione . COMMA string CMP string COMMA operazioni RPAREN LBRACE elenchi RBRACE
-
-    COMMA  shift e prosecuzione allo stato 135
-
-
-Stato 120
-
-   40 cambiostato: string CHANGESTATE string . SEMI
-
-    SEMI  shift e prosecuzione allo stato 136
-
-
-Stato 121
-
-   33 elenchi: elenchi NEWLINE elenco_operazioni .
-   35 elenco_operazioni: elenco_operazioni . NEWLINE SEMI operazioni
-
-    NEWLINE  shift e prosecuzione allo stato 107
-
-    NEWLINE   [riduzione con la regola 33 (elenchi)]
-    $default  riduzione con la regola 33 (elenchi)
-
-
-Stato 122
-
-   32 elenchi: elenchi NEWLINE elenco_cambio .
-   43 elenco_cambio: elenco_cambio . NEWLINE cambiostato
-
-    NEWLINE  shift e prosecuzione allo stato 108
-
-    NEWLINE   [riduzione con la regola 32 (elenchi)]
-    $default  riduzione con la regola 32 (elenchi)
-
-
-Stato 123
-
-   35 elenco_operazioni: elenco_operazioni NEWLINE SEMI . operazioni
-
-    ALPHA      shift e prosecuzione allo stato 18
-    OPERATORE  shift e prosecuzione allo stato 39
-    PRINT      shift e prosecuzione allo stato 40
-
-    string      prosecuzione allo stato 41
-    operazioni  prosecuzione allo stato 137
-
-
-Stato 124
-
-   40 cambiostato: string . CHANGESTATE string SEMI
-
-    CHANGESTATE  shift e prosecuzione allo stato 103
-
-
-Stato 125
-
-   43 elenco_cambio: elenco_cambio NEWLINE cambiostato .
-
-    $default  riduzione con la regola 43 (elenco_cambio)
-
-
-Stato 126
-
-   29 state: STATE string LBRACE elenco_actions NEWLINE cicli NEWLINE elenchi . RBRACE
-   32 elenchi: elenchi . NEWLINE elenco_cambio
-   33        | elenchi . NEWLINE elenco_operazioni
-
-    RBRACE   shift e prosecuzione allo stato 138
-    NEWLINE  shift e prosecuzione allo stato 106
-
-
-Stato 127
-
-   28 state: STATE string LBRACE elenco_actions NEWLINE cicli NEWLINE elenco_cond . RBRACE
-   66 elenco_cond: elenco_cond . NEWLINE cond
-
-    RBRACE   shift e prosecuzione allo stato 139
-    NEWLINE  shift e prosecuzione allo stato 114
-
-
-Stato 128
-
-   62 cond: metodo LPAREN string . CMP term RPAREN LBRACE elenchi RBRACE
-   63     | metodo LPAREN string . CMP string RPAREN LBRACE elenchi RBRACE
-
-    CMP  shift e prosecuzione allo stato 140
-
-
-Stato 129
-
-   60 cond: metodo LPAREN term . CMP term RPAREN LBRACE elenchi RBRACE
-   61     | metodo LPAREN term . CMP string RPAREN LBRACE elenchi RBRACE
-
-    CMP  shift e prosecuzione allo stato 141
-
-
-Stato 130
-
-   65 elenco_cond: cond NEWLINE cond .
+   65 elenco_cond: elenco_cond cond .
 
     $default  riduzione con la regola 65 (elenco_cond)
 
 
-Stato 131
+Stato 86
 
-   66 elenco_cond: elenco_cond NEWLINE cond .
+   34 actions: ACTION LBRACE RBRACE SEMI .
 
-    $default  riduzione con la regola 66 (elenco_cond)
-
-
-Stato 132
-
-   64 cond: ELSE LBRACE elenchi RBRACE .
-
-    $default  riduzione con la regola 64 (cond)
+    $default  riduzione con la regola 34 (actions)
 
 
-Stato 133
+Stato 87
 
-   51 cicli: WHILE LPAREN string CMP . term RPAREN LBRACE elenco_cond RBRACE
-   53      | WHILE LPAREN string CMP . string RPAREN LBRACE elenco_cond RBRACE
-   55      | WHILE LPAREN string CMP . term RPAREN LBRACE elenchi RBRACE
-   57      | WHILE LPAREN string CMP . string RPAREN LBRACE elenchi RBRACE
+   35 actions: ACTION LBRACE elenco_actions RBRACE . SEMI
 
-    NUMBER  shift e prosecuzione allo stato 32
-    ALPHA   shift e prosecuzione allo stato 18
-
-    string  prosecuzione allo stato 142
-    term    prosecuzione allo stato 143
+    SEMI  shift e prosecuzione allo stato 106
 
 
-Stato 134
+Stato 88
 
-   50 cicli: WHILE LPAREN term CMP . term RPAREN LBRACE elenco_cond RBRACE
-   52      | WHILE LPAREN term CMP . string RPAREN LBRACE elenco_cond RBRACE
-   54      | WHILE LPAREN term CMP . term RPAREN LBRACE elenchi RBRACE
-   56      | WHILE LPAREN term CMP . string RPAREN LBRACE elenchi RBRACE
+   38 elenco_actions: elenco_actions COMMA . operazioni
 
-    NUMBER  shift e prosecuzione allo stato 32
-    ALPHA   shift e prosecuzione allo stato 18
+    ALPHA      shift e prosecuzione allo stato 15
+    OPERATORE  shift e prosecuzione allo stato 47
+    PRINT      shift e prosecuzione allo stato 50
 
-    string  prosecuzione allo stato 144
-    term    prosecuzione allo stato 145
+    string      prosecuzione allo stato 62
+    operazioni  prosecuzione allo stato 107
 
 
-Stato 135
+Stato 89
 
-   44 cicli: FOR LPAREN assegnazione COMMA . string CMP term COMMA operazioni RPAREN LBRACE elenco_cond RBRACE
-   45      | FOR LPAREN assegnazione COMMA . term CMP string COMMA operazioni RPAREN LBRACE elenco_cond RBRACE
-   46      | FOR LPAREN assegnazione COMMA . string CMP string COMMA operazioni RPAREN LBRACE elenco_cond RBRACE
-   47      | FOR LPAREN assegnazione COMMA . string CMP term COMMA operazioni RPAREN LBRACE elenchi RBRACE
-   48      | FOR LPAREN assegnazione COMMA . term CMP string COMMA operazioni RPAREN LBRACE elenchi RBRACE
-   49      | FOR LPAREN assegnazione COMMA . string CMP string COMMA operazioni RPAREN LBRACE elenchi RBRACE
-
-    NUMBER  shift e prosecuzione allo stato 32
-    ALPHA   shift e prosecuzione allo stato 18
-
-    string  prosecuzione allo stato 146
-    term    prosecuzione allo stato 147
-
-
-Stato 136
-
-   40 cambiostato: string CHANGESTATE string SEMI .
+   40 cambiostato: CHANGESTATE string SEMI .
 
     $default  riduzione con la regola 40 (cambiostato)
 
 
+Stato 90
+
+   30 elenchi: elenchi . elenco_cambio
+   31        | elenchi . elenco_operazioni
+   63 cond: ELSE LBRACE elenchi . RBRACE
+
+    ALPHA        shift e prosecuzione allo stato 15
+    RBRACE       shift e prosecuzione allo stato 108
+    CHANGESTATE  shift e prosecuzione allo stato 43
+    OPERATORE    shift e prosecuzione allo stato 47
+    PRINT        shift e prosecuzione allo stato 50
+
+    string             prosecuzione allo stato 51
+    operazioni         prosecuzione allo stato 52
+    elenco_operazioni  prosecuzione allo stato 75
+    cambiostato        prosecuzione allo stato 55
+    elenco_cambio      prosecuzione allo stato 76
+
+
+Stato 91
+
+   13 operazioni: OPERATORE LPAREN string . RPAREN
+
+    RPAREN  shift e prosecuzione allo stato 109
+
+
+Stato 92
+
+   14 operazioni: OPERATORE LPAREN term . COMMA string RPAREN
+
+    COMMA  shift e prosecuzione allo stato 110
+
+
+Stato 93
+
+   50 cicli: WHILE LPAREN string . CMP term RPAREN LBRACE elenco_cond RBRACE
+   52      | WHILE LPAREN string . CMP string RPAREN LBRACE elenco_cond RBRACE
+   54      | WHILE LPAREN string . CMP term RPAREN LBRACE elenchi RBRACE
+   56      | WHILE LPAREN string . CMP string RPAREN LBRACE elenchi RBRACE
+
+    CMP  shift e prosecuzione allo stato 111
+
+
+Stato 94
+
+   49 cicli: WHILE LPAREN term . CMP term RPAREN LBRACE elenco_cond RBRACE
+   51      | WHILE LPAREN term . CMP string RPAREN LBRACE elenco_cond RBRACE
+   53      | WHILE LPAREN term . CMP term RPAREN LBRACE elenchi RBRACE
+   55      | WHILE LPAREN term . CMP string RPAREN LBRACE elenchi RBRACE
+
+    CMP  shift e prosecuzione allo stato 112
+
+
+Stato 95
+
+   43 cicli: FOR LPAREN assegnazione . COMMA string CMP term COMMA operazioni RPAREN LBRACE elenco_cond RBRACE
+   44      | FOR LPAREN assegnazione . COMMA term CMP string COMMA operazioni RPAREN LBRACE elenco_cond RBRACE
+   45      | FOR LPAREN assegnazione . COMMA string CMP string COMMA operazioni RPAREN LBRACE elenco_cond RBRACE
+   46      | FOR LPAREN assegnazione . COMMA string CMP term COMMA operazioni RPAREN LBRACE elenchi RBRACE
+   47      | FOR LPAREN assegnazione . COMMA term CMP string COMMA operazioni RPAREN LBRACE elenchi RBRACE
+   48      | FOR LPAREN assegnazione . COMMA string CMP string COMMA operazioni RPAREN LBRACE elenchi RBRACE
+
+    COMMA  shift e prosecuzione allo stato 113
+
+
+Stato 96
+
+   15 operazioni: PRINT LPAREN string . RPAREN
+
+    RPAREN  shift e prosecuzione allo stato 114
+
+
+Stato 97
+
+    9 operazioni: string ASSIGN string . OPERATORE string
+   10           | string ASSIGN string . OPERATORE term
+
+    OPERATORE  shift e prosecuzione allo stato 115
+
+
+Stato 98
+
+   11 operazioni: string ASSIGN term . OPERATORE string
+   12           | string ASSIGN term . OPERATORE term
+
+    OPERATORE  shift e prosecuzione allo stato 116
+
+
+Stato 99
+
+   39 cambiostato: string CHANGESTATE string . SEMI
+
+    SEMI  shift e prosecuzione allo stato 117
+
+
+Stato 100
+
+   33 elenco_operazioni: elenco_operazioni SEMI operazioni .
+
+    $default  riduzione con la regola 33 (elenco_operazioni)
+
+
+Stato 101
+
+   27 state: STATE string LBRACE actions cicli elenchi RBRACE .
+
+    $default  riduzione con la regola 27 (state)
+
+
+Stato 102
+
+   26 state: STATE string LBRACE actions cicli elenco_cond RBRACE .
+
+    $default  riduzione con la regola 26 (state)
+
+
+Stato 103
+
+   61 cond: metodo LPAREN string . CMP term RPAREN LBRACE elenchi RBRACE
+   62     | metodo LPAREN string . CMP string RPAREN LBRACE elenchi RBRACE
+
+    CMP  shift e prosecuzione allo stato 118
+
+
+Stato 104
+
+   59 cond: metodo LPAREN term . CMP term RPAREN LBRACE elenchi RBRACE
+   60     | metodo LPAREN term . CMP string RPAREN LBRACE elenchi RBRACE
+
+    CMP  shift e prosecuzione allo stato 119
+
+
+Stato 105
+
+   24 state: STATE string LBRACE actions elenco_cond elenchi RBRACE .
+
+    $default  riduzione con la regola 24 (state)
+
+
+Stato 106
+
+   35 actions: ACTION LBRACE elenco_actions RBRACE SEMI .
+
+    $default  riduzione con la regola 35 (actions)
+
+
+Stato 107
+
+   38 elenco_actions: elenco_actions COMMA operazioni .
+
+    $default  riduzione con la regola 38 (elenco_actions)
+
+
+Stato 108
+
+   63 cond: ELSE LBRACE elenchi RBRACE .
+
+    $default  riduzione con la regola 63 (cond)
+
+
+Stato 109
+
+   13 operazioni: OPERATORE LPAREN string RPAREN .
+
+    $default  riduzione con la regola 13 (operazioni)
+
+
+Stato 110
+
+   14 operazioni: OPERATORE LPAREN term COMMA . string RPAREN
+
+    ALPHA  shift e prosecuzione allo stato 15
+
+    string  prosecuzione allo stato 120
+
+
+Stato 111
+
+   50 cicli: WHILE LPAREN string CMP . term RPAREN LBRACE elenco_cond RBRACE
+   52      | WHILE LPAREN string CMP . string RPAREN LBRACE elenco_cond RBRACE
+   54      | WHILE LPAREN string CMP . term RPAREN LBRACE elenchi RBRACE
+   56      | WHILE LPAREN string CMP . string RPAREN LBRACE elenchi RBRACE
+
+    NUMBER  shift e prosecuzione allo stato 34
+    ALPHA   shift e prosecuzione allo stato 15
+
+    string  prosecuzione allo stato 121
+    term    prosecuzione allo stato 122
+
+
+Stato 112
+
+   49 cicli: WHILE LPAREN term CMP . term RPAREN LBRACE elenco_cond RBRACE
+   51      | WHILE LPAREN term CMP . string RPAREN LBRACE elenco_cond RBRACE
+   53      | WHILE LPAREN term CMP . term RPAREN LBRACE elenchi RBRACE
+   55      | WHILE LPAREN term CMP . string RPAREN LBRACE elenchi RBRACE
+
+    NUMBER  shift e prosecuzione allo stato 34
+    ALPHA   shift e prosecuzione allo stato 15
+
+    string  prosecuzione allo stato 123
+    term    prosecuzione allo stato 124
+
+
+Stato 113
+
+   43 cicli: FOR LPAREN assegnazione COMMA . string CMP term COMMA operazioni RPAREN LBRACE elenco_cond RBRACE
+   44      | FOR LPAREN assegnazione COMMA . term CMP string COMMA operazioni RPAREN LBRACE elenco_cond RBRACE
+   45      | FOR LPAREN assegnazione COMMA . string CMP string COMMA operazioni RPAREN LBRACE elenco_cond RBRACE
+   46      | FOR LPAREN assegnazione COMMA . string CMP term COMMA operazioni RPAREN LBRACE elenchi RBRACE
+   47      | FOR LPAREN assegnazione COMMA . term CMP string COMMA operazioni RPAREN LBRACE elenchi RBRACE
+   48      | FOR LPAREN assegnazione COMMA . string CMP string COMMA operazioni RPAREN LBRACE elenchi RBRACE
+
+    NUMBER  shift e prosecuzione allo stato 34
+    ALPHA   shift e prosecuzione allo stato 15
+
+    string  prosecuzione allo stato 125
+    term    prosecuzione allo stato 126
+
+
+Stato 114
+
+   15 operazioni: PRINT LPAREN string RPAREN .
+
+    $default  riduzione con la regola 15 (operazioni)
+
+
+Stato 115
+
+    9 operazioni: string ASSIGN string OPERATORE . string
+   10           | string ASSIGN string OPERATORE . term
+
+    NUMBER  shift e prosecuzione allo stato 34
+    ALPHA   shift e prosecuzione allo stato 15
+
+    string  prosecuzione allo stato 127
+    term    prosecuzione allo stato 128
+
+
+Stato 116
+
+   11 operazioni: string ASSIGN term OPERATORE . string
+   12           | string ASSIGN term OPERATORE . term
+
+    NUMBER  shift e prosecuzione allo stato 34
+    ALPHA   shift e prosecuzione allo stato 15
+
+    string  prosecuzione allo stato 129
+    term    prosecuzione allo stato 130
+
+
+Stato 117
+
+   39 cambiostato: string CHANGESTATE string SEMI .
+
+    $default  riduzione con la regola 39 (cambiostato)
+
+
+Stato 118
+
+   61 cond: metodo LPAREN string CMP . term RPAREN LBRACE elenchi RBRACE
+   62     | metodo LPAREN string CMP . string RPAREN LBRACE elenchi RBRACE
+
+    NUMBER  shift e prosecuzione allo stato 34
+    ALPHA   shift e prosecuzione allo stato 15
+
+    string  prosecuzione allo stato 131
+    term    prosecuzione allo stato 132
+
+
+Stato 119
+
+   59 cond: metodo LPAREN term CMP . term RPAREN LBRACE elenchi RBRACE
+   60     | metodo LPAREN term CMP . string RPAREN LBRACE elenchi RBRACE
+
+    NUMBER  shift e prosecuzione allo stato 34
+    ALPHA   shift e prosecuzione allo stato 15
+
+    string  prosecuzione allo stato 133
+    term    prosecuzione allo stato 134
+
+
+Stato 120
+
+   14 operazioni: OPERATORE LPAREN term COMMA string . RPAREN
+
+    RPAREN  shift e prosecuzione allo stato 135
+
+
+Stato 121
+
+   52 cicli: WHILE LPAREN string CMP string . RPAREN LBRACE elenco_cond RBRACE
+   56      | WHILE LPAREN string CMP string . RPAREN LBRACE elenchi RBRACE
+
+    RPAREN  shift e prosecuzione allo stato 136
+
+
+Stato 122
+
+   50 cicli: WHILE LPAREN string CMP term . RPAREN LBRACE elenco_cond RBRACE
+   54      | WHILE LPAREN string CMP term . RPAREN LBRACE elenchi RBRACE
+
+    RPAREN  shift e prosecuzione allo stato 137
+
+
+Stato 123
+
+   51 cicli: WHILE LPAREN term CMP string . RPAREN LBRACE elenco_cond RBRACE
+   55      | WHILE LPAREN term CMP string . RPAREN LBRACE elenchi RBRACE
+
+    RPAREN  shift e prosecuzione allo stato 138
+
+
+Stato 124
+
+   49 cicli: WHILE LPAREN term CMP term . RPAREN LBRACE elenco_cond RBRACE
+   53      | WHILE LPAREN term CMP term . RPAREN LBRACE elenchi RBRACE
+
+    RPAREN  shift e prosecuzione allo stato 139
+
+
+Stato 125
+
+   43 cicli: FOR LPAREN assegnazione COMMA string . CMP term COMMA operazioni RPAREN LBRACE elenco_cond RBRACE
+   45      | FOR LPAREN assegnazione COMMA string . CMP string COMMA operazioni RPAREN LBRACE elenco_cond RBRACE
+   46      | FOR LPAREN assegnazione COMMA string . CMP term COMMA operazioni RPAREN LBRACE elenchi RBRACE
+   48      | FOR LPAREN assegnazione COMMA string . CMP string COMMA operazioni RPAREN LBRACE elenchi RBRACE
+
+    CMP  shift e prosecuzione allo stato 140
+
+
+Stato 126
+
+   44 cicli: FOR LPAREN assegnazione COMMA term . CMP string COMMA operazioni RPAREN LBRACE elenco_cond RBRACE
+   47      | FOR LPAREN assegnazione COMMA term . CMP string COMMA operazioni RPAREN LBRACE elenchi RBRACE
+
+    CMP  shift e prosecuzione allo stato 141
+
+
+Stato 127
+
+    9 operazioni: string ASSIGN string OPERATORE string .
+
+    $default  riduzione con la regola 9 (operazioni)
+
+
+Stato 128
+
+   10 operazioni: string ASSIGN string OPERATORE term .
+
+    $default  riduzione con la regola 10 (operazioni)
+
+
+Stato 129
+
+   11 operazioni: string ASSIGN term OPERATORE string .
+
+    $default  riduzione con la regola 11 (operazioni)
+
+
+Stato 130
+
+   12 operazioni: string ASSIGN term OPERATORE term .
+
+    $default  riduzione con la regola 12 (operazioni)
+
+
+Stato 131
+
+   62 cond: metodo LPAREN string CMP string . RPAREN LBRACE elenchi RBRACE
+
+    RPAREN  shift e prosecuzione allo stato 142
+
+
+Stato 132
+
+   61 cond: metodo LPAREN string CMP term . RPAREN LBRACE elenchi RBRACE
+
+    RPAREN  shift e prosecuzione allo stato 143
+
+
+Stato 133
+
+   60 cond: metodo LPAREN term CMP string . RPAREN LBRACE elenchi RBRACE
+
+    RPAREN  shift e prosecuzione allo stato 144
+
+
+Stato 134
+
+   59 cond: metodo LPAREN term CMP term . RPAREN LBRACE elenchi RBRACE
+
+    RPAREN  shift e prosecuzione allo stato 145
+
+
+Stato 135
+
+   14 operazioni: OPERATORE LPAREN term COMMA string RPAREN .
+
+    $default  riduzione con la regola 14 (operazioni)
+
+
+Stato 136
+
+   52 cicli: WHILE LPAREN string CMP string RPAREN . LBRACE elenco_cond RBRACE
+   56      | WHILE LPAREN string CMP string RPAREN . LBRACE elenchi RBRACE
+
+    LBRACE  shift e prosecuzione allo stato 146
+
+
 Stato 137
 
-   35 elenco_operazioni: elenco_operazioni NEWLINE SEMI operazioni .
+   50 cicli: WHILE LPAREN string CMP term RPAREN . LBRACE elenco_cond RBRACE
+   54      | WHILE LPAREN string CMP term RPAREN . LBRACE elenchi RBRACE
 
-    $default  riduzione con la regola 35 (elenco_operazioni)
+    LBRACE  shift e prosecuzione allo stato 147
 
 
 Stato 138
 
-   29 state: STATE string LBRACE elenco_actions NEWLINE cicli NEWLINE elenchi RBRACE .
+   51 cicli: WHILE LPAREN term CMP string RPAREN . LBRACE elenco_cond RBRACE
+   55      | WHILE LPAREN term CMP string RPAREN . LBRACE elenchi RBRACE
 
-    $default  riduzione con la regola 29 (state)
+    LBRACE  shift e prosecuzione allo stato 148
 
 
 Stato 139
 
-   28 state: STATE string LBRACE elenco_actions NEWLINE cicli NEWLINE elenco_cond RBRACE .
+   49 cicli: WHILE LPAREN term CMP term RPAREN . LBRACE elenco_cond RBRACE
+   53      | WHILE LPAREN term CMP term RPAREN . LBRACE elenchi RBRACE
 
-    $default  riduzione con la regola 28 (state)
+    LBRACE  shift e prosecuzione allo stato 149
 
 
 Stato 140
 
-   62 cond: metodo LPAREN string CMP . term RPAREN LBRACE elenchi RBRACE
-   63     | metodo LPAREN string CMP . string RPAREN LBRACE elenchi RBRACE
+   43 cicli: FOR LPAREN assegnazione COMMA string CMP . term COMMA operazioni RPAREN LBRACE elenco_cond RBRACE
+   45      | FOR LPAREN assegnazione COMMA string CMP . string COMMA operazioni RPAREN LBRACE elenco_cond RBRACE
+   46      | FOR LPAREN assegnazione COMMA string CMP . term COMMA operazioni RPAREN LBRACE elenchi RBRACE
+   48      | FOR LPAREN assegnazione COMMA string CMP . string COMMA operazioni RPAREN LBRACE elenchi RBRACE
 
-    NUMBER  shift e prosecuzione allo stato 32
-    ALPHA   shift e prosecuzione allo stato 18
-
-    string  prosecuzione allo stato 148
-    term    prosecuzione allo stato 149
-
-
-Stato 141
-
-   60 cond: metodo LPAREN term CMP . term RPAREN LBRACE elenchi RBRACE
-   61     | metodo LPAREN term CMP . string RPAREN LBRACE elenchi RBRACE
-
-    NUMBER  shift e prosecuzione allo stato 32
-    ALPHA   shift e prosecuzione allo stato 18
+    NUMBER  shift e prosecuzione allo stato 34
+    ALPHA   shift e prosecuzione allo stato 15
 
     string  prosecuzione allo stato 150
     term    prosecuzione allo stato 151
 
 
+Stato 141
+
+   44 cicli: FOR LPAREN assegnazione COMMA term CMP . string COMMA operazioni RPAREN LBRACE elenco_cond RBRACE
+   47      | FOR LPAREN assegnazione COMMA term CMP . string COMMA operazioni RPAREN LBRACE elenchi RBRACE
+
+    ALPHA  shift e prosecuzione allo stato 15
+
+    string  prosecuzione allo stato 152
+
+
 Stato 142
 
-   53 cicli: WHILE LPAREN string CMP string . RPAREN LBRACE elenco_cond RBRACE
-   57      | WHILE LPAREN string CMP string . RPAREN LBRACE elenchi RBRACE
+   62 cond: metodo LPAREN string CMP string RPAREN . LBRACE elenchi RBRACE
 
-    RPAREN  shift e prosecuzione allo stato 152
+    LBRACE  shift e prosecuzione allo stato 153
 
 
 Stato 143
 
-   51 cicli: WHILE LPAREN string CMP term . RPAREN LBRACE elenco_cond RBRACE
-   55      | WHILE LPAREN string CMP term . RPAREN LBRACE elenchi RBRACE
+   61 cond: metodo LPAREN string CMP term RPAREN . LBRACE elenchi RBRACE
 
-    RPAREN  shift e prosecuzione allo stato 153
+    LBRACE  shift e prosecuzione allo stato 154
 
 
 Stato 144
 
-   52 cicli: WHILE LPAREN term CMP string . RPAREN LBRACE elenco_cond RBRACE
-   56      | WHILE LPAREN term CMP string . RPAREN LBRACE elenchi RBRACE
+   60 cond: metodo LPAREN term CMP string RPAREN . LBRACE elenchi RBRACE
 
-    RPAREN  shift e prosecuzione allo stato 154
+    LBRACE  shift e prosecuzione allo stato 155
 
 
 Stato 145
 
-   50 cicli: WHILE LPAREN term CMP term . RPAREN LBRACE elenco_cond RBRACE
-   54      | WHILE LPAREN term CMP term . RPAREN LBRACE elenchi RBRACE
+   59 cond: metodo LPAREN term CMP term RPAREN . LBRACE elenchi RBRACE
 
-    RPAREN  shift e prosecuzione allo stato 155
+    LBRACE  shift e prosecuzione allo stato 156
 
 
 Stato 146
 
-   44 cicli: FOR LPAREN assegnazione COMMA string . CMP term COMMA operazioni RPAREN LBRACE elenco_cond RBRACE
-   46      | FOR LPAREN assegnazione COMMA string . CMP string COMMA operazioni RPAREN LBRACE elenco_cond RBRACE
-   47      | FOR LPAREN assegnazione COMMA string . CMP term COMMA operazioni RPAREN LBRACE elenchi RBRACE
-   49      | FOR LPAREN assegnazione COMMA string . CMP string COMMA operazioni RPAREN LBRACE elenchi RBRACE
+   52 cicli: WHILE LPAREN string CMP string RPAREN LBRACE . elenco_cond RBRACE
+   56      | WHILE LPAREN string CMP string RPAREN LBRACE . elenchi RBRACE
 
-    CMP  shift e prosecuzione allo stato 156
+    ALPHA        shift e prosecuzione allo stato 15
+    CHANGESTATE  shift e prosecuzione allo stato 43
+    IF           shift e prosecuzione allo stato 44
+    ELSE         shift e prosecuzione allo stato 45
+    ELIF         shift e prosecuzione allo stato 46
+    OPERATORE    shift e prosecuzione allo stato 47
+    PRINT        shift e prosecuzione allo stato 50
+
+    string             prosecuzione allo stato 51
+    operazioni         prosecuzione allo stato 52
+    elenchi            prosecuzione allo stato 157
+    elenco_operazioni  prosecuzione allo stato 54
+    cambiostato        prosecuzione allo stato 55
+    elenco_cambio      prosecuzione allo stato 56
+    metodo             prosecuzione allo stato 58
+    cond               prosecuzione allo stato 59
+    elenco_cond        prosecuzione allo stato 158
 
 
 Stato 147
 
-   45 cicli: FOR LPAREN assegnazione COMMA term . CMP string COMMA operazioni RPAREN LBRACE elenco_cond RBRACE
-   48      | FOR LPAREN assegnazione COMMA term . CMP string COMMA operazioni RPAREN LBRACE elenchi RBRACE
+   50 cicli: WHILE LPAREN string CMP term RPAREN LBRACE . elenco_cond RBRACE
+   54      | WHILE LPAREN string CMP term RPAREN LBRACE . elenchi RBRACE
 
-    CMP  shift e prosecuzione allo stato 157
+    ALPHA        shift e prosecuzione allo stato 15
+    CHANGESTATE  shift e prosecuzione allo stato 43
+    IF           shift e prosecuzione allo stato 44
+    ELSE         shift e prosecuzione allo stato 45
+    ELIF         shift e prosecuzione allo stato 46
+    OPERATORE    shift e prosecuzione allo stato 47
+    PRINT        shift e prosecuzione allo stato 50
+
+    string             prosecuzione allo stato 51
+    operazioni         prosecuzione allo stato 52
+    elenchi            prosecuzione allo stato 159
+    elenco_operazioni  prosecuzione allo stato 54
+    cambiostato        prosecuzione allo stato 55
+    elenco_cambio      prosecuzione allo stato 56
+    metodo             prosecuzione allo stato 58
+    cond               prosecuzione allo stato 59
+    elenco_cond        prosecuzione allo stato 160
 
 
 Stato 148
 
-   63 cond: metodo LPAREN string CMP string . RPAREN LBRACE elenchi RBRACE
+   51 cicli: WHILE LPAREN term CMP string RPAREN LBRACE . elenco_cond RBRACE
+   55      | WHILE LPAREN term CMP string RPAREN LBRACE . elenchi RBRACE
 
-    RPAREN  shift e prosecuzione allo stato 158
+    ALPHA        shift e prosecuzione allo stato 15
+    CHANGESTATE  shift e prosecuzione allo stato 43
+    IF           shift e prosecuzione allo stato 44
+    ELSE         shift e prosecuzione allo stato 45
+    ELIF         shift e prosecuzione allo stato 46
+    OPERATORE    shift e prosecuzione allo stato 47
+    PRINT        shift e prosecuzione allo stato 50
+
+    string             prosecuzione allo stato 51
+    operazioni         prosecuzione allo stato 52
+    elenchi            prosecuzione allo stato 161
+    elenco_operazioni  prosecuzione allo stato 54
+    cambiostato        prosecuzione allo stato 55
+    elenco_cambio      prosecuzione allo stato 56
+    metodo             prosecuzione allo stato 58
+    cond               prosecuzione allo stato 59
+    elenco_cond        prosecuzione allo stato 162
 
 
 Stato 149
 
-   62 cond: metodo LPAREN string CMP term . RPAREN LBRACE elenchi RBRACE
+   49 cicli: WHILE LPAREN term CMP term RPAREN LBRACE . elenco_cond RBRACE
+   53      | WHILE LPAREN term CMP term RPAREN LBRACE . elenchi RBRACE
 
-    RPAREN  shift e prosecuzione allo stato 159
+    ALPHA        shift e prosecuzione allo stato 15
+    CHANGESTATE  shift e prosecuzione allo stato 43
+    IF           shift e prosecuzione allo stato 44
+    ELSE         shift e prosecuzione allo stato 45
+    ELIF         shift e prosecuzione allo stato 46
+    OPERATORE    shift e prosecuzione allo stato 47
+    PRINT        shift e prosecuzione allo stato 50
+
+    string             prosecuzione allo stato 51
+    operazioni         prosecuzione allo stato 52
+    elenchi            prosecuzione allo stato 163
+    elenco_operazioni  prosecuzione allo stato 54
+    cambiostato        prosecuzione allo stato 55
+    elenco_cambio      prosecuzione allo stato 56
+    metodo             prosecuzione allo stato 58
+    cond               prosecuzione allo stato 59
+    elenco_cond        prosecuzione allo stato 164
 
 
 Stato 150
 
-   61 cond: metodo LPAREN term CMP string . RPAREN LBRACE elenchi RBRACE
+   45 cicli: FOR LPAREN assegnazione COMMA string CMP string . COMMA operazioni RPAREN LBRACE elenco_cond RBRACE
+   48      | FOR LPAREN assegnazione COMMA string CMP string . COMMA operazioni RPAREN LBRACE elenchi RBRACE
 
-    RPAREN  shift e prosecuzione allo stato 160
+    COMMA  shift e prosecuzione allo stato 165
 
 
 Stato 151
 
-   60 cond: metodo LPAREN term CMP term . RPAREN LBRACE elenchi RBRACE
+   43 cicli: FOR LPAREN assegnazione COMMA string CMP term . COMMA operazioni RPAREN LBRACE elenco_cond RBRACE
+   46      | FOR LPAREN assegnazione COMMA string CMP term . COMMA operazioni RPAREN LBRACE elenchi RBRACE
 
-    RPAREN  shift e prosecuzione allo stato 161
+    COMMA  shift e prosecuzione allo stato 166
 
 
 Stato 152
 
-   53 cicli: WHILE LPAREN string CMP string RPAREN . LBRACE elenco_cond RBRACE
-   57      | WHILE LPAREN string CMP string RPAREN . LBRACE elenchi RBRACE
+   44 cicli: FOR LPAREN assegnazione COMMA term CMP string . COMMA operazioni RPAREN LBRACE elenco_cond RBRACE
+   47      | FOR LPAREN assegnazione COMMA term CMP string . COMMA operazioni RPAREN LBRACE elenchi RBRACE
 
-    LBRACE  shift e prosecuzione allo stato 162
+    COMMA  shift e prosecuzione allo stato 167
 
 
 Stato 153
 
-   51 cicli: WHILE LPAREN string CMP term RPAREN . LBRACE elenco_cond RBRACE
-   55      | WHILE LPAREN string CMP term RPAREN . LBRACE elenchi RBRACE
+   62 cond: metodo LPAREN string CMP string RPAREN LBRACE . elenchi RBRACE
 
-    LBRACE  shift e prosecuzione allo stato 163
+    ALPHA        shift e prosecuzione allo stato 15
+    CHANGESTATE  shift e prosecuzione allo stato 43
+    OPERATORE    shift e prosecuzione allo stato 47
+    PRINT        shift e prosecuzione allo stato 50
+
+    string             prosecuzione allo stato 51
+    operazioni         prosecuzione allo stato 52
+    elenchi            prosecuzione allo stato 168
+    elenco_operazioni  prosecuzione allo stato 54
+    cambiostato        prosecuzione allo stato 55
+    elenco_cambio      prosecuzione allo stato 56
 
 
 Stato 154
 
-   52 cicli: WHILE LPAREN term CMP string RPAREN . LBRACE elenco_cond RBRACE
-   56      | WHILE LPAREN term CMP string RPAREN . LBRACE elenchi RBRACE
+   61 cond: metodo LPAREN string CMP term RPAREN LBRACE . elenchi RBRACE
 
-    LBRACE  shift e prosecuzione allo stato 164
+    ALPHA        shift e prosecuzione allo stato 15
+    CHANGESTATE  shift e prosecuzione allo stato 43
+    OPERATORE    shift e prosecuzione allo stato 47
+    PRINT        shift e prosecuzione allo stato 50
+
+    string             prosecuzione allo stato 51
+    operazioni         prosecuzione allo stato 52
+    elenchi            prosecuzione allo stato 169
+    elenco_operazioni  prosecuzione allo stato 54
+    cambiostato        prosecuzione allo stato 55
+    elenco_cambio      prosecuzione allo stato 56
 
 
 Stato 155
 
-   50 cicli: WHILE LPAREN term CMP term RPAREN . LBRACE elenco_cond RBRACE
-   54      | WHILE LPAREN term CMP term RPAREN . LBRACE elenchi RBRACE
+   60 cond: metodo LPAREN term CMP string RPAREN LBRACE . elenchi RBRACE
 
-    LBRACE  shift e prosecuzione allo stato 165
+    ALPHA        shift e prosecuzione allo stato 15
+    CHANGESTATE  shift e prosecuzione allo stato 43
+    OPERATORE    shift e prosecuzione allo stato 47
+    PRINT        shift e prosecuzione allo stato 50
+
+    string             prosecuzione allo stato 51
+    operazioni         prosecuzione allo stato 52
+    elenchi            prosecuzione allo stato 170
+    elenco_operazioni  prosecuzione allo stato 54
+    cambiostato        prosecuzione allo stato 55
+    elenco_cambio      prosecuzione allo stato 56
 
 
 Stato 156
 
-   44 cicli: FOR LPAREN assegnazione COMMA string CMP . term COMMA operazioni RPAREN LBRACE elenco_cond RBRACE
-   46      | FOR LPAREN assegnazione COMMA string CMP . string COMMA operazioni RPAREN LBRACE elenco_cond RBRACE
-   47      | FOR LPAREN assegnazione COMMA string CMP . term COMMA operazioni RPAREN LBRACE elenchi RBRACE
-   49      | FOR LPAREN assegnazione COMMA string CMP . string COMMA operazioni RPAREN LBRACE elenchi RBRACE
+   59 cond: metodo LPAREN term CMP term RPAREN LBRACE . elenchi RBRACE
 
-    NUMBER  shift e prosecuzione allo stato 32
-    ALPHA   shift e prosecuzione allo stato 18
+    ALPHA        shift e prosecuzione allo stato 15
+    CHANGESTATE  shift e prosecuzione allo stato 43
+    OPERATORE    shift e prosecuzione allo stato 47
+    PRINT        shift e prosecuzione allo stato 50
 
-    string  prosecuzione allo stato 166
-    term    prosecuzione allo stato 167
+    string             prosecuzione allo stato 51
+    operazioni         prosecuzione allo stato 52
+    elenchi            prosecuzione allo stato 171
+    elenco_operazioni  prosecuzione allo stato 54
+    cambiostato        prosecuzione allo stato 55
+    elenco_cambio      prosecuzione allo stato 56
 
 
 Stato 157
 
-   45 cicli: FOR LPAREN assegnazione COMMA term CMP . string COMMA operazioni RPAREN LBRACE elenco_cond RBRACE
-   48      | FOR LPAREN assegnazione COMMA term CMP . string COMMA operazioni RPAREN LBRACE elenchi RBRACE
+   30 elenchi: elenchi . elenco_cambio
+   31        | elenchi . elenco_operazioni
+   56 cicli: WHILE LPAREN string CMP string RPAREN LBRACE elenchi . RBRACE
 
-    ALPHA  shift e prosecuzione allo stato 18
+    ALPHA        shift e prosecuzione allo stato 15
+    RBRACE       shift e prosecuzione allo stato 172
+    CHANGESTATE  shift e prosecuzione allo stato 43
+    OPERATORE    shift e prosecuzione allo stato 47
+    PRINT        shift e prosecuzione allo stato 50
 
-    string  prosecuzione allo stato 168
+    string             prosecuzione allo stato 51
+    operazioni         prosecuzione allo stato 52
+    elenco_operazioni  prosecuzione allo stato 75
+    cambiostato        prosecuzione allo stato 55
+    elenco_cambio      prosecuzione allo stato 76
 
 
 Stato 158
 
-   63 cond: metodo LPAREN string CMP string RPAREN . LBRACE elenchi RBRACE
+   52 cicli: WHILE LPAREN string CMP string RPAREN LBRACE elenco_cond . RBRACE
+   65 elenco_cond: elenco_cond . cond
 
-    LBRACE  shift e prosecuzione allo stato 169
+    RBRACE  shift e prosecuzione allo stato 173
+    IF      shift e prosecuzione allo stato 44
+    ELSE    shift e prosecuzione allo stato 45
+    ELIF    shift e prosecuzione allo stato 46
+
+    metodo  prosecuzione allo stato 58
+    cond    prosecuzione allo stato 85
 
 
 Stato 159
 
-   62 cond: metodo LPAREN string CMP term RPAREN . LBRACE elenchi RBRACE
+   30 elenchi: elenchi . elenco_cambio
+   31        | elenchi . elenco_operazioni
+   54 cicli: WHILE LPAREN string CMP term RPAREN LBRACE elenchi . RBRACE
 
-    LBRACE  shift e prosecuzione allo stato 170
+    ALPHA        shift e prosecuzione allo stato 15
+    RBRACE       shift e prosecuzione allo stato 174
+    CHANGESTATE  shift e prosecuzione allo stato 43
+    OPERATORE    shift e prosecuzione allo stato 47
+    PRINT        shift e prosecuzione allo stato 50
+
+    string             prosecuzione allo stato 51
+    operazioni         prosecuzione allo stato 52
+    elenco_operazioni  prosecuzione allo stato 75
+    cambiostato        prosecuzione allo stato 55
+    elenco_cambio      prosecuzione allo stato 76
 
 
 Stato 160
 
-   61 cond: metodo LPAREN term CMP string RPAREN . LBRACE elenchi RBRACE
+   50 cicli: WHILE LPAREN string CMP term RPAREN LBRACE elenco_cond . RBRACE
+   65 elenco_cond: elenco_cond . cond
 
-    LBRACE  shift e prosecuzione allo stato 171
+    RBRACE  shift e prosecuzione allo stato 175
+    IF      shift e prosecuzione allo stato 44
+    ELSE    shift e prosecuzione allo stato 45
+    ELIF    shift e prosecuzione allo stato 46
+
+    metodo  prosecuzione allo stato 58
+    cond    prosecuzione allo stato 85
 
 
 Stato 161
 
-   60 cond: metodo LPAREN term CMP term RPAREN . LBRACE elenchi RBRACE
+   30 elenchi: elenchi . elenco_cambio
+   31        | elenchi . elenco_operazioni
+   55 cicli: WHILE LPAREN term CMP string RPAREN LBRACE elenchi . RBRACE
 
-    LBRACE  shift e prosecuzione allo stato 172
+    ALPHA        shift e prosecuzione allo stato 15
+    RBRACE       shift e prosecuzione allo stato 176
+    CHANGESTATE  shift e prosecuzione allo stato 43
+    OPERATORE    shift e prosecuzione allo stato 47
+    PRINT        shift e prosecuzione allo stato 50
+
+    string             prosecuzione allo stato 51
+    operazioni         prosecuzione allo stato 52
+    elenco_operazioni  prosecuzione allo stato 75
+    cambiostato        prosecuzione allo stato 55
+    elenco_cambio      prosecuzione allo stato 76
 
 
 Stato 162
 
-   53 cicli: WHILE LPAREN string CMP string RPAREN LBRACE . elenco_cond RBRACE
-   57      | WHILE LPAREN string CMP string RPAREN LBRACE . elenchi RBRACE
+   51 cicli: WHILE LPAREN term CMP string RPAREN LBRACE elenco_cond . RBRACE
+   65 elenco_cond: elenco_cond . cond
 
-    ALPHA        shift e prosecuzione allo stato 18
-    CHANGESTATE  shift e prosecuzione allo stato 83
-    IF           shift e prosecuzione allo stato 84
-    ELSE         shift e prosecuzione allo stato 85
-    ELIF         shift e prosecuzione allo stato 86
-    OPERATORE    shift e prosecuzione allo stato 39
-    PRINT        shift e prosecuzione allo stato 40
+    RBRACE  shift e prosecuzione allo stato 177
+    IF      shift e prosecuzione allo stato 44
+    ELSE    shift e prosecuzione allo stato 45
+    ELIF    shift e prosecuzione allo stato 46
 
-    string             prosecuzione allo stato 89
-    operazioni         prosecuzione allo stato 90
-    elenchi            prosecuzione allo stato 173
-    elenco_operazioni  prosecuzione allo stato 92
-    cambiostato        prosecuzione allo stato 93
-    elenco_cambio      prosecuzione allo stato 94
-    metodo             prosecuzione allo stato 96
-    cond               prosecuzione allo stato 97
-    elenco_cond        prosecuzione allo stato 174
+    metodo  prosecuzione allo stato 58
+    cond    prosecuzione allo stato 85
 
 
 Stato 163
 
-   51 cicli: WHILE LPAREN string CMP term RPAREN LBRACE . elenco_cond RBRACE
-   55      | WHILE LPAREN string CMP term RPAREN LBRACE . elenchi RBRACE
+   30 elenchi: elenchi . elenco_cambio
+   31        | elenchi . elenco_operazioni
+   53 cicli: WHILE LPAREN term CMP term RPAREN LBRACE elenchi . RBRACE
 
-    ALPHA        shift e prosecuzione allo stato 18
-    CHANGESTATE  shift e prosecuzione allo stato 83
-    IF           shift e prosecuzione allo stato 84
-    ELSE         shift e prosecuzione allo stato 85
-    ELIF         shift e prosecuzione allo stato 86
-    OPERATORE    shift e prosecuzione allo stato 39
-    PRINT        shift e prosecuzione allo stato 40
+    ALPHA        shift e prosecuzione allo stato 15
+    RBRACE       shift e prosecuzione allo stato 178
+    CHANGESTATE  shift e prosecuzione allo stato 43
+    OPERATORE    shift e prosecuzione allo stato 47
+    PRINT        shift e prosecuzione allo stato 50
 
-    string             prosecuzione allo stato 89
-    operazioni         prosecuzione allo stato 90
-    elenchi            prosecuzione allo stato 175
-    elenco_operazioni  prosecuzione allo stato 92
-    cambiostato        prosecuzione allo stato 93
-    elenco_cambio      prosecuzione allo stato 94
-    metodo             prosecuzione allo stato 96
-    cond               prosecuzione allo stato 97
-    elenco_cond        prosecuzione allo stato 176
+    string             prosecuzione allo stato 51
+    operazioni         prosecuzione allo stato 52
+    elenco_operazioni  prosecuzione allo stato 75
+    cambiostato        prosecuzione allo stato 55
+    elenco_cambio      prosecuzione allo stato 76
 
 
 Stato 164
 
-   52 cicli: WHILE LPAREN term CMP string RPAREN LBRACE . elenco_cond RBRACE
-   56      | WHILE LPAREN term CMP string RPAREN LBRACE . elenchi RBRACE
+   49 cicli: WHILE LPAREN term CMP term RPAREN LBRACE elenco_cond . RBRACE
+   65 elenco_cond: elenco_cond . cond
 
-    ALPHA        shift e prosecuzione allo stato 18
-    CHANGESTATE  shift e prosecuzione allo stato 83
-    IF           shift e prosecuzione allo stato 84
-    ELSE         shift e prosecuzione allo stato 85
-    ELIF         shift e prosecuzione allo stato 86
-    OPERATORE    shift e prosecuzione allo stato 39
-    PRINT        shift e prosecuzione allo stato 40
+    RBRACE  shift e prosecuzione allo stato 179
+    IF      shift e prosecuzione allo stato 44
+    ELSE    shift e prosecuzione allo stato 45
+    ELIF    shift e prosecuzione allo stato 46
 
-    string             prosecuzione allo stato 89
-    operazioni         prosecuzione allo stato 90
-    elenchi            prosecuzione allo stato 177
-    elenco_operazioni  prosecuzione allo stato 92
-    cambiostato        prosecuzione allo stato 93
-    elenco_cambio      prosecuzione allo stato 94
-    metodo             prosecuzione allo stato 96
-    cond               prosecuzione allo stato 97
-    elenco_cond        prosecuzione allo stato 178
+    metodo  prosecuzione allo stato 58
+    cond    prosecuzione allo stato 85
 
 
 Stato 165
 
-   50 cicli: WHILE LPAREN term CMP term RPAREN LBRACE . elenco_cond RBRACE
-   54      | WHILE LPAREN term CMP term RPAREN LBRACE . elenchi RBRACE
+   45 cicli: FOR LPAREN assegnazione COMMA string CMP string COMMA . operazioni RPAREN LBRACE elenco_cond RBRACE
+   48      | FOR LPAREN assegnazione COMMA string CMP string COMMA . operazioni RPAREN LBRACE elenchi RBRACE
 
-    ALPHA        shift e prosecuzione allo stato 18
-    CHANGESTATE  shift e prosecuzione allo stato 83
-    IF           shift e prosecuzione allo stato 84
-    ELSE         shift e prosecuzione allo stato 85
-    ELIF         shift e prosecuzione allo stato 86
-    OPERATORE    shift e prosecuzione allo stato 39
-    PRINT        shift e prosecuzione allo stato 40
+    ALPHA      shift e prosecuzione allo stato 15
+    OPERATORE  shift e prosecuzione allo stato 47
+    PRINT      shift e prosecuzione allo stato 50
 
-    string             prosecuzione allo stato 89
-    operazioni         prosecuzione allo stato 90
-    elenchi            prosecuzione allo stato 179
-    elenco_operazioni  prosecuzione allo stato 92
-    cambiostato        prosecuzione allo stato 93
-    elenco_cambio      prosecuzione allo stato 94
-    metodo             prosecuzione allo stato 96
-    cond               prosecuzione allo stato 97
-    elenco_cond        prosecuzione allo stato 180
+    string      prosecuzione allo stato 62
+    operazioni  prosecuzione allo stato 180
 
 
 Stato 166
 
-   46 cicli: FOR LPAREN assegnazione COMMA string CMP string . COMMA operazioni RPAREN LBRACE elenco_cond RBRACE
-   49      | FOR LPAREN assegnazione COMMA string CMP string . COMMA operazioni RPAREN LBRACE elenchi RBRACE
+   43 cicli: FOR LPAREN assegnazione COMMA string CMP term COMMA . operazioni RPAREN LBRACE elenco_cond RBRACE
+   46      | FOR LPAREN assegnazione COMMA string CMP term COMMA . operazioni RPAREN LBRACE elenchi RBRACE
 
-    COMMA  shift e prosecuzione allo stato 181
+    ALPHA      shift e prosecuzione allo stato 15
+    OPERATORE  shift e prosecuzione allo stato 47
+    PRINT      shift e prosecuzione allo stato 50
+
+    string      prosecuzione allo stato 62
+    operazioni  prosecuzione allo stato 181
 
 
 Stato 167
 
-   44 cicli: FOR LPAREN assegnazione COMMA string CMP term . COMMA operazioni RPAREN LBRACE elenco_cond RBRACE
-   47      | FOR LPAREN assegnazione COMMA string CMP term . COMMA operazioni RPAREN LBRACE elenchi RBRACE
+   44 cicli: FOR LPAREN assegnazione COMMA term CMP string COMMA . operazioni RPAREN LBRACE elenco_cond RBRACE
+   47      | FOR LPAREN assegnazione COMMA term CMP string COMMA . operazioni RPAREN LBRACE elenchi RBRACE
 
-    COMMA  shift e prosecuzione allo stato 182
+    ALPHA      shift e prosecuzione allo stato 15
+    OPERATORE  shift e prosecuzione allo stato 47
+    PRINT      shift e prosecuzione allo stato 50
+
+    string      prosecuzione allo stato 62
+    operazioni  prosecuzione allo stato 182
 
 
 Stato 168
 
-   45 cicli: FOR LPAREN assegnazione COMMA term CMP string . COMMA operazioni RPAREN LBRACE elenco_cond RBRACE
-   48      | FOR LPAREN assegnazione COMMA term CMP string . COMMA operazioni RPAREN LBRACE elenchi RBRACE
+   30 elenchi: elenchi . elenco_cambio
+   31        | elenchi . elenco_operazioni
+   62 cond: metodo LPAREN string CMP string RPAREN LBRACE elenchi . RBRACE
 
-    COMMA  shift e prosecuzione allo stato 183
+    ALPHA        shift e prosecuzione allo stato 15
+    RBRACE       shift e prosecuzione allo stato 183
+    CHANGESTATE  shift e prosecuzione allo stato 43
+    OPERATORE    shift e prosecuzione allo stato 47
+    PRINT        shift e prosecuzione allo stato 50
+
+    string             prosecuzione allo stato 51
+    operazioni         prosecuzione allo stato 52
+    elenco_operazioni  prosecuzione allo stato 75
+    cambiostato        prosecuzione allo stato 55
+    elenco_cambio      prosecuzione allo stato 76
 
 
 Stato 169
 
-   63 cond: metodo LPAREN string CMP string RPAREN LBRACE . elenchi RBRACE
+   30 elenchi: elenchi . elenco_cambio
+   31        | elenchi . elenco_operazioni
+   61 cond: metodo LPAREN string CMP term RPAREN LBRACE elenchi . RBRACE
 
-    ALPHA        shift e prosecuzione allo stato 18
-    CHANGESTATE  shift e prosecuzione allo stato 83
-    OPERATORE    shift e prosecuzione allo stato 39
-    PRINT        shift e prosecuzione allo stato 40
+    ALPHA        shift e prosecuzione allo stato 15
+    RBRACE       shift e prosecuzione allo stato 184
+    CHANGESTATE  shift e prosecuzione allo stato 43
+    OPERATORE    shift e prosecuzione allo stato 47
+    PRINT        shift e prosecuzione allo stato 50
 
-    string             prosecuzione allo stato 89
-    operazioni         prosecuzione allo stato 90
-    elenchi            prosecuzione allo stato 184
-    elenco_operazioni  prosecuzione allo stato 92
-    cambiostato        prosecuzione allo stato 93
-    elenco_cambio      prosecuzione allo stato 94
+    string             prosecuzione allo stato 51
+    operazioni         prosecuzione allo stato 52
+    elenco_operazioni  prosecuzione allo stato 75
+    cambiostato        prosecuzione allo stato 55
+    elenco_cambio      prosecuzione allo stato 76
 
 
 Stato 170
 
-   62 cond: metodo LPAREN string CMP term RPAREN LBRACE . elenchi RBRACE
+   30 elenchi: elenchi . elenco_cambio
+   31        | elenchi . elenco_operazioni
+   60 cond: metodo LPAREN term CMP string RPAREN LBRACE elenchi . RBRACE
 
-    ALPHA        shift e prosecuzione allo stato 18
-    CHANGESTATE  shift e prosecuzione allo stato 83
-    OPERATORE    shift e prosecuzione allo stato 39
-    PRINT        shift e prosecuzione allo stato 40
+    ALPHA        shift e prosecuzione allo stato 15
+    RBRACE       shift e prosecuzione allo stato 185
+    CHANGESTATE  shift e prosecuzione allo stato 43
+    OPERATORE    shift e prosecuzione allo stato 47
+    PRINT        shift e prosecuzione allo stato 50
 
-    string             prosecuzione allo stato 89
-    operazioni         prosecuzione allo stato 90
-    elenchi            prosecuzione allo stato 185
-    elenco_operazioni  prosecuzione allo stato 92
-    cambiostato        prosecuzione allo stato 93
-    elenco_cambio      prosecuzione allo stato 94
+    string             prosecuzione allo stato 51
+    operazioni         prosecuzione allo stato 52
+    elenco_operazioni  prosecuzione allo stato 75
+    cambiostato        prosecuzione allo stato 55
+    elenco_cambio      prosecuzione allo stato 76
 
 
 Stato 171
 
-   61 cond: metodo LPAREN term CMP string RPAREN LBRACE . elenchi RBRACE
+   30 elenchi: elenchi . elenco_cambio
+   31        | elenchi . elenco_operazioni
+   59 cond: metodo LPAREN term CMP term RPAREN LBRACE elenchi . RBRACE
 
-    ALPHA        shift e prosecuzione allo stato 18
-    CHANGESTATE  shift e prosecuzione allo stato 83
-    OPERATORE    shift e prosecuzione allo stato 39
-    PRINT        shift e prosecuzione allo stato 40
+    ALPHA        shift e prosecuzione allo stato 15
+    RBRACE       shift e prosecuzione allo stato 186
+    CHANGESTATE  shift e prosecuzione allo stato 43
+    OPERATORE    shift e prosecuzione allo stato 47
+    PRINT        shift e prosecuzione allo stato 50
 
-    string             prosecuzione allo stato 89
-    operazioni         prosecuzione allo stato 90
-    elenchi            prosecuzione allo stato 186
-    elenco_operazioni  prosecuzione allo stato 92
-    cambiostato        prosecuzione allo stato 93
-    elenco_cambio      prosecuzione allo stato 94
+    string             prosecuzione allo stato 51
+    operazioni         prosecuzione allo stato 52
+    elenco_operazioni  prosecuzione allo stato 75
+    cambiostato        prosecuzione allo stato 55
+    elenco_cambio      prosecuzione allo stato 76
 
 
 Stato 172
 
-   60 cond: metodo LPAREN term CMP term RPAREN LBRACE . elenchi RBRACE
-
-    ALPHA        shift e prosecuzione allo stato 18
-    CHANGESTATE  shift e prosecuzione allo stato 83
-    OPERATORE    shift e prosecuzione allo stato 39
-    PRINT        shift e prosecuzione allo stato 40
-
-    string             prosecuzione allo stato 89
-    operazioni         prosecuzione allo stato 90
-    elenchi            prosecuzione allo stato 187
-    elenco_operazioni  prosecuzione allo stato 92
-    cambiostato        prosecuzione allo stato 93
-    elenco_cambio      prosecuzione allo stato 94
-
-
-Stato 173
-
-   32 elenchi: elenchi . NEWLINE elenco_cambio
-   33        | elenchi . NEWLINE elenco_operazioni
-   57 cicli: WHILE LPAREN string CMP string RPAREN LBRACE elenchi . RBRACE
-
-    RBRACE   shift e prosecuzione allo stato 188
-    NEWLINE  shift e prosecuzione allo stato 106
-
-
-Stato 174
-
-   53 cicli: WHILE LPAREN string CMP string RPAREN LBRACE elenco_cond . RBRACE
-   66 elenco_cond: elenco_cond . NEWLINE cond
-
-    RBRACE   shift e prosecuzione allo stato 189
-    NEWLINE  shift e prosecuzione allo stato 114
-
-
-Stato 175
-
-   32 elenchi: elenchi . NEWLINE elenco_cambio
-   33        | elenchi . NEWLINE elenco_operazioni
-   55 cicli: WHILE LPAREN string CMP term RPAREN LBRACE elenchi . RBRACE
-
-    RBRACE   shift e prosecuzione allo stato 190
-    NEWLINE  shift e prosecuzione allo stato 106
-
-
-Stato 176
-
-   51 cicli: WHILE LPAREN string CMP term RPAREN LBRACE elenco_cond . RBRACE
-   66 elenco_cond: elenco_cond . NEWLINE cond
-
-    RBRACE   shift e prosecuzione allo stato 191
-    NEWLINE  shift e prosecuzione allo stato 114
-
-
-Stato 177
-
-   32 elenchi: elenchi . NEWLINE elenco_cambio
-   33        | elenchi . NEWLINE elenco_operazioni
-   56 cicli: WHILE LPAREN term CMP string RPAREN LBRACE elenchi . RBRACE
-
-    RBRACE   shift e prosecuzione allo stato 192
-    NEWLINE  shift e prosecuzione allo stato 106
-
-
-Stato 178
-
-   52 cicli: WHILE LPAREN term CMP string RPAREN LBRACE elenco_cond . RBRACE
-   66 elenco_cond: elenco_cond . NEWLINE cond
-
-    RBRACE   shift e prosecuzione allo stato 193
-    NEWLINE  shift e prosecuzione allo stato 114
-
-
-Stato 179
-
-   32 elenchi: elenchi . NEWLINE elenco_cambio
-   33        | elenchi . NEWLINE elenco_operazioni
-   54 cicli: WHILE LPAREN term CMP term RPAREN LBRACE elenchi . RBRACE
-
-    RBRACE   shift e prosecuzione allo stato 194
-    NEWLINE  shift e prosecuzione allo stato 106
-
-
-Stato 180
-
-   50 cicli: WHILE LPAREN term CMP term RPAREN LBRACE elenco_cond . RBRACE
-   66 elenco_cond: elenco_cond . NEWLINE cond
-
-    RBRACE   shift e prosecuzione allo stato 195
-    NEWLINE  shift e prosecuzione allo stato 114
-
-
-Stato 181
-
-   46 cicli: FOR LPAREN assegnazione COMMA string CMP string COMMA . operazioni RPAREN LBRACE elenco_cond RBRACE
-   49      | FOR LPAREN assegnazione COMMA string CMP string COMMA . operazioni RPAREN LBRACE elenchi RBRACE
-
-    ALPHA      shift e prosecuzione allo stato 18
-    OPERATORE  shift e prosecuzione allo stato 39
-    PRINT      shift e prosecuzione allo stato 40
-
-    string      prosecuzione allo stato 41
-    operazioni  prosecuzione allo stato 196
-
-
-Stato 182
-
-   44 cicli: FOR LPAREN assegnazione COMMA string CMP term COMMA . operazioni RPAREN LBRACE elenco_cond RBRACE
-   47      | FOR LPAREN assegnazione COMMA string CMP term COMMA . operazioni RPAREN LBRACE elenchi RBRACE
-
-    ALPHA      shift e prosecuzione allo stato 18
-    OPERATORE  shift e prosecuzione allo stato 39
-    PRINT      shift e prosecuzione allo stato 40
-
-    string      prosecuzione allo stato 41
-    operazioni  prosecuzione allo stato 197
-
-
-Stato 183
-
-   45 cicli: FOR LPAREN assegnazione COMMA term CMP string COMMA . operazioni RPAREN LBRACE elenco_cond RBRACE
-   48      | FOR LPAREN assegnazione COMMA term CMP string COMMA . operazioni RPAREN LBRACE elenchi RBRACE
-
-    ALPHA      shift e prosecuzione allo stato 18
-    OPERATORE  shift e prosecuzione allo stato 39
-    PRINT      shift e prosecuzione allo stato 40
-
-    string      prosecuzione allo stato 41
-    operazioni  prosecuzione allo stato 198
-
-
-Stato 184
-
-   32 elenchi: elenchi . NEWLINE elenco_cambio
-   33        | elenchi . NEWLINE elenco_operazioni
-   63 cond: metodo LPAREN string CMP string RPAREN LBRACE elenchi . RBRACE
-
-    RBRACE   shift e prosecuzione allo stato 199
-    NEWLINE  shift e prosecuzione allo stato 106
-
-
-Stato 185
-
-   32 elenchi: elenchi . NEWLINE elenco_cambio
-   33        | elenchi . NEWLINE elenco_operazioni
-   62 cond: metodo LPAREN string CMP term RPAREN LBRACE elenchi . RBRACE
-
-    RBRACE   shift e prosecuzione allo stato 200
-    NEWLINE  shift e prosecuzione allo stato 106
-
-
-Stato 186
-
-   32 elenchi: elenchi . NEWLINE elenco_cambio
-   33        | elenchi . NEWLINE elenco_operazioni
-   61 cond: metodo LPAREN term CMP string RPAREN LBRACE elenchi . RBRACE
-
-    RBRACE   shift e prosecuzione allo stato 201
-    NEWLINE  shift e prosecuzione allo stato 106
-
-
-Stato 187
-
-   32 elenchi: elenchi . NEWLINE elenco_cambio
-   33        | elenchi . NEWLINE elenco_operazioni
-   60 cond: metodo LPAREN term CMP term RPAREN LBRACE elenchi . RBRACE
-
-    RBRACE   shift e prosecuzione allo stato 202
-    NEWLINE  shift e prosecuzione allo stato 106
-
-
-Stato 188
-
-   57 cicli: WHILE LPAREN string CMP string RPAREN LBRACE elenchi RBRACE .
-
-    $default  riduzione con la regola 57 (cicli)
-
-
-Stato 189
-
-   53 cicli: WHILE LPAREN string CMP string RPAREN LBRACE elenco_cond RBRACE .
-
-    $default  riduzione con la regola 53 (cicli)
-
-
-Stato 190
-
-   55 cicli: WHILE LPAREN string CMP term RPAREN LBRACE elenchi RBRACE .
-
-    $default  riduzione con la regola 55 (cicli)
-
-
-Stato 191
-
-   51 cicli: WHILE LPAREN string CMP term RPAREN LBRACE elenco_cond RBRACE .
-
-    $default  riduzione con la regola 51 (cicli)
-
-
-Stato 192
-
-   56 cicli: WHILE LPAREN term CMP string RPAREN LBRACE elenchi RBRACE .
+   56 cicli: WHILE LPAREN string CMP string RPAREN LBRACE elenchi RBRACE .
 
     $default  riduzione con la regola 56 (cicli)
 
 
-Stato 193
+Stato 173
 
-   52 cicli: WHILE LPAREN term CMP string RPAREN LBRACE elenco_cond RBRACE .
+   52 cicli: WHILE LPAREN string CMP string RPAREN LBRACE elenco_cond RBRACE .
 
     $default  riduzione con la regola 52 (cicli)
 
 
-Stato 194
+Stato 174
 
-   54 cicli: WHILE LPAREN term CMP term RPAREN LBRACE elenchi RBRACE .
+   54 cicli: WHILE LPAREN string CMP term RPAREN LBRACE elenchi RBRACE .
 
     $default  riduzione con la regola 54 (cicli)
 
 
-Stato 195
+Stato 175
 
-   50 cicli: WHILE LPAREN term CMP term RPAREN LBRACE elenco_cond RBRACE .
+   50 cicli: WHILE LPAREN string CMP term RPAREN LBRACE elenco_cond RBRACE .
 
     $default  riduzione con la regola 50 (cicli)
 
 
-Stato 196
+Stato 176
 
-   46 cicli: FOR LPAREN assegnazione COMMA string CMP string COMMA operazioni . RPAREN LBRACE elenco_cond RBRACE
-   49      | FOR LPAREN assegnazione COMMA string CMP string COMMA operazioni . RPAREN LBRACE elenchi RBRACE
+   55 cicli: WHILE LPAREN term CMP string RPAREN LBRACE elenchi RBRACE .
 
-    RPAREN  shift e prosecuzione allo stato 203
+    $default  riduzione con la regola 55 (cicli)
 
 
-Stato 197
+Stato 177
 
-   44 cicli: FOR LPAREN assegnazione COMMA string CMP term COMMA operazioni . RPAREN LBRACE elenco_cond RBRACE
-   47      | FOR LPAREN assegnazione COMMA string CMP term COMMA operazioni . RPAREN LBRACE elenchi RBRACE
+   51 cicli: WHILE LPAREN term CMP string RPAREN LBRACE elenco_cond RBRACE .
 
-    RPAREN  shift e prosecuzione allo stato 204
+    $default  riduzione con la regola 51 (cicli)
 
 
-Stato 198
+Stato 178
 
-   45 cicli: FOR LPAREN assegnazione COMMA term CMP string COMMA operazioni . RPAREN LBRACE elenco_cond RBRACE
-   48      | FOR LPAREN assegnazione COMMA term CMP string COMMA operazioni . RPAREN LBRACE elenchi RBRACE
+   53 cicli: WHILE LPAREN term CMP term RPAREN LBRACE elenchi RBRACE .
 
-    RPAREN  shift e prosecuzione allo stato 205
+    $default  riduzione con la regola 53 (cicli)
 
 
-Stato 199
+Stato 179
 
-   63 cond: metodo LPAREN string CMP string RPAREN LBRACE elenchi RBRACE .
-
-    $default  riduzione con la regola 63 (cond)
-
-
-Stato 200
-
-   62 cond: metodo LPAREN string CMP term RPAREN LBRACE elenchi RBRACE .
-
-    $default  riduzione con la regola 62 (cond)
-
-
-Stato 201
-
-   61 cond: metodo LPAREN term CMP string RPAREN LBRACE elenchi RBRACE .
-
-    $default  riduzione con la regola 61 (cond)
-
-
-Stato 202
-
-   60 cond: metodo LPAREN term CMP term RPAREN LBRACE elenchi RBRACE .
-
-    $default  riduzione con la regola 60 (cond)
-
-
-Stato 203
-
-   46 cicli: FOR LPAREN assegnazione COMMA string CMP string COMMA operazioni RPAREN . LBRACE elenco_cond RBRACE
-   49      | FOR LPAREN assegnazione COMMA string CMP string COMMA operazioni RPAREN . LBRACE elenchi RBRACE
-
-    LBRACE  shift e prosecuzione allo stato 206
-
-
-Stato 204
-
-   44 cicli: FOR LPAREN assegnazione COMMA string CMP term COMMA operazioni RPAREN . LBRACE elenco_cond RBRACE
-   47      | FOR LPAREN assegnazione COMMA string CMP term COMMA operazioni RPAREN . LBRACE elenchi RBRACE
-
-    LBRACE  shift e prosecuzione allo stato 207
-
-
-Stato 205
-
-   45 cicli: FOR LPAREN assegnazione COMMA term CMP string COMMA operazioni RPAREN . LBRACE elenco_cond RBRACE
-   48      | FOR LPAREN assegnazione COMMA term CMP string COMMA operazioni RPAREN . LBRACE elenchi RBRACE
-
-    LBRACE  shift e prosecuzione allo stato 208
-
-
-Stato 206
-
-   46 cicli: FOR LPAREN assegnazione COMMA string CMP string COMMA operazioni RPAREN LBRACE . elenco_cond RBRACE
-   49      | FOR LPAREN assegnazione COMMA string CMP string COMMA operazioni RPAREN LBRACE . elenchi RBRACE
-
-    ALPHA        shift e prosecuzione allo stato 18
-    CHANGESTATE  shift e prosecuzione allo stato 83
-    IF           shift e prosecuzione allo stato 84
-    ELSE         shift e prosecuzione allo stato 85
-    ELIF         shift e prosecuzione allo stato 86
-    OPERATORE    shift e prosecuzione allo stato 39
-    PRINT        shift e prosecuzione allo stato 40
-
-    string             prosecuzione allo stato 89
-    operazioni         prosecuzione allo stato 90
-    elenchi            prosecuzione allo stato 209
-    elenco_operazioni  prosecuzione allo stato 92
-    cambiostato        prosecuzione allo stato 93
-    elenco_cambio      prosecuzione allo stato 94
-    metodo             prosecuzione allo stato 96
-    cond               prosecuzione allo stato 97
-    elenco_cond        prosecuzione allo stato 210
-
-
-Stato 207
-
-   44 cicli: FOR LPAREN assegnazione COMMA string CMP term COMMA operazioni RPAREN LBRACE . elenco_cond RBRACE
-   47      | FOR LPAREN assegnazione COMMA string CMP term COMMA operazioni RPAREN LBRACE . elenchi RBRACE
-
-    ALPHA        shift e prosecuzione allo stato 18
-    CHANGESTATE  shift e prosecuzione allo stato 83
-    IF           shift e prosecuzione allo stato 84
-    ELSE         shift e prosecuzione allo stato 85
-    ELIF         shift e prosecuzione allo stato 86
-    OPERATORE    shift e prosecuzione allo stato 39
-    PRINT        shift e prosecuzione allo stato 40
-
-    string             prosecuzione allo stato 89
-    operazioni         prosecuzione allo stato 90
-    elenchi            prosecuzione allo stato 211
-    elenco_operazioni  prosecuzione allo stato 92
-    cambiostato        prosecuzione allo stato 93
-    elenco_cambio      prosecuzione allo stato 94
-    metodo             prosecuzione allo stato 96
-    cond               prosecuzione allo stato 97
-    elenco_cond        prosecuzione allo stato 212
-
-
-Stato 208
-
-   45 cicli: FOR LPAREN assegnazione COMMA term CMP string COMMA operazioni RPAREN LBRACE . elenco_cond RBRACE
-   48      | FOR LPAREN assegnazione COMMA term CMP string COMMA operazioni RPAREN LBRACE . elenchi RBRACE
-
-    ALPHA        shift e prosecuzione allo stato 18
-    CHANGESTATE  shift e prosecuzione allo stato 83
-    IF           shift e prosecuzione allo stato 84
-    ELSE         shift e prosecuzione allo stato 85
-    ELIF         shift e prosecuzione allo stato 86
-    OPERATORE    shift e prosecuzione allo stato 39
-    PRINT        shift e prosecuzione allo stato 40
-
-    string             prosecuzione allo stato 89
-    operazioni         prosecuzione allo stato 90
-    elenchi            prosecuzione allo stato 213
-    elenco_operazioni  prosecuzione allo stato 92
-    cambiostato        prosecuzione allo stato 93
-    elenco_cambio      prosecuzione allo stato 94
-    metodo             prosecuzione allo stato 96
-    cond               prosecuzione allo stato 97
-    elenco_cond        prosecuzione allo stato 214
-
-
-Stato 209
-
-   32 elenchi: elenchi . NEWLINE elenco_cambio
-   33        | elenchi . NEWLINE elenco_operazioni
-   49 cicli: FOR LPAREN assegnazione COMMA string CMP string COMMA operazioni RPAREN LBRACE elenchi . RBRACE
-
-    RBRACE   shift e prosecuzione allo stato 215
-    NEWLINE  shift e prosecuzione allo stato 106
-
-
-Stato 210
-
-   46 cicli: FOR LPAREN assegnazione COMMA string CMP string COMMA operazioni RPAREN LBRACE elenco_cond . RBRACE
-   66 elenco_cond: elenco_cond . NEWLINE cond
-
-    RBRACE   shift e prosecuzione allo stato 216
-    NEWLINE  shift e prosecuzione allo stato 114
-
-
-Stato 211
-
-   32 elenchi: elenchi . NEWLINE elenco_cambio
-   33        | elenchi . NEWLINE elenco_operazioni
-   47 cicli: FOR LPAREN assegnazione COMMA string CMP term COMMA operazioni RPAREN LBRACE elenchi . RBRACE
-
-    RBRACE   shift e prosecuzione allo stato 217
-    NEWLINE  shift e prosecuzione allo stato 106
-
-
-Stato 212
-
-   44 cicli: FOR LPAREN assegnazione COMMA string CMP term COMMA operazioni RPAREN LBRACE elenco_cond . RBRACE
-   66 elenco_cond: elenco_cond . NEWLINE cond
-
-    RBRACE   shift e prosecuzione allo stato 218
-    NEWLINE  shift e prosecuzione allo stato 114
-
-
-Stato 213
-
-   32 elenchi: elenchi . NEWLINE elenco_cambio
-   33        | elenchi . NEWLINE elenco_operazioni
-   48 cicli: FOR LPAREN assegnazione COMMA term CMP string COMMA operazioni RPAREN LBRACE elenchi . RBRACE
-
-    RBRACE   shift e prosecuzione allo stato 219
-    NEWLINE  shift e prosecuzione allo stato 106
-
-
-Stato 214
-
-   45 cicli: FOR LPAREN assegnazione COMMA term CMP string COMMA operazioni RPAREN LBRACE elenco_cond . RBRACE
-   66 elenco_cond: elenco_cond . NEWLINE cond
-
-    RBRACE   shift e prosecuzione allo stato 220
-    NEWLINE  shift e prosecuzione allo stato 114
-
-
-Stato 215
-
-   49 cicli: FOR LPAREN assegnazione COMMA string CMP string COMMA operazioni RPAREN LBRACE elenchi RBRACE .
+   49 cicli: WHILE LPAREN term CMP term RPAREN LBRACE elenco_cond RBRACE .
 
     $default  riduzione con la regola 49 (cicli)
 
 
-Stato 216
+Stato 180
 
-   46 cicli: FOR LPAREN assegnazione COMMA string CMP string COMMA operazioni RPAREN LBRACE elenco_cond RBRACE .
+   45 cicli: FOR LPAREN assegnazione COMMA string CMP string COMMA operazioni . RPAREN LBRACE elenco_cond RBRACE
+   48      | FOR LPAREN assegnazione COMMA string CMP string COMMA operazioni . RPAREN LBRACE elenchi RBRACE
 
-    $default  riduzione con la regola 46 (cicli)
-
-
-Stato 217
-
-   47 cicli: FOR LPAREN assegnazione COMMA string CMP term COMMA operazioni RPAREN LBRACE elenchi RBRACE .
-
-    $default  riduzione con la regola 47 (cicli)
+    RPAREN  shift e prosecuzione allo stato 187
 
 
-Stato 218
+Stato 181
 
-   44 cicli: FOR LPAREN assegnazione COMMA string CMP term COMMA operazioni RPAREN LBRACE elenco_cond RBRACE .
+   43 cicli: FOR LPAREN assegnazione COMMA string CMP term COMMA operazioni . RPAREN LBRACE elenco_cond RBRACE
+   46      | FOR LPAREN assegnazione COMMA string CMP term COMMA operazioni . RPAREN LBRACE elenchi RBRACE
 
-    $default  riduzione con la regola 44 (cicli)
+    RPAREN  shift e prosecuzione allo stato 188
 
 
-Stato 219
+Stato 182
 
-   48 cicli: FOR LPAREN assegnazione COMMA term CMP string COMMA operazioni RPAREN LBRACE elenchi RBRACE .
+   44 cicli: FOR LPAREN assegnazione COMMA term CMP string COMMA operazioni . RPAREN LBRACE elenco_cond RBRACE
+   47      | FOR LPAREN assegnazione COMMA term CMP string COMMA operazioni . RPAREN LBRACE elenchi RBRACE
+
+    RPAREN  shift e prosecuzione allo stato 189
+
+
+Stato 183
+
+   62 cond: metodo LPAREN string CMP string RPAREN LBRACE elenchi RBRACE .
+
+    $default  riduzione con la regola 62 (cond)
+
+
+Stato 184
+
+   61 cond: metodo LPAREN string CMP term RPAREN LBRACE elenchi RBRACE .
+
+    $default  riduzione con la regola 61 (cond)
+
+
+Stato 185
+
+   60 cond: metodo LPAREN term CMP string RPAREN LBRACE elenchi RBRACE .
+
+    $default  riduzione con la regola 60 (cond)
+
+
+Stato 186
+
+   59 cond: metodo LPAREN term CMP term RPAREN LBRACE elenchi RBRACE .
+
+    $default  riduzione con la regola 59 (cond)
+
+
+Stato 187
+
+   45 cicli: FOR LPAREN assegnazione COMMA string CMP string COMMA operazioni RPAREN . LBRACE elenco_cond RBRACE
+   48      | FOR LPAREN assegnazione COMMA string CMP string COMMA operazioni RPAREN . LBRACE elenchi RBRACE
+
+    LBRACE  shift e prosecuzione allo stato 190
+
+
+Stato 188
+
+   43 cicli: FOR LPAREN assegnazione COMMA string CMP term COMMA operazioni RPAREN . LBRACE elenco_cond RBRACE
+   46      | FOR LPAREN assegnazione COMMA string CMP term COMMA operazioni RPAREN . LBRACE elenchi RBRACE
+
+    LBRACE  shift e prosecuzione allo stato 191
+
+
+Stato 189
+
+   44 cicli: FOR LPAREN assegnazione COMMA term CMP string COMMA operazioni RPAREN . LBRACE elenco_cond RBRACE
+   47      | FOR LPAREN assegnazione COMMA term CMP string COMMA operazioni RPAREN . LBRACE elenchi RBRACE
+
+    LBRACE  shift e prosecuzione allo stato 192
+
+
+Stato 190
+
+   45 cicli: FOR LPAREN assegnazione COMMA string CMP string COMMA operazioni RPAREN LBRACE . elenco_cond RBRACE
+   48      | FOR LPAREN assegnazione COMMA string CMP string COMMA operazioni RPAREN LBRACE . elenchi RBRACE
+
+    ALPHA        shift e prosecuzione allo stato 15
+    CHANGESTATE  shift e prosecuzione allo stato 43
+    IF           shift e prosecuzione allo stato 44
+    ELSE         shift e prosecuzione allo stato 45
+    ELIF         shift e prosecuzione allo stato 46
+    OPERATORE    shift e prosecuzione allo stato 47
+    PRINT        shift e prosecuzione allo stato 50
+
+    string             prosecuzione allo stato 51
+    operazioni         prosecuzione allo stato 52
+    elenchi            prosecuzione allo stato 193
+    elenco_operazioni  prosecuzione allo stato 54
+    cambiostato        prosecuzione allo stato 55
+    elenco_cambio      prosecuzione allo stato 56
+    metodo             prosecuzione allo stato 58
+    cond               prosecuzione allo stato 59
+    elenco_cond        prosecuzione allo stato 194
+
+
+Stato 191
+
+   43 cicli: FOR LPAREN assegnazione COMMA string CMP term COMMA operazioni RPAREN LBRACE . elenco_cond RBRACE
+   46      | FOR LPAREN assegnazione COMMA string CMP term COMMA operazioni RPAREN LBRACE . elenchi RBRACE
+
+    ALPHA        shift e prosecuzione allo stato 15
+    CHANGESTATE  shift e prosecuzione allo stato 43
+    IF           shift e prosecuzione allo stato 44
+    ELSE         shift e prosecuzione allo stato 45
+    ELIF         shift e prosecuzione allo stato 46
+    OPERATORE    shift e prosecuzione allo stato 47
+    PRINT        shift e prosecuzione allo stato 50
+
+    string             prosecuzione allo stato 51
+    operazioni         prosecuzione allo stato 52
+    elenchi            prosecuzione allo stato 195
+    elenco_operazioni  prosecuzione allo stato 54
+    cambiostato        prosecuzione allo stato 55
+    elenco_cambio      prosecuzione allo stato 56
+    metodo             prosecuzione allo stato 58
+    cond               prosecuzione allo stato 59
+    elenco_cond        prosecuzione allo stato 196
+
+
+Stato 192
+
+   44 cicli: FOR LPAREN assegnazione COMMA term CMP string COMMA operazioni RPAREN LBRACE . elenco_cond RBRACE
+   47      | FOR LPAREN assegnazione COMMA term CMP string COMMA operazioni RPAREN LBRACE . elenchi RBRACE
+
+    ALPHA        shift e prosecuzione allo stato 15
+    CHANGESTATE  shift e prosecuzione allo stato 43
+    IF           shift e prosecuzione allo stato 44
+    ELSE         shift e prosecuzione allo stato 45
+    ELIF         shift e prosecuzione allo stato 46
+    OPERATORE    shift e prosecuzione allo stato 47
+    PRINT        shift e prosecuzione allo stato 50
+
+    string             prosecuzione allo stato 51
+    operazioni         prosecuzione allo stato 52
+    elenchi            prosecuzione allo stato 197
+    elenco_operazioni  prosecuzione allo stato 54
+    cambiostato        prosecuzione allo stato 55
+    elenco_cambio      prosecuzione allo stato 56
+    metodo             prosecuzione allo stato 58
+    cond               prosecuzione allo stato 59
+    elenco_cond        prosecuzione allo stato 198
+
+
+Stato 193
+
+   30 elenchi: elenchi . elenco_cambio
+   31        | elenchi . elenco_operazioni
+   48 cicli: FOR LPAREN assegnazione COMMA string CMP string COMMA operazioni RPAREN LBRACE elenchi . RBRACE
+
+    ALPHA        shift e prosecuzione allo stato 15
+    RBRACE       shift e prosecuzione allo stato 199
+    CHANGESTATE  shift e prosecuzione allo stato 43
+    OPERATORE    shift e prosecuzione allo stato 47
+    PRINT        shift e prosecuzione allo stato 50
+
+    string             prosecuzione allo stato 51
+    operazioni         prosecuzione allo stato 52
+    elenco_operazioni  prosecuzione allo stato 75
+    cambiostato        prosecuzione allo stato 55
+    elenco_cambio      prosecuzione allo stato 76
+
+
+Stato 194
+
+   45 cicli: FOR LPAREN assegnazione COMMA string CMP string COMMA operazioni RPAREN LBRACE elenco_cond . RBRACE
+   65 elenco_cond: elenco_cond . cond
+
+    RBRACE  shift e prosecuzione allo stato 200
+    IF      shift e prosecuzione allo stato 44
+    ELSE    shift e prosecuzione allo stato 45
+    ELIF    shift e prosecuzione allo stato 46
+
+    metodo  prosecuzione allo stato 58
+    cond    prosecuzione allo stato 85
+
+
+Stato 195
+
+   30 elenchi: elenchi . elenco_cambio
+   31        | elenchi . elenco_operazioni
+   46 cicli: FOR LPAREN assegnazione COMMA string CMP term COMMA operazioni RPAREN LBRACE elenchi . RBRACE
+
+    ALPHA        shift e prosecuzione allo stato 15
+    RBRACE       shift e prosecuzione allo stato 201
+    CHANGESTATE  shift e prosecuzione allo stato 43
+    OPERATORE    shift e prosecuzione allo stato 47
+    PRINT        shift e prosecuzione allo stato 50
+
+    string             prosecuzione allo stato 51
+    operazioni         prosecuzione allo stato 52
+    elenco_operazioni  prosecuzione allo stato 75
+    cambiostato        prosecuzione allo stato 55
+    elenco_cambio      prosecuzione allo stato 76
+
+
+Stato 196
+
+   43 cicli: FOR LPAREN assegnazione COMMA string CMP term COMMA operazioni RPAREN LBRACE elenco_cond . RBRACE
+   65 elenco_cond: elenco_cond . cond
+
+    RBRACE  shift e prosecuzione allo stato 202
+    IF      shift e prosecuzione allo stato 44
+    ELSE    shift e prosecuzione allo stato 45
+    ELIF    shift e prosecuzione allo stato 46
+
+    metodo  prosecuzione allo stato 58
+    cond    prosecuzione allo stato 85
+
+
+Stato 197
+
+   30 elenchi: elenchi . elenco_cambio
+   31        | elenchi . elenco_operazioni
+   47 cicli: FOR LPAREN assegnazione COMMA term CMP string COMMA operazioni RPAREN LBRACE elenchi . RBRACE
+
+    ALPHA        shift e prosecuzione allo stato 15
+    RBRACE       shift e prosecuzione allo stato 203
+    CHANGESTATE  shift e prosecuzione allo stato 43
+    OPERATORE    shift e prosecuzione allo stato 47
+    PRINT        shift e prosecuzione allo stato 50
+
+    string             prosecuzione allo stato 51
+    operazioni         prosecuzione allo stato 52
+    elenco_operazioni  prosecuzione allo stato 75
+    cambiostato        prosecuzione allo stato 55
+    elenco_cambio      prosecuzione allo stato 76
+
+
+Stato 198
+
+   44 cicli: FOR LPAREN assegnazione COMMA term CMP string COMMA operazioni RPAREN LBRACE elenco_cond . RBRACE
+   65 elenco_cond: elenco_cond . cond
+
+    RBRACE  shift e prosecuzione allo stato 204
+    IF      shift e prosecuzione allo stato 44
+    ELSE    shift e prosecuzione allo stato 45
+    ELIF    shift e prosecuzione allo stato 46
+
+    metodo  prosecuzione allo stato 58
+    cond    prosecuzione allo stato 85
+
+
+Stato 199
+
+   48 cicli: FOR LPAREN assegnazione COMMA string CMP string COMMA operazioni RPAREN LBRACE elenchi RBRACE .
 
     $default  riduzione con la regola 48 (cicli)
 
 
-Stato 220
+Stato 200
 
-   45 cicli: FOR LPAREN assegnazione COMMA term CMP string COMMA operazioni RPAREN LBRACE elenco_cond RBRACE .
+   45 cicli: FOR LPAREN assegnazione COMMA string CMP string COMMA operazioni RPAREN LBRACE elenco_cond RBRACE .
 
     $default  riduzione con la regola 45 (cicli)
+
+
+Stato 201
+
+   46 cicli: FOR LPAREN assegnazione COMMA string CMP term COMMA operazioni RPAREN LBRACE elenchi RBRACE .
+
+    $default  riduzione con la regola 46 (cicli)
+
+
+Stato 202
+
+   43 cicli: FOR LPAREN assegnazione COMMA string CMP term COMMA operazioni RPAREN LBRACE elenco_cond RBRACE .
+
+    $default  riduzione con la regola 43 (cicli)
+
+
+Stato 203
+
+   47 cicli: FOR LPAREN assegnazione COMMA term CMP string COMMA operazioni RPAREN LBRACE elenchi RBRACE .
+
+    $default  riduzione con la regola 47 (cicli)
+
+
+Stato 204
+
+   44 cicli: FOR LPAREN assegnazione COMMA term CMP string COMMA operazioni RPAREN LBRACE elenco_cond RBRACE .
+
+    $default  riduzione con la regola 44 (cicli)

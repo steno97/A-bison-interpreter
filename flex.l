@@ -21,8 +21,8 @@
 "if"|"IF"               { return IF; }
 "elif"|"ELIF"           { return ELIF; }
 "else"|"ELSE"           { return ELSE; }
-"for|FOR"				{ return FOR; }
-"while|WHILE"			{ return FOR; }
+"for"|"FOR"				{ return FOR; }
+"while"|"WHILE"			{ return WHILE; }
 
 "inc"	                { yylval.fn = 24; return OPERATORE; }
 "dec"					{ yylval.fn = 25; return OPERATORE; }
@@ -30,7 +30,7 @@
 print_schermo_message	{ yylval.fn = 40; return PRINT; }
 
 [0-9]+ 					{ return NUMBER; }
-([a-z]+[_a-z0-9]*)		{ return ALPHA; }
+([a-z]+['_a-z0-9]*)		{ return ALPHA; }
 
 "+"	                    { yylval.fn = 20; return OPERATORE; }
 "-"						{ yylval.fn = 21; return OPERATORE; }
@@ -58,7 +58,7 @@ print_schermo_message	{ yylval.fn = 40; return PRINT; }
 [ \t ]
 \\\n
 
-"\r"			{ return NEWLINE; }
+"\r"			
 "#"				{ return COMMENT; }
 "=>"			{ return CHANGESTATE; }
 "$end"     		{return ENFILE; exit(0);}

@@ -244,8 +244,6 @@ stato* analisi(stato* s){
 			}
 		}
 	}
-	
-	
 	condi=s->el_cond;
 	while(condi!=NULL){
 		if(confronto(condi->value)){

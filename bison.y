@@ -6,6 +6,7 @@
 
 %{
 #include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 %}
 
@@ -29,10 +30,9 @@
 %token LPAREN	/*(*/
 %token RPAREN	/*)*/
 %token EVENT
+%token ACTION
 %token COMMAND
 %token STATE
-%token ACTION
-%token NEWLINE
 %token COMMA
 %token CHANGESTATE
 %token COMMENT
@@ -48,13 +48,13 @@
 
 %type <fn> term NUMBER TYPE
 %type <op> operazioni
-%type <c> ALPHA string
+%type <c> ALPHA string 
 %type <as> elenco_ass assegnazione definition
-%type <even> elenco_ev_com events commands COMMAND 
+%type <even> elenco_ev_com events  commands
 %type <elen_stat> elenco_stati
 %type <stat> state
 %type <elen> elenchi
-%type <azione> elenco_actions actions elenco_operazioni
+%type <azione> elenco_actions elenco_operazioni actions
 %type <elen_con> elenco_cond
 %type <cic> cicli
 %type <camb_stat> elenco_cambio cambiostato
@@ -66,19 +66,15 @@
 
 %%
 
-main: definition serie_newline events serie_newline actions serie_newline elenco_stati serie_newline {run($1,$3,$5,$7);}
+main: definition events commands elenco_stati {run($1,$2,$3,$4);}
 ;
 
-serie_newline: NEWLINE
-	| serie_newline NEWLINE
-;
-
-definition: VAR LBRACE NEWLINE RBRACE {$$=add_assegnazioni(NULL,new_assegnazioni(NULL,NULL,11));}
-	| VAR LBRACE NEWLINE elenco_ass NEWLINE RBRACE {$$=$4;}
+definition: VAR LBRACE RBRACE {$$=add_assegnazioni(NULL,new_assegnazioni(NULL,NULL,11));}
+	| VAR LBRACE elenco_ass RBRACE {$$=$3;}
 ;
 
 elenco_ass: assegnazione SEMI 
-	| elenco_ass NEWLINE assegnazione SEMI {$$= add_assegnazioni( $1, $3);}
+	| elenco_ass assegnazione SEMI {$$= add_assegnazioni( $1, $2);}
 ;
 
 assegnazione: TYPE string ASSIGN string	{$$ = new_assegnazioni($2, $4, $1);}
@@ -100,6 +96,7 @@ operazioni: string ASSIGN string OPERATORE string {$$=new_operazione( new_assegn
 	| PRINT {$$=new_operazione(NULL, NULL, NULL, $1, -1);}
 ;
 
+
 /*
 assignments: VAR LBRACE elenco_ass RBRACE {$$=$3;}
 ;*/
@@ -107,45 +104,45 @@ assignments: VAR LBRACE elenco_ass RBRACE {$$=$3;}
 term: NUMBER
 ;
 
-events: EVENT LBRACE NEWLINE elenco_ev_com NEWLINE RBRACE {$$=$4;}
+events: EVENT LBRACE elenco_ev_com RBRACE {$$=$3;}
 ;
 
-elenco_ev_com: string SEMI {$$= new_evento((evento *) $1,NULL);}
-	| elenco_ev_com NEWLINE string SEMI {$$= add_evento($1,new_evento((evento *) $3,NULL));}
+elenco_ev_com: string SEMI {$$= new_evento((evento) $1,NULL);}
+	| elenco_ev_com string SEMI {$$= add_evento($1,new_evento((evento) $2,NULL));}
 ;
 
-commands: COMMAND LBRACE elenco_ev_com RBRACE
+elenco_stati:state {$$=new_el_stati1($1);}
+	| elenco_stati state {$$=add_el_stati($1, $2);}
 ;
 
-elenco_stati:state NEWLINE state {$$=new_el_stati($1, $3);}
-	| elenco_stati NEWLINE state {$$=add_el_stati($1, $3);}
-;
-
-state: STATE string LBRACE elenco_actions NEWLINE elenchi RBRACE {$$=new_stato2($2,$4,$6);}
-	| STATE string LBRACE elenco_actions NEWLINE elenco_cond RBRACE {$$=new_stato4($2,$4,$6);}
-	| STATE string LBRACE elenco_actions NEWLINE cicli RBRACE {$$=new_stato5($2,$4,NULL,NULL,$6);}
-	| STATE string LBRACE elenco_actions NEWLINE cicli NEWLINE elenco_cond RBRACE {$$=new_stato5($2,$4,$8,NULL,$6);}
-	| STATE string LBRACE elenco_actions NEWLINE cicli NEWLINE elenchi RBRACE {$$=new_stato5($2,$4,NULL,$8,$6);}
+state: STATE string LBRACE actions elenchi RBRACE {$$=new_stato2($2,$4,$5); printf("casa");}
+	| STATE string LBRACE actions elenco_cond elenchi RBRACE {$$=new_stato4($2,$4,$5,$6);}
+	| STATE string LBRACE actions cicli RBRACE {$$=new_stato5($2,$4,NULL,NULL,$5);}
+	| STATE string LBRACE actions cicli elenco_cond RBRACE {$$=new_stato5($2,$4,$6,NULL,$5);}
+	| STATE string LBRACE actions cicli elenchi RBRACE {$$=new_stato5($2,$4,NULL,$6,$5);}
 ;
 
 elenchi: elenco_operazioni					{$$= new_elenchi($1, NULL);}
 	| elenco_cambio							{$$= new_elenchi(NULL, $1);}
-	| elenchi NEWLINE elenco_cambio			{$$= add_cambio_elenchi($1, $3);}
-	| elenchi NEWLINE elenco_operazioni		{$$= add_oper_elenchi($1, $3);}
+	| elenchi elenco_cambio			{$$= add_cambio_elenchi($1, $2);}
+	| elenchi elenco_operazioni		{$$= add_oper_elenchi($1, $2);}
 ; 
 
-elenco_operazioni: operazioni SEMI {$$ = new_action((operazioni*) $1,NULL);}
-	| elenco_operazioni NEWLINE SEMI operazioni {$$ = add_azione($1, new_action((operazioni*) $4, NULL));}
+elenco_operazioni: operazioni SEMI {$$ = new_action((operazioni*) $1,NULL);;}
+	| elenco_operazioni SEMI operazioni {$$ = add_azione($1, new_action((operazioni*) $3, NULL));}
 ;
 
 /*
 azioni:string SEMI {$$ = new_action((operazioni*) $1,NULL);}
-	| azioni NEWLINE string SEMI {$$ = add_azione($1, new_action((operazioni*) $3, NULL));}
+	| azioni string SEMI {$$ = add_azione($1, new_action((operazioni*) $2, NULL));}
 ;
 */
 
 actions: ACTION LBRACE RBRACE SEMI	{$$= new_action(NULL, NULL);}
 	| ACTION LBRACE elenco_actions RBRACE SEMI  {$$= $3;}
+;
+
+commands: COMMAND LBRACE elenco_ev_com RBRACE {$$=$3;}
 ;
 
 elenco_actions: operazioni {$$ = new_action((operazioni*) $1,NULL);}
@@ -157,12 +154,12 @@ cambiostato: string CHANGESTATE string SEMI {$$= new_cambiostato(new_evento((eve
 ;
 
 elenco_cambio: cambiostato 
-	| elenco_cambio NEWLINE cambiostato {$$=add_cambiostato($1,$3);}
+	| elenco_cambio cambiostato {$$=add_cambiostato($1,$2);}
 ;
 
 
 commenti: COMMENT
-	|COMMENT string NEWLINE
+	|COMMENT string
 ;
 
 cicli: FOR LPAREN assegnazione COMMA string CMP term COMMA operazioni RPAREN LBRACE elenco_cond RBRACE  {$$=new_cicli(1, $3, $12, new_action((operazioni*) $9,NULL), new_cond(new_assegnazioni(NULL,(void*) $5,15),new_assegnazioni(NULL,(void*) $7,11), $6, NULL));}
@@ -192,8 +189,8 @@ cond: metodo LPAREN term CMP term RPAREN LBRACE elenchi RBRACE			{$$=new_cond(ne
 	| ELSE LBRACE elenchi RBRACE										{$$=new_cond(NULL,NULL,0, $3);}
 ;
 
-elenco_cond: cond NEWLINE cond  {$$=add_elencocond(new_elencocond($1),new_elencocond($3));}
-	| elenco_cond NEWLINE cond	{$$=add_elencocond($1,new_elencocond($3));}
+elenco_cond: cond {$$=add_elencocond(new_elencocond($1),NULL);}
+	| elenco_cond cond	{$$=add_elencocond($1,new_elencocond($2));}
 ;
 
 %%

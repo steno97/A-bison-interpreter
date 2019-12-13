@@ -4,6 +4,7 @@
 
 cicli* new_cicli(int t, assegnazioni* asse, elenco_cond* con, action* a, cond* co){
 	cicli* cs=(cicli*) malloc(sizeof(cicli));
+	printf("eccomi\n");
 	cs->tipo=t;
 	cs->as=asse;
 	cs->condi=con;
@@ -14,6 +15,7 @@ cicli* new_cicli(int t, assegnazioni* asse, elenco_cond* con, action* a, cond* c
 
 cicli* new_cicli1(int t, assegnazioni* asse, elenchi* e, action* a, cond* co){
 	cicli* cs=(cicli*) malloc(sizeof(cicli));
+	printf("eccomi\n");
 	cs->tipo=t;
 	cs->as=asse;
 	cs->el=e;
@@ -106,14 +108,14 @@ stato* new_stato5( String n,action* actions,elenco_cond* el_con, elenchi* cs,cic
 	s->cic=c;
 	return s;
 }
-stato* new_stato4( String n,action* actions, elenco_cond* con){
+stato* new_stato4( String n,action* actions, elenco_cond* con, elenchi* cs){
 	stato* s=(stato*) malloc(sizeof(stato));
 	s->nome=n;
 	s->azioni=actions;
-	s->eventi=NULL;
-	s->el_stati=NULL;
-	s->azioni=NULL;
-	s->el_cond=NULL;
+	s->eventi=(cs->cambio)->causa;
+	s->el_stati=(cs->cambio)->effetto;
+	s->azioni=add_azione(cs->oper, s->azioni);
+	s->el_cond=con;
 	s->cic=NULL;
 	return s;
 }
@@ -155,9 +157,9 @@ action* new_action(operazioni* a, action* prox){
 	az->next=prox;
 	return az;
 }
-event* new_evento(evento* e, event* prox){
+event* new_evento(evento e, event* prox){
 	event* ev=(event*) malloc(sizeof(event));
-	ev->value=*e;
+	ev->value=e;
 	ev->next=prox;
 	return ev;
 }
@@ -175,8 +177,12 @@ elenco_stati* new_el_stati1(stato* statolista){
 }
 
 action* add_azione(action* a, action* prox){
-	a->next=prox;
-	return a;
+	action* b=prox;
+	while(prox->next!=NULL){
+		prox=prox->next;
+	}
+	prox->next=a;
+	return b;
 }
 event* add_evento(event* e, event* prox){
 	e->next=prox;
@@ -229,6 +235,7 @@ assegnazioni* new_assegnazioni(String n,void* v, int tipo){
 	as->nome=n;
 	as->value=v;
 	as->next=NULL;
+	printf("prova\n");
 	return as;
 }
 assegnazioni* add_assegnazioni(assegnazioni* as, assegnazioni*as2){
@@ -252,7 +259,7 @@ elenco_cond* new_elencocond(cond* condi){
 	return el;
 }
 elenco_cond* add_elencocond(elenco_cond* prim, elenco_cond* sec){
-	sec->next=prim;
+	prim->next=sec;
 	return sec;
 }
 int free_elencocond(elenco_cond* elen){

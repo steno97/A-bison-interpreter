@@ -124,10 +124,10 @@ int free_assegnazioni(assegnazioni* as);
 stato* new_stato1(String n);
 stato* new_stato2( String n,action* actions, elenchi* cs);
 stato* new_stato3( String n,action* actions, event *ev, elenco_stati* prox);
-stato* new_stato4( String n,action* actions, elenco_cond* con);
+stato* new_stato4( String n,action* actions, elenco_cond* con, elenchi* cs);
 
 action* new_action(operazioni* a, action* prox);
-event* new_evento(evento* e, event* prox);
+event* new_evento(evento e, event* prox);
 elenco_stati* new_el_stati(stato* statolista, stato* prox);
 elenco_stati* new_el_stati1(stato* statolista);
 
