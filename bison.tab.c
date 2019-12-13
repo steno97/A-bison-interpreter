@@ -1383,7 +1383,7 @@ yyreduce:
     {
         case 2:
 #line 69 "bison.y" /* yacc.c:1652  */
-    {run((yyvsp[-3].as),(yyvsp[-2].even),(yyvsp[-1].even),(yyvsp[0].elen_stat));}
+    {run((yyvsp[-3].as),(yyvsp[-2].even),(yyvsp[-1].even),(yyvsp[0].elen_stat));printf("stai runnando??\n");}
 #line 1388 "bison.tab.c" /* yacc.c:1652  */
     break;
 
@@ -1503,7 +1503,7 @@ yyreduce:
 
   case 24:
 #line 118 "bison.y" /* yacc.c:1652  */
-    {(yyval.stat)=new_stato2((yyvsp[-4].c),(yyvsp[-2].azione),(yyvsp[-1].elen)); printf("casa");}
+    {(yyval.stat)=new_stato2((yyvsp[-4].c),(yyvsp[-2].azione),(yyvsp[-1].elen));}
 #line 1508 "bison.tab.c" /* yacc.c:1652  */
     break;
 

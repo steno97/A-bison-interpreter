@@ -61,7 +61,7 @@ print_schermo_message	{ yylval.fn = 40; return PRINT; }
 "\r"			
 "#"				{ return COMMENT; }
 "=>"			{ return CHANGESTATE; }
-"$end"     		{return ENFILE; exit(0);}
+
 .              	{ yyerror("Mystery character %c\n", *yytext); printf("Unknown token!\n"); yyterminate();}
 <<EOF>>         { exit(0); }
 

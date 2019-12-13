@@ -66,7 +66,7 @@
 
 %%
 
-main: definition events commands elenco_stati {run($1,$2,$3,$4);}
+main: definition events commands elenco_stati {run($1,$2,$3,$4);printf("stai runnando??\n");}
 ;
 
 definition: VAR LBRACE RBRACE {$$=add_assegnazioni(NULL,new_assegnazioni(NULL,NULL,11));}
@@ -115,7 +115,7 @@ elenco_stati:state {$$=new_el_stati1($1);}
 	| elenco_stati state {$$=add_el_stati($1, $2);}
 ;
 
-state: STATE string LBRACE actions elenchi RBRACE {$$=new_stato2($2,$4,$5); printf("casa");}
+state: STATE string LBRACE actions elenchi RBRACE {$$=new_stato2($2,$4,$5);}
 	| STATE string LBRACE actions elenco_cond elenchi RBRACE {$$=new_stato4($2,$4,$5,$6);}
 	| STATE string LBRACE actions cicli RBRACE {$$=new_stato5($2,$4,NULL,NULL,$5);}
 	| STATE string LBRACE actions cicli elenco_cond RBRACE {$$=new_stato5($2,$4,$6,NULL,$5);}

@@ -4,7 +4,6 @@
 
 cicli* new_cicli(int t, assegnazioni* asse, elenco_cond* con, action* a, cond* co){
 	cicli* cs=(cicli*) malloc(sizeof(cicli));
-	printf("eccomi\n");
 	cs->tipo=t;
 	cs->as=asse;
 	cs->condi=con;
@@ -15,7 +14,6 @@ cicli* new_cicli(int t, assegnazioni* asse, elenco_cond* con, action* a, cond* c
 
 cicli* new_cicli1(int t, assegnazioni* asse, elenchi* e, action* a, cond* co){
 	cicli* cs=(cicli*) malloc(sizeof(cicli));
-	printf("eccomi\n");
 	cs->tipo=t;
 	cs->as=asse;
 	cs->el=e;
@@ -235,7 +233,6 @@ assegnazioni* new_assegnazioni(String n,void* v, int tipo){
 	as->nome=n;
 	as->value=v;
 	as->next=NULL;
-	printf("prova\n");
 	return as;
 }
 assegnazioni* add_assegnazioni(assegnazioni* as, assegnazioni*as2){
@@ -277,8 +274,14 @@ cond* new_cond(assegnazioni* pr, assegnazioni* sec, int par, elenchi* stat){
 	con->primo=pr;
 	con->secondo=sec;
 	con->paragone=par;
-	con->s=stat->cambio;
-	con->az=stat->oper;
+	if(stat!=NULL){
+		con->s=stat->cambio;
+		con->az=stat->oper;
+	}
+	else{
+		con->s=NULL;
+		con->az=NULL;
+	}
 	free(stat);
 	return con;
 }

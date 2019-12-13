@@ -200,12 +200,12 @@ stato* analisi(stato* s){
 	trovato=0;
 	variabile=0;
 	interruzioni=0;
-	action* az=s->azioni;
+	printf("siamo dentro\n");
+	az=s->azioni;
 	while(az!=NULL){
 		do_(az->op);
 		az=az->next;
 		}
-
 	//analisi dei cicli
 	cicli* cicl=s->cic;
 	if(cicl!=NULL){
@@ -286,8 +286,7 @@ stato* analisi(stato* s){
 	}
 }
 
-int run(assegnazioni* ass,event* evv,action* azz,elenco_stati* el){
-	
+int run(assegnazioni* ass,event* evv,event* azz,elenco_stati* el){
 	as=ass;
 	elenco=el;	
 	while(el!=NULL){
