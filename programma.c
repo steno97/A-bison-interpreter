@@ -70,9 +70,9 @@ void evento_handler(int signum){
 		eventi=eventi->next;
 		status=status->next;
 		}
-		if(eventi==NULL){
-			printf("errore evento non presente per tale stato");
-		}
+	if(eventi==NULL){
+		printf("errore evento non presente per tale stato");
+	}
 }
 
 void* tipo(assegnazioni* a){
@@ -201,6 +201,8 @@ stato* analisi(stato* s){
 	variabile=0;
 	interruzioni=0;
 	printf("siamo dentro\n");
+	if(s==NULL){
+		printf("siamo dentro ancora?\n");}
 	az=s->azioni;
 	while(az!=NULL){
 		do_(az->op);
@@ -218,8 +220,7 @@ stato* analisi(stato* s){
 				do_(az->op);
 				az=az->next;
 			}
-			
-			
+				
 		condi=cicl->condi;
 		while(condi!=NULL){
 			if(confronto(condi->value)){
@@ -241,6 +242,7 @@ stato* analisi(stato* s){
 			eventi=((cicl->el)->cambio)->causa;
 			status=((cicl->el)->cambio)->effetto;
 			while(interruzioni==0){
+				}
 			}
 		}
 	}
@@ -283,14 +285,13 @@ stato* analisi(stato* s){
 		el=el->next;
 	}	
 	return stato0;
-	}
 }
 
 int run(assegnazioni* ass,event* evv,event* azz,elenco_stati* el){
 	as=ass;
 	elenco=el;	
 	while(el!=NULL){
-		if((el->value)->nome=="idle"){
+		if(strcmp((el->value)->nome, "idle")==0){
 			stato0=el->value;
 			break;
 		}

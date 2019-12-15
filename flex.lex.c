@@ -956,12 +956,12 @@ YY_RULE_SETUP
 case 20:
 YY_RULE_SETUP
 #line 32 "flex.l"
-{ return NUMBER; }
+{ yylval.fn = atof(yytext);return NUMBER; }
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
 #line 33 "flex.l"
-{ return ALPHA; }
+{ yylval.c = lookup(yytext); return ALPHA; }
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
@@ -1096,7 +1096,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case YY_STATE_EOF(INITIAL):
 #line 66 "flex.l"
-{ exit(0); }
+{return 1;}
 	YY_BREAK
 case 48:
 YY_RULE_SETUP

@@ -22,7 +22,7 @@
 //%token <fn> TYPE
 %token TYPE
 %token SEMI
-%token ALPHA
+%token <c> ALPHA 
 %token ASSIGN
 %token VAR
 %token LBRACE	/*{*/
@@ -48,7 +48,7 @@
 
 %type <fn> term NUMBER TYPE
 %type <op> operazioni
-%type <c> ALPHA string 
+%type <c> string 
 %type <as> elenco_ass assegnazione definition
 %type <even> elenco_ev_com events  commands
 %type <elen_stat> elenco_stati

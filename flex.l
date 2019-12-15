@@ -29,8 +29,8 @@
 "set"					{ yylval.fn = 26; return OPERATORE; } 
 print_schermo_message	{ yylval.fn = 40; return PRINT; }
 
-[0-9]+ 					{ return NUMBER; }
-([a-z]+['_a-z0-9]*)		{ return ALPHA; }
+[0-9]+ 					{ yylval.fn = atof(yytext);return NUMBER; }
+([a-z]+['_a-z0-9]*)		{ yylval.c = lookup(yytext); return ALPHA; }
 
 "+"	                    { yylval.fn = 20; return OPERATORE; }
 "-"						{ yylval.fn = 21; return OPERATORE; }
@@ -63,6 +63,6 @@ print_schermo_message	{ yylval.fn = 40; return PRINT; }
 "=>"			{ return CHANGESTATE; }
 
 .              	{ yyerror("Mystery character %c\n", *yytext); printf("Unknown token!\n"); yyterminate();}
-<<EOF>>         { exit(0); }
+<<EOF>>         {return 1;}
 
 %%

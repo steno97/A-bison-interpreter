@@ -6,9 +6,43 @@ extern FILE *yyin;
 extern int yylex();
 union YYSTYPE yylval;
 
+typedef char* String;
+typedef char* evento;
+
+
+
+//lettura di stringhe
+struct symbol {
+	/* a variable name */
+	char *name;
+	double value;
+	struct ast *func;
+	/* stmt for the function */
+	struct symlist *syms; /* list of dummy args */
+
+};
+/* simple symtab of fixed size */
+#define NHASH 9997
+struct symbol symtab[NHASH];
+/* list of symbols, for an argument list */
+struct symlist {
+	struct symbol *sym;
+	struct symlist *next;
+};
+
+static unsigned symhash(char *sym);
+String lookup(char* sym);
+
+//lettura di stringhe
+
+
+
+
+
+
 union YYSTYPE{
 	int fn;
-	char* c;
+	String c;
 	struct assegnazioni* as;
 	struct operazioni* op;
 	struct cond* con;
@@ -22,8 +56,7 @@ union YYSTYPE{
 	struct cicli* cic;
 };
  
-typedef char* String;
-typedef char* evento;
+
 
 typedef struct assegnazioni{
 	int type;
