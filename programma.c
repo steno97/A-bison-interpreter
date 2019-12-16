@@ -11,7 +11,6 @@
 #include <sys/time.h>
 
 int trovato=0;
-int variabile=0;
 elenco_cond* condi=NULL;
 assegnazioni* as=NULL;
 elenco_stati* elenco=NULL;
@@ -24,7 +23,6 @@ stato* stato0=NULL;
 String errore="evento non valido per lo stato corrente\n";
 FILE * fp;
 char * line = NULL;
-size_t len = 0;
 ssize_t ra;
 int end_of_file=0;
 
@@ -42,7 +40,8 @@ void timer_handler(int signum){
 	}
 	interruzioni=1;
 	while(eventi!=NULL){
-		if(eventi->value=="0"){
+		
+		if(strcmp(eventi->value, "0")==0){
 			stato0=status->value;
 			break;
 			}
@@ -52,12 +51,26 @@ void timer_handler(int signum){
 	
 }
 
+ssize_t readline(char **lineptr, FILE *stream){
+  size_t len = 0;  // Size of the buffer, ignored.
+
+  ssize_t chars = getline(lineptr, &len, stream);
+
+  if((*lineptr)[chars-1] == '\n') {
+    (*lineptr)[chars-2] = '\0';
+    --chars;
+    --chars;
+  }
+  return chars;
+}
+
+
 void evento_handler(int signum){
 	if (interruzioni==1 || end_of_file){
 		return;
 	}
 	interruzioni=1;
-	if((ra = getline(&line, &len, fp)) == -1) {
+	if((ra = readline(&line, fp)) == -1) {
         interruzioni=0;
         end_of_file=1;
         return;
@@ -65,6 +78,7 @@ void evento_handler(int signum){
 	while(eventi!=NULL){
 		if(strcmp(eventi->value, line)==0){
 			stato0=status->value;
+			printf("trovata\n");
 			break;
 			}
 		eventi=eventi->next;
@@ -84,10 +98,9 @@ void* tipo(assegnazioni* a){
 		case 14: return a->value;
 		case 15:{
 			assegnazioni* at=as;
-			while(at!=NULL && !variabile){
-				if(at->nome==((String)a->value))
+			while(at!=NULL){
+				if(strcmp(at->nome, a->value)==0)
 				{
-					variabile=1;
 					return tipo(at);
 				 }
 				 at=at->next;
@@ -110,73 +123,82 @@ int do_(operazioni* v){
 		case 20:{
 			assegnazioni* x=as;
 			while (x!=NULL){
-				if(v->primo->nome==x->nome){
+				if(strcmp(v->primo->nome, x->nome)==0){
 					x->value=(int)tipo(v->secondo)+(int)tipo(v->terzo);
 					break;
 					}
 				x=x->next;
 				}
+				break;
 			}	
 		case 21:{
 			assegnazioni* x=as;
 			while (x!=NULL){
-				if(v->primo->nome==x->nome){
+				if(strcmp(v->primo->nome, x->nome)==0){
 					x->value=(int)tipo(v->secondo)-(int)tipo(v->terzo);
 					break;
 					}
 				x=x->next;
 				}
+				break;
 			}	
 		case 22:{
 			assegnazioni* x=as;
 			while (x!=NULL){
-				if(v->primo->nome==x->nome){
+				if(strcmp(v->primo->nome, x->nome)==0){
 					x->value=(int)tipo(v->secondo)*(int)tipo(v->terzo);
 					break;
 					}
 				x=x->next;
 				}
+				break;
 			}	
 		case 23:{
 			assegnazioni* x=as;
 			while (x!=NULL){
-				if(v->primo->nome==x->nome){
+				if(strcmp(v->primo->nome, x->nome)==0){
 					x->value=(int)tipo(v->secondo)/(int)tipo(v->terzo);
 					break;
 					}
 				x=x->next;
 				}
+				break;
 			}	
 		
 		case 24: {
 			assegnazioni* x=as;
 			while (x!=NULL){
-				if(v->primo->nome==x->nome){
+				if(strcmp(v->primo->nome, x->nome)==0){
 					x->value=x->value+1;
+					printf("%d\n",x->value);
 					break;
 					}
 				x=x->next;
 				}
+				break;
 			}	
 		case 25:{
 			assegnazioni* x=as;
 			while (x!=NULL){
-				if(v->primo->nome==x->nome){
+				if(strcmp(v->primo->nome, x->nome)==0){
 					x->value=x->value-1;
+					printf("%d\n",x->value);
 					break;
 					}
 				x=x->next;
 				}
+				break;
 			}
 		case 26:{
 			assegnazioni* x=as;
 			while (x!=NULL){
-				if(v->primo->nome==x->nome){
+				if(strcmp(v->primo->nome, x->nome)==0){
 					x->value=v->value;
 					break;
 					}
 				x=x->next;
 				}
+				break;
 			}
 	}
 	return 1;
@@ -198,11 +220,8 @@ int confronto(cond* c){
 //fatta
 stato* analisi(stato* s){
 	trovato=0;
-	variabile=0;
 	interruzioni=0;
-	printf("siamo dentro\n");
-	if(s==NULL){
-		printf("siamo dentro ancora?\n");}
+	printf("%s\n",s->nome);
 	az=s->azioni;
 	while(az!=NULL){
 		do_(az->op);
@@ -278,7 +297,7 @@ stato* analisi(stato* s){
 	}
 	elenco_stati* el=elenco;	
 	while(el!=NULL){
-		if((el->value)->nome==stato0->nome){
+		if (strcmp((el->value)->nome, stato0->nome)==0){
 			stato0=el->value;
 			break;
 		}
@@ -338,10 +357,10 @@ int main(int argc, char **argv){
 
 	/* Configure the timer to expire after 500 msec... */
 	timer.it_value.tv_sec = 0;
-	timer.it_value.tv_usec = 90000;
+	timer.it_value.tv_usec = 60000;
 	/* ... and every 500 msec after that. */
 	timer.it_interval.tv_sec = 0;
-	timer.it_interval.tv_usec = 900000;
+	timer.it_interval.tv_usec = 600000;
 	/* Start a virtual timer. It counts down whenever this process is
 	executing. */
 	setitimer (ITIMER_VIRTUAL, &timer, NULL);
