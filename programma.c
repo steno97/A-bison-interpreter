@@ -14,10 +14,12 @@ int trovato=0;
 elenco_cond* condi=NULL;
 assegnazioni* as=NULL;
 elenco_stati* elenco=NULL;
+int waitinterrupt=0;
 action* az=NULL;
 event* eventi=NULL;
 //event* interrupt=NULL;
 int interruzioni=0;
+int cic=0;
 elenco_stati* status=NULL;
 stato* stato0=NULL;
 String errore="evento non valido per lo stato corrente\n";
@@ -25,7 +27,8 @@ FILE * fp;
 char * line = NULL;
 ssize_t ra;
 int end_of_file=0;
-
+struct itimerval timer;
+struct itimerval timer1;
 
 /*dubbi e perplessita
  * qualche volta dovrò alloracare spazio alle strutture contenute in altre strutture dati!!! ATTENZIONE
@@ -35,20 +38,21 @@ int end_of_file=0;
 //interruzione del "clock", tempo fittizio ideato da noi
 //handler timer 
 void timer_handler(int signum){
-	if (interruzioni==1){
+	if (interruzioni==1 || cic==1){
 		return;
 	}
 	interruzioni=1;
 	while(eventi!=NULL){
-		
-		if(strcmp(eventi->value, "0")==0){
+		printf("%s\n",eventi->value);
+		if(strcmp(eventi->value,"0")==0){
 			stato0=status->value;
+			trovato=1;
 			break;
 			}
 		eventi=eventi->next;
 		status=status->next;
 		}
-	
+	waitinterrupt=0;
 }
 
 ssize_t readline(char **lineptr, FILE *stream){
@@ -78,14 +82,18 @@ void evento_handler(int signum){
 	while(eventi!=NULL){
 		if(strcmp(eventi->value, line)==0){
 			stato0=status->value;
-			printf("trovata\n");
+			trovato=1;
 			break;
 			}
 		eventi=eventi->next;
 		status=status->next;
 		}
 	if(eventi==NULL){
-		printf("errore evento non presente per tale stato");
+		printf("errore: evento non presente per tale stato\n");
+		interruzioni=0;
+		eventi=stato0->eventi;
+		status=stato0->el_stati;
+		waitinterrupt=1;
 	}
 }
 
@@ -170,7 +178,6 @@ int do_(operazioni* v){
 			while (x!=NULL){
 				if(strcmp(v->primo->nome, x->nome)==0){
 					x->value=x->value+1;
-					printf("%d\n",x->value);
 					break;
 					}
 				x=x->next;
@@ -182,7 +189,6 @@ int do_(operazioni* v){
 			while (x!=NULL){
 				if(strcmp(v->primo->nome, x->nome)==0){
 					x->value=x->value-1;
-					printf("%d\n",x->value);
 					break;
 					}
 				x=x->next;
@@ -219,6 +225,8 @@ int confronto(cond* c){
 
 //fatta
 stato* analisi(stato* s){
+	setitimer (ITIMER_VIRTUAL, &timer1, NULL);
+	setitimer (ITIMER_REAL, &timer, NULL);
 	trovato=0;
 	interruzioni=0;
 	printf("%s\n",s->nome);
@@ -230,41 +238,47 @@ stato* analisi(stato* s){
 	//analisi dei cicli
 	cicli* cicl=s->cic;
 	if(cicl!=NULL){
+		cic=1;
 		if(cicl->tipo==1){
 			add_assegnazioni(cicl->as, as);
 		}
 		while(confronto(cicl->con)){
+			//printf("%d\n",confronto(cicl->con));
 			az=cicl->az;
 			while(az!=NULL){
 				do_(az->op);
 				az=az->next;
 			}
-				
-		condi=cicl->condi;
-		while(condi!=NULL){
-			if(confronto(condi->value)){
-				az=(condi->value)->az;
-				while(az!=NULL){
-					do_(az->op);
-					az=az->next;
-				}
-				eventi=((condi->value)->s)->causa;
-				status=((condi->value)->s)->effetto;
+			condi=cicl->condi;
+			while(condi!=NULL){
+				if(confronto(condi->value)){
+					az=(condi->value)->az;
+					while(az!=NULL){
+						do_(az->op);
+						az=az->next;
+					}
+					eventi=((condi->value)->s)->causa;
+					status=((condi->value)->s)->effetto;
+					while(interruzioni==0){
+						}
+					break;
+					}
+				condi=condi->next;
+			}
+			az=(cicl->el)->oper;
+			while(az!=NULL){
+				do_(az->op);
+				az=az->next;
+			}
+			if((cicl->el)->cambio!=NULL && !(trovato)){
+				eventi=((cicl->el)->cambio)->causa;
+				status=((cicl->el)->cambio)->effetto;
 				while(interruzioni==0){
 					}
-				trovato=1;
-				break;
-				}
-			condi=condi->next;
-		}
-		if(cicl->el!=NULL && !(trovato)){
-			eventi=((cicl->el)->cambio)->causa;
-			status=((cicl->el)->cambio)->effetto;
-			while(interruzioni==0){
 				}
 			}
 		}
-	}
+	cic=0;
 	condi=s->el_cond;
 	while(condi!=NULL){
 		if(confronto(condi->value)){
@@ -273,13 +287,15 @@ stato* analisi(stato* s){
 				do_(az->op);
 				az=az->next;
 			}
-			eventi=((condi->value)->s)->causa;
-			status=((condi->value)->s)->effetto;
-			while(interruzioni==0){
+			if((condi->value)->s!=NULL){
+				eventi=((condi->value)->s)->causa;
+				status=((condi->value)->s)->effetto;
+				while(interruzioni==0){
+				}
+				trovato=1;
+				break;
+				}
 			}
-			trovato=1;
-			break;
-		}
 		condi=condi->next;
 	}
 	if(s->el_stati!=NULL && !(trovato)){
@@ -295,6 +311,7 @@ stato* analisi(stato* s){
 	//cerco in elenco lo stato con il nome uguale a quello che sta in stato0
 	//perchè elenco ha una struttura dati completa mentre stato0 possiede solo il nome dello stato
 	}
+	while(waitinterrupt==1){}
 	elenco_stati* el=elenco;	
 	while(el!=NULL){
 		if (strcmp((el->value)->nome, stato0->nome)==0){
@@ -348,28 +365,27 @@ int main(int argc, char **argv){
 	////////////////////////////////////////////////////////////////////	
 	// 1° interrupt	
 	struct sigaction sa;
-	struct itimerval timer;
+	
 
 	/* Install timer_handler as the signal handler for SIGVTALRM. */
 	memset (&sa, 0, sizeof (sa));
 	sa.sa_handler = &timer_handler;
-	sigaction (SIGVTALRM, &sa, NULL);
+	sigaction (SIGALRM, &sa, NULL);
 
 	/* Configure the timer to expire after 500 msec... */
 	timer.it_value.tv_sec = 0;
-	timer.it_value.tv_usec = 60000;
+	timer.it_value.tv_usec = 70000;
 	/* ... and every 500 msec after that. */
 	timer.it_interval.tv_sec = 0;
-	timer.it_interval.tv_usec = 600000;
+	timer.it_interval.tv_usec = 700000;
 	/* Start a virtual timer. It counts down whenever this process is
 	executing. */
-	setitimer (ITIMER_VIRTUAL, &timer, NULL);
+	setitimer (ITIMER_REAL, &timer, NULL);
 
 
 	///////////////////////////////////////////////////////////////////
 	//2° interrupt
 	struct sigaction sa1;
-	struct itimerval timer1;
 
 	/* Install timer_handler as the signal handler for SIGVTALRM. */
 	memset (&sa1, 0, sizeof (sa1));
@@ -398,7 +414,3 @@ int main(int argc, char **argv){
 	}
     return flag;
 }
-
-
-
-

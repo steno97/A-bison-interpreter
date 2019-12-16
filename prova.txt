@@ -62,8 +62,3 @@ state error{
 	actions{print_schermo_message};
 	=>idle;
 }
-
-
-
-
-

@@ -165,15 +165,15 @@ commenti: COMMENT
 cicli: FOR LPAREN assegnazione COMMA string CMP term COMMA operazioni RPAREN LBRACE elenco_cond RBRACE  {$$=new_cicli(1, $3, $12, new_action((operazioni*) $9,NULL), new_cond(new_assegnazioni(NULL,(void*) $5,15),new_assegnazioni(NULL,(void*) $7,11), $6, NULL));}
 	| FOR LPAREN assegnazione COMMA term CMP string COMMA operazioni RPAREN LBRACE elenco_cond RBRACE 	{$$=new_cicli(1, $3, $12, new_action((operazioni*) $9,NULL), new_cond(new_assegnazioni(NULL,(void *) $5, 11),new_assegnazioni(NULL,(void *) $7, 15), $6, NULL));} 
 	| FOR LPAREN assegnazione COMMA string CMP string COMMA operazioni RPAREN LBRACE elenco_cond RBRACE	{$$=new_cicli(1, $3, $12, new_action((operazioni*) $9,NULL), new_cond(new_assegnazioni(NULL,(void *) $5, 15),new_assegnazioni(NULL,(void *) $7, 15), $6, NULL));}
-	| FOR LPAREN assegnazione COMMA string CMP term COMMA operazioni RPAREN LBRACE elenchi RBRACE		{$$=new_cicli1(1, $3, $12, new_action((operazioni*) $9,NULL), new_cond(new_assegnazioni(NULL,(void *) $5, 11),new_assegnazioni(NULL,(void*) $7, 15), $6, NULL));}
-	| FOR LPAREN assegnazione COMMA term CMP string COMMA operazioni RPAREN LBRACE elenchi RBRACE		{$$=new_cicli1(1, $3, $12, new_action((operazioni*) $9,NULL), new_cond(new_assegnazioni(NULL,(void*) $5, 15),new_assegnazioni(NULL,(void *) $7, 11), $6, NULL));}
-	| FOR LPAREN assegnazione COMMA string CMP string COMMA operazioni RPAREN LBRACE elenchi RBRACE		{$$=new_cicli1(1, $3, $12, new_action((operazioni*) $9,NULL), new_cond(new_assegnazioni(NULL,(void *) $5, 11),new_assegnazioni(NULL,(void *) $7, 15), $6, NULL));}
+	| FOR LPAREN assegnazione COMMA string CMP term COMMA operazioni RPAREN LBRACE elenchi RBRACE		{$$=new_cicli1(1, $3, $12, new_action((operazioni*) $9,NULL), new_cond(new_assegnazioni(NULL,(void *) $5, 15),new_assegnazioni(NULL,(void*) $7, 11), $6, NULL));}
+	| FOR LPAREN assegnazione COMMA term CMP string COMMA operazioni RPAREN LBRACE elenchi RBRACE		{$$=new_cicli1(1, $3, $12, new_action((operazioni*) $9,NULL), new_cond(new_assegnazioni(NULL,(void*) $5, 11),new_assegnazioni(NULL,(void *) $7, 15), $6, NULL));}
+	| FOR LPAREN assegnazione COMMA string CMP string COMMA operazioni RPAREN LBRACE elenchi RBRACE		{$$=new_cicli1(1, $3, $12, new_action((operazioni*) $9,NULL), new_cond(new_assegnazioni(NULL,(void *) $5, 15),new_assegnazioni(NULL,(void *) $7, 15), $6, NULL));}
 	| WHILE LPAREN term CMP term RPAREN LBRACE elenco_cond RBRACE	{$$=new_cicli(2, NULL, $8, NULL, new_cond(new_assegnazioni(NULL,(void *) $3, 11),new_assegnazioni(NULL,(void *) $5,11), $4, NULL));}
 	| WHILE LPAREN string CMP term RPAREN LBRACE elenco_cond RBRACE	{$$=new_cicli(2, NULL, $8, NULL, new_cond(new_assegnazioni(NULL,(void *) $3, 15),new_assegnazioni(NULL,(void *) $5, 11), $4, NULL));}
 	| WHILE LPAREN term CMP string RPAREN LBRACE elenco_cond RBRACE	{$$=new_cicli(2, NULL, $8, NULL, new_cond(new_assegnazioni(NULL,(void *) $3,11),new_assegnazioni(NULL,(void *) $5,15), $4, NULL));}
 	| WHILE LPAREN string CMP string RPAREN LBRACE elenco_cond RBRACE	{$$=new_cicli(2, NULL, $8, NULL, new_cond(new_assegnazioni(NULL,(void *) $3, 15),new_assegnazioni(NULL,(void *) $5,15), $4, NULL));}
 	| WHILE LPAREN term CMP term RPAREN LBRACE elenchi RBRACE	{$$=new_cicli1(2, NULL, $8, NULL, new_cond(new_assegnazioni(NULL,(void *) $3, 11),new_assegnazioni(NULL,(void *) $5,11), $4, NULL));}
-	| WHILE LPAREN string CMP term RPAREN LBRACE elenchi RBRACE	{$$=new_cicli1(2, NULL, $8, NULL, new_cond(new_assegnazioni(NULL,(void *) $3, 11),new_assegnazioni(NULL,(void *) $5, 11), $4, NULL));}
+	| WHILE LPAREN string CMP term RPAREN LBRACE elenchi RBRACE	{$$=new_cicli1(2, NULL, $8, NULL, new_cond(new_assegnazioni(NULL,(void *) $3, 15),new_assegnazioni(NULL,(void *) $5, 11), $4, NULL));}
 	| WHILE LPAREN term CMP string RPAREN LBRACE elenchi RBRACE	{$$=new_cicli1(2, NULL, $8, NULL, new_cond(new_assegnazioni(NULL,(void *) $3,11),new_assegnazioni(NULL, (void *) $5,15), $4, NULL));}
 	| WHILE LPAREN string CMP string RPAREN LBRACE elenchi RBRACE	{$$=new_cicli1(2, NULL, $8, NULL, new_cond(new_assegnazioni(NULL,(void *) $3, 15),new_assegnazioni(NULL,(void *) $5,15), $4, NULL));}
 ;
@@ -183,7 +183,7 @@ metodo: IF
 ;
 
 cond: metodo LPAREN term CMP term RPAREN LBRACE elenchi RBRACE			{$$=new_cond(new_assegnazioni(NULL, (void *) $3, 11),new_assegnazioni(NULL,(void*) $5, 11), $4, $8);}
-	| metodo LPAREN term CMP string RPAREN LBRACE elenchi RBRACE		{$$=new_cond(new_assegnazioni(NULL,(void*) $3, 11),new_assegnazioni(NULL, $5,15), $4, $8);}
+	| metodo LPAREN term CMP string RPAREN LBRACE elenchi RBRACE		{$$=new_cond(new_assegnazioni(NULL,(void*) $3, 11),new_assegnazioni(NULL, (void*)$5,15), $4, $8);}
 	| metodo LPAREN string CMP term  RPAREN LBRACE elenchi RBRACE		{$$=new_cond(new_assegnazioni(NULL,(void *) $3,15),new_assegnazioni(NULL,(void*) $5, 11), $4, $8);}
 	| metodo LPAREN string CMP string RPAREN LBRACE elenchi RBRACE		{$$=new_cond(new_assegnazioni(NULL,(void *) $3, 15),new_assegnazioni(NULL,(void *) $5, 15), $4, $8);}
 	| ELSE LBRACE elenchi RBRACE										{$$=new_cond(NULL,NULL,0, $3);}

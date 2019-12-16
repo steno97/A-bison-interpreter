@@ -63,11 +63,11 @@ int free_operazioni(operazioni* op){
 }
 
 elenchi* add_cambio_elenchi( elenchi* el, cambio_stato* cambio){
-		(el->cambio)=add_cambiostato(cambio, el->cambio);
+		el->cambio=add_cambiostato(cambio, el->cambio);
 		return el;
 }
 elenchi* add_oper_elenchi(elenchi* el, action* az){
-		(el->oper)=add_azione(az, el->oper);
+		el->oper=add_azione(az, el->oper);
 		return el;
 }
 
@@ -252,12 +252,13 @@ int free_assegnazioni(assegnazioni* as){
 elenco_cond* new_elencocond(cond* condi){
 	elenco_cond* el=(elenco_cond*) malloc(sizeof(elenco_cond));
 	el->value=condi;
+	
 	el->next=NULL;
 	return el;
 }
 elenco_cond* add_elencocond(elenco_cond* prim, elenco_cond* sec){
 	prim->next=sec;
-	return sec;
+	return prim;
 }
 int free_elencocond(elenco_cond* elen){
 	elenco_cond* el=NULL;
