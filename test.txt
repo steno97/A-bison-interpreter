@@ -1,0 +1,64 @@
+global_variables{
+	int prima=1000;	
+	int seconda=0;
+}
+
+events{
+	diminuiamo_prima;
+	aumentiamo_seconda;
+    errore;
+	ciclo;
+}
+
+commands{
+	incrementa;
+	decrementa;
+}
+
+state idle{
+	actions{print_schermo_message(stiamo_nell'idle)};
+	diminuiamo_prima=>dim;
+	aumentiamo_seconda=>incr;
+	errore=>error;
+	ciclo=>cic;
+	=>idle;
+}
+
+state dim{
+	actions{dec(prima)};
+	if(prima==0){
+		print_schermo_message(non_si_puo_piu_diminuire_prima);
+	}
+	aumentiamo_seconda=>incr;
+	errore=>error;
+	ciclo=>cic;
+	=>idle;
+}
+
+
+state incr{
+	actions{inc(seconda)};
+	if(seconda==5){
+		print_schermo_message(seconda_e_arrivata_a_5);
+	}
+	diminuiamo_prima=>dim;
+	errore=>error;
+	ciclo=>cic;
+	=>idle;
+}
+
+state cic{
+	actions{print_schermo_message(stiamo_nel_ciclo)};
+	while(prima>=900){
+		dec(prima);
+	}
+	diminuiamo_prima=>dim;
+	errore=>error;
+	aumentiamo_seconda=>incr;
+	=>idle;
+}
+
+state error{
+	actions{print_schermo_message};
+	=>idle;
+}
