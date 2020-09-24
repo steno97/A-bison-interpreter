@@ -5,4 +5,6 @@ used to implement the code of devices for architecture like -x86.
 
 If you want to make a test you have to digit on your shell the instruction below:
 > make
+
+
 > ./compilatore
