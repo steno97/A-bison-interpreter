@@ -8,3 +8,6 @@ If you want to make a test you have to digit on your shell the instruction below
 
 
 > ./compilatore
+
+
+In the file My_thesis__2_.pdf there is the description of the project
